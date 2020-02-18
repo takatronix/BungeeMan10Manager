@@ -1,0 +1,4 @@
+name: TemplatePlugin
+main: red.man10.bungee.TemplatePlugin
+version: 1.0
+author: takatronix

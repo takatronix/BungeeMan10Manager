@@ -1,0 +1,4 @@
+name: TemplatePlugin
+version: 1.0.0
+main: red.man10.bungee.TemplatePlugin
+description: BungeeCord Template Plugin
