@@ -1,4 +1,4 @@
-name: TemplatePlugin
-main: red.man10.bungee.TemplatePlugin
+name: §dBungee§fMan10§aManager§f
+main: red.man10.bungee.manager.Plugin
 version: 1.0
 author: takatronix

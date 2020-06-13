@@ -1,4 +1,4 @@
-name: TemplatePlugin
+name: BungeeMan10Manager
 version: 1.0.0
-main: red.man10.bungee.TemplatePlugin
-description: BungeeCord Template Plugin
+main: red.man10.bungee.manager.Plugin
+description: BungeeCord Man10 Server manager
