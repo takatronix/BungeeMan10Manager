@@ -20,13 +20,16 @@ repositories {
     maven {
         url = 'https://jitpack.io'
     }
+    jcenter()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     compileOnly 'net.md-5:bungeecord-api:1.15-SNAPSHOT'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.github.Tea-Ayataka:Kordis:0.2.3'
+    def coroutines_version = '1.3.7' //Kotlin coroutines用ライブラリ(async, await)のバージョン
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    def jda_version = '4.1.1_165'
+    compile "net.dv8tion:JDA:$jda_version"
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -44,10 +47,10 @@ processResources {
 
 buildscript {
     ext{
-        kotlin_version = '1.3.61'
+        kotlin_version = '1.3.71'
     }
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

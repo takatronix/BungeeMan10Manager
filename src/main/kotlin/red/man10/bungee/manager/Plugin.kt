@@ -1,22 +1,36 @@
 package red.man10.bungee.manager
 
+import kotlinx.coroutines.runBlocking
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
+import net.md_5.bungee.config.Configuration
 import net.md_5.bungee.event.EventHandler
 
 
 class Plugin : Plugin() ,Listener{
+
+    private lateinit var config: Configuration;
     override fun onEnable() { // Plugin startup logic
+
+
 
         logger.info("Started.")
         //      イベント登録
         proxy.pluginManager.registerListener(this, this)
         //      コマンド登録
         proxy.pluginManager.registerCommand(this,PluginCommand("test","red.man10.template.test"))
+
+        this.
+
+        logger.info("aaa")
+        runBlocking {
+            logger.info("run")
+
+            logger.info("done")
+;        }
     }
 
     override fun onDisable() { // Plugin shutdown logic

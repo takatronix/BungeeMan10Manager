@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Main-Class: red.man10.bungee.manager.Plugin
 Class-Path: annotations-13.0.jar kotlin-stdlib-common-1.3.61.jar kotlin-
- stdlib-1.3.61.jar
+ stdlib-1.3.61.jar kotlinx-coroutines-core-1.3.4.jar
 
