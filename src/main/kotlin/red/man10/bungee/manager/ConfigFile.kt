@@ -35,7 +35,7 @@ class ConfigFile(plugin: Plugin) {
                 }
             }catch (e: IOException){
                 e.printStackTrace()
-                plugin.logger.info("コンフィグファイルの生成に失敗しました")
+                plugin.logger.info("failed to create config.yml")
             }
         }
 
