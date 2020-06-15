@@ -34,6 +34,42 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     var uuid: UUID = player.uniqueId
     var mcid: String = player.name
 
+    var freezeUntil: Date? = null      //      拘束期限
+    var muteUntil: Date? = null        //      ミュート期限
+    var jailUntil: Date? = null        //      ジェイル期限
+    var banUntil: Date? = null         //      BAN期限
+
+    fun isFronzen() : Boolean{
+        if(freezeUntil == null)
+            return false
+        return true
+    }
+    fun isMuted() : Boolean{
+        if(muteUntil == null)
+            return false
+        return true
+    }
+    fun isJailed() : Boolean{
+        if(jailUntil == null)
+            return false
+        return true
+    }
+    fun isBanned() : Boolean{
+        if(banUntil == null)
+            return false
+        return true
+    }
+    //      ミュート時間を追加
+    fun AddMuteTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
+        if(muteUntil == null){
+            muteUntil = Date();         //  現在時刻を設定
+        }
+
+        //muteUntil += ...
+
+        return muteUntil;
+    }
+
 
     init {
         load()
