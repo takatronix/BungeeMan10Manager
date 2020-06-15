@@ -7,7 +7,8 @@ import java.util.*
 
 class PlayerCommand{
     lateinit var time: Time             //  イベントの発生した時刻
-    lateinit var message: String        //  プレイヤーの入力メッセージ
+    lateinit var message: String       //  プレイヤーの入力メッセージ
+    lateinit var type:Type
 }
 
 enum class PlayerStatus{
@@ -18,6 +19,11 @@ enum class PlayerStatus{
     Banned,
 }
 
+enum class Type{
+    COMMAND,
+    MESSAGE
+}
+
 class PlayerData {
     lateinit var uuid: UUID
     lateinit var mcid: String
@@ -26,8 +32,21 @@ class PlayerData {
     //   チャットとコマンドを履歴に登録する
     //   条件によって Mute/Jail/Kickを返す
 
-    fun Add(commandOrChat:String): PlayerStatus{
-        
+    fun Add(commandOrChat:String,type:Type): PlayerStatus{
+
+        val pc =PlayerCommand()
+
+        pc.message = commandOrChat
+        pc.time = Time(Date().time)
+
+        if (commandOrChat.indexOf("/") == 0){
+            pc.type = Type.COMMAND
+            commandHistory.add(pc)
+        }else {
+            pc.type = Type.MESSAGE
+            commandHistory.add(pc)
+        }
+
         return PlayerStatus.OK;
     }
 
