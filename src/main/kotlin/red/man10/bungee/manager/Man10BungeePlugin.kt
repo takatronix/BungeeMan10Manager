@@ -51,9 +51,16 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
     fun log(text: String){
         logger.info("${Companion.prefix}$text")
+        discord.admin("[log]$text")
     }
+    fun warning(text: String){
+        logger.warning("${Companion.prefix}$text")
+        discord.admin("[warning]$text")
+    }
+
     fun error(text: String){
         logger.severe("${Companion.prefix}§c$text")
+        discord.admin("[error]$text")
     }
 
     private fun loadConfig(){
@@ -94,6 +101,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         GlobalScope.launch {
             initPlayerData(e.player)
 
+
+            ///////////////////////////////////////////////////
+            //      ログインしたユーザーがジェイル民なら転送
             if(playerDataDic[e.player.uniqueId]?.isJailed()!!){
                 discord.admin(e.player.name +" was sent to the jail.")
                 val target = ProxyServer.getInstance().getServerInfo(jailServerName)
@@ -134,7 +144,6 @@ class Man10BungeePlugin : Plugin() ,Listener{
         //      整形: takatronix@lobby>ohaman(おはまん)
         var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
 
-
         ////////////////////////////////////////////////////
         //      SPAM判定用に履歴保存
         playerDataDic[p.uniqueId]!!.add(message!!)
@@ -143,7 +152,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         //   ミュートされている場合チャット＆コマンドも禁止
         if(data.isMuted()){
             //      adminチャンネルへは何をしているか通知
-            discord.admin("[Muted] ($chatMessage)")
+            warning("[Muted] ($chatMessage)")
             sendMessage(data.uuid,"§eYou are muted!!")
             e.isCancelled = true;
             return
@@ -153,7 +162,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         //   ジェイルされている場合コマンド実行禁止
         if (data.isJailed()){
             //      adminチャンネルへは何をしているか通知
-            discord.admin("[Jailed] ($chatMessage)")
+            warning("[Jailed] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendMessage(data.uuid,"§eYou are jailed!!")
                 e.isCancelled = true;
@@ -176,11 +185,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand){
             log("[Command] $message");
-            discord.admin("[Command] $message")
         }else{
             log(chatMessage)
             discord.chat(chatMessage)
-            discord.admin(chatMessage)
         }
     }
 
@@ -189,9 +196,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     @EventHandler
     fun onClientConnect(e: ClientConnectEvent) {
         logger.info("ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress}")
-
-        discord.log("connect")
-
+        //discord.log("connect")
     }
 
 
@@ -203,6 +208,11 @@ class Man10BungeePlugin : Plugin() ,Listener{
     @EventHandler
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
         logger.info("PlayerDisconnectEvent ${e.player} ")
+
+        var msg = "${e.player} is disconnected";
+        sendGlobalMessage(msg)
+        discord.admin(msg)
+        discord.chat(msg)
     }
 
     //      Event called to represent a player first making their presence and username known.
@@ -216,22 +226,22 @@ class Man10BungeePlugin : Plugin() ,Listener{
     //  プラグインメッセージがクライアントまたはサーバに送信されたときに呼び出されるイベント
     @EventHandler
     fun onPluginMessage(e: PluginMessageEvent) {
-        logger.info("PluginMessageEvent tag:${e.tag} sender:${e.sender}")
+ //       logger.info("PluginMessageEvent tag:${e.tag} sender:${e.sender}")
     }
 
     //  Called when the proxy is pinged with packet 0xFE from the server list.
     //  プロキシがサーバリストからパケット0xFEでpingされたときに呼び出される。
     @EventHandler
     fun onProxyPing(e: ProxyPingEvent) {
-        logger.info("ProxyPingEvent connection:${e.connection} response:${e.response}")
+   //     logger.info("ProxyPingEvent connection:${e.connection} response:${e.response}")
     }
 
     //  Called when somebody reloads BungeeCord
     //  誰かがBungeeCordをリロードしたときに呼び出される
     @EventHandler
     fun onProxyReload(e: ProxyReloadEvent) {
-        logger.info("ProxyReloadEvent sender:${e.sender}")
-
+        log("ProxyReloadEvent sender:${e.sender}")
+      //  discord.admin("ProxyReloadEvent sender:${e.sender}")
     }
 
     //  Not to be confused with ServerConnectEvent,
@@ -296,6 +306,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     }
 
     fun sendGlobalMessage(text:String){
+        log("[Global]$text")
         for (player in ProxyServer.getInstance().players) {
             player.sendMessage(TextComponent(text))
         }
@@ -306,7 +317,6 @@ class Man10BungeePlugin : Plugin() ,Listener{
     }
 
     fun initPlayerData(p:ProxiedPlayer){
-
         playerDataDic[p.uniqueId] = PlayerData(p,this)
     }
 
