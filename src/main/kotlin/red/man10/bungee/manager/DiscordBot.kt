@@ -34,21 +34,27 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
     var adminChannel:TextChannel? = null
 
 
+    //      チャットチャンネル出力
     fun chat(text:String){
         chatChannel?.sendMessage(text)?.queue()
     }
+    //      ログチャンネル出力
     fun log(text:String){
         logChannel?.sendMessage(text)?.queue()
     }
+    //      システム出力
     fun system(text:String){
         systemChannel?.sendMessage(text)?.queue()
     }
+    //      通知
     fun notification(text:String){
         notificationChannel?.sendMessage(text)?.queue()
     }
+    //      Admin用
     fun admin(text:String){
         adminChannel?.sendMessage(text)?.queue()
     }
+    
     init{
 
     }

@@ -40,9 +40,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     private fun loadConfig(){
         var config = ConfigFile(this).getConfig()
         try {
-
             this.enableJapanizer = config?.getBoolean("japanizer")
-
             ////////////////////////////////////////////
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
@@ -54,7 +52,6 @@ class Man10BungeePlugin : Plugin() ,Listener{
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
             discord.plugin = this
             discord.setup()
-
         } catch (e: NullPointerException) {
             e.printStackTrace()
             error(e.localizedMessage)
