@@ -54,7 +54,7 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
     fun admin(text:String){
         adminChannel?.sendMessage(text)?.queue()
     }
-    
+
     init{
 
     }
