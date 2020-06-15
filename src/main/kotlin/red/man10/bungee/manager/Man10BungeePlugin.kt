@@ -7,6 +7,7 @@ import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.config.Configuration
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.db.MySQLManager
 
 
 class Man10BungeePlugin : Plugin() ,Listener{
@@ -23,6 +24,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
         discord.system("Started.")
+
+        MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
+
     }
 
     override fun onDisable() {

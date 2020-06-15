@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import sun.plugin2.main.server.Plugin
+//import sun.plugin2.main.server.Plugin
 import javax.security.auth.login.LoginException
 
 
