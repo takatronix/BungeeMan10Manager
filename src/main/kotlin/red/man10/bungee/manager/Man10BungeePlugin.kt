@@ -16,6 +16,7 @@ import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import javax.xml.bind.JAXBElement
 import kotlin.collections.HashMap
 
@@ -28,7 +29,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
 
     //      オンラインのプレイヤーの情報
-    var playerDataDic = HashMap<UUID,PlayerData>()
+    var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
 
     var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
@@ -96,6 +97,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
             initPlayerData(e.player)
         }
 
+
         for (player in ProxyServer.getInstance().players) {
             player.sendMessage(TextComponent(e.player.name.toString() + " has joined the network."))
         }
@@ -105,6 +107,11 @@ class Man10BungeePlugin : Plugin() ,Listener{
     //  プレイヤーがサーバーにメッセージを送信したときに呼び出されるイベント。
     @EventHandler
     fun onChat(e: ChatEvent) {
+
+        val p = e.sender
+
+        if (p !is ProxiedPlayer)return
+
         logger.info("chatEvent ${e.message} isCommand:${e.isCommand} sender:${e.sender} receiver:${e.receiver}")
 
         var message = removeColorCode(e.message)
@@ -116,7 +123,11 @@ class Man10BungeePlugin : Plugin() ,Listener{
             }
         }
 
-        discord.chat("<${e.sender}>${message}")
+        playerDataDic[p.uniqueId]!!.add(message!!)
+
+        if (e.isCommand)return
+
+        discord.chat("<${e.sender}@${p.server.info.name}>${message}")
     }
 
     //  Event called to represent an initial client connection.

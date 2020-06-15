@@ -1,6 +1,7 @@
 package red.man10.bungee.manager
 
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import net.md_5.bungee.api.connection.Server
 import red.man10.bungee.manager.db.MySQLManager
 import java.sql.Time
 import java.util.*
@@ -61,6 +62,8 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
 
     init {
         load()
+
+        plugin.logger.info("Loaded ${mcid}'s player data ")
     }
 
     //   チャットとコマンドを履歴に登録する
@@ -91,6 +94,8 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     }
 
     //      ログインしてからのCommand/Chat履歴
-    lateinit var commandHistory: MutableList<History>
-    lateinit var messageHistory : MutableList<History>
+    private val commandHistory = mutableListOf<History>()
+    private val messageHistory = mutableListOf<History>()
+
+
 }

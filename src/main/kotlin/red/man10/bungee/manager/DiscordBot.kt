@@ -36,6 +36,9 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
 
     //      チャットチャンネル出力
     fun chat(text:String){
+
+        if (text.indexOf("/") == 0)return
+
         chatChannel?.sendMessage(text)?.queue()
     }
     //      ログチャンネル出力
