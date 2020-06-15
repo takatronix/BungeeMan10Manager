@@ -4,6 +4,8 @@ import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
 import com.github.ucchyocean.lc.japanize.KanaConverter
 import com.iwebpp.crypto.TweetNaclFast
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
@@ -13,6 +15,7 @@ import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
+import javax.xml.bind.JAXBElement
 import kotlin.collections.HashMap
 
 
@@ -87,8 +90,15 @@ class Man10BungeePlugin : Plugin() ,Listener{
     //  接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
     @EventHandler fun  onPostLogin(e: PostLoginEvent){
         logger.info("${e.player.name} is logged in")
+
+        val p = e.player
+
+        GlobalScope.launch {
+            playerDataDic[p.uniqueId] = PlayerData(p,this@Man10BungeePlugin)
+        }
+
         for (player in ProxyServer.getInstance().players) {
-            player.sendMessage(TextComponent(e.getPlayer().getName().toString() + " has joined the network."))
+            player.sendMessage(TextComponent(e.player.name.toString() + " has joined the network."))
         }
     }
 
