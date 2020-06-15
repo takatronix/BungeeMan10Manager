@@ -9,7 +9,7 @@ import net.md_5.bungee.config.Configuration
 import net.md_5.bungee.event.EventHandler
 
 
-class Plugin : Plugin() ,Listener{
+class Man10BungeePlugin : Plugin() ,Listener{
 
     companion object {
         private const val prefix = "§f[§dMan§f10§aBot§f]"
@@ -23,10 +23,7 @@ class Plugin : Plugin() ,Listener{
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
 
-        discord.log("log channel connected")
-        discord.system("system channel connected")
-        discord.notification("notification channel connected")
-        discord.chat("chat channel connected")
+
 
 
         //proxy.pluginManager.registerCommand(this,PluginCommand("test","red.man10.template.test"))
@@ -87,6 +84,8 @@ class Plugin : Plugin() ,Listener{
     @EventHandler
     fun onChat(e: ChatEvent) {
         logger.info("chatEvent ${e.message} isCommand:${e.isCommand} sender:${e.sender} receiver:${e.receiver}")
+
+        discord.chat(e.message)
     }
 
     //  Event called to represent an initial client connection.
