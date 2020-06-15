@@ -22,11 +22,6 @@ class Man10BungeePlugin : Plugin() ,Listener{
         log("started")
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
-
-
-
-
-        //proxy.pluginManager.registerCommand(this,PluginCommand("test","red.man10.template.test"))
     }
 
     override fun onDisable() {
@@ -56,6 +51,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
             discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
             discord.logChannelID = config.getLong("Discord.LogChannel")
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
+            discord.plugin = this
             discord.setup()
 
         } catch (e: NullPointerException) {
@@ -87,7 +83,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     fun onChat(e: ChatEvent) {
         logger.info("chatEvent ${e.message} isCommand:${e.isCommand} sender:${e.sender} receiver:${e.receiver}")
 
-        discord.chat(e.message)
+        discord.chat("${e.sender}@${e.message}")
     }
 
     //  Event called to represent an initial client connection.
