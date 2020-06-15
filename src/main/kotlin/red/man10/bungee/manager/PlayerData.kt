@@ -1,20 +1,13 @@
 package red.man10.bungee.manager
 
-import com.mojang.brigadier.Command
-import com.sun.org.apache.xpath.internal.operations.Bool
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import red.man10.bungee.manager.db.MySQLManager
 import java.sql.Time
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.HashMap
 
-class PlayerCommand{
+class History{
     lateinit var time: Time             //  イベントの発生した時刻
     lateinit var message: String        //  プレイヤーの入力メッセージ
-    lateinit var type:Type              //メッセージのタイプ(チャットかコマンドか)
 }
 
 enum class PlayerStatus{
@@ -60,10 +53,12 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
         return true
     }
     //      ミュート時間を追加
-    fun AddMuteTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
+    fun addMuteTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
         if(muteUntil == null){
             muteUntil = Date();         //  現在時刻を設定
         }
+
+
 
         //muteUntil += ...
 
@@ -78,19 +73,17 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     //   チャットとコマンドを履歴に登録する
     //   条件によって Mute/Jail/Kickを返す
 
-    fun Add(commandOrChat:String){
+    fun add(commandOrChat:String){
 
-        val pc =PlayerCommand()
+        val pc =History()
 
         pc.message = commandOrChat
         pc.time = Time(Date().time)
 
         if (commandOrChat.indexOf("/") == 0){
-            pc.type = Type.COMMAND
             commandHistory.add(pc)
         }else {
-            pc.type = Type.MESSAGE
-            commandHistory.add(pc)
+            messageHistory.add(pc)
         }
 
         return
@@ -105,5 +98,6 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     }
 
     //      ログインしてからのCommand/Chat履歴
-    lateinit var commandHistory: MutableList<PlayerCommand>
+    lateinit var commandHistory: MutableList<History>
+    lateinit var messageHistory : MutableList<History>
 }

@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
@@ -91,10 +92,8 @@ class Man10BungeePlugin : Plugin() ,Listener{
     @EventHandler fun  onPostLogin(e: PostLoginEvent){
         logger.info("${e.player.name} is logged in")
 
-        val p = e.player
-
         GlobalScope.launch {
-            playerDataDic[p.uniqueId] = PlayerData(p,this@Man10BungeePlugin)
+            initPlayerData(e.player)
         }
 
         for (player in ProxyServer.getInstance().players) {
@@ -228,6 +227,10 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
     fun removeColorCode(msg: String?): String? {
         return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg))
+    }
+
+    fun initPlayerData(p:ProxiedPlayer){
+        playerDataDic[p.uniqueId] = PlayerData(p,this)
     }
 
 }
