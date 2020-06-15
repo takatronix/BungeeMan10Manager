@@ -1,8 +1,7 @@
 package red.man10.bungee.manager
 
 import net.md_5.bungee.api.connection.ProxiedPlayer
-import net.md_5.bungee.api.connection.Server
-import red.man10.bungee.manager.db.MySQLManager
+//import red.man10.bungee.manager.db.MySQLManager
 import java.sql.Time
 import java.util.*
 
@@ -37,6 +36,7 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
         return true
     }
     fun isJailed() : Boolean{
+        //return true
         if(jailUntil == null)
             return false
         return true
@@ -87,9 +87,9 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
 
     fun load(){
 
-        val mysql = MySQLManager(plugin,"BungeeManager Loading")
+       // val mysql = MySQLManager(plugin,"BungeeManager Loading")
 
-        val rs = mysql.query("SELECT * ")
+        //val rs = mysql.query("SELECT * ")
 
     }
 

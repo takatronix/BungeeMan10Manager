@@ -12,8 +12,8 @@ import sun.plugin2.main.server.Plugin
 import javax.security.auth.login.LoginException
 
 
-class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
-    var plugin:Man10BungeePlugin? = plugin
+class DiscordBot() : ListenerAdapter() {
+    var plugin:Man10BungeePlugin? = null
 
     lateinit var jda: JDA
     var token:String? = null

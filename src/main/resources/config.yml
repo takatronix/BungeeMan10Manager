@@ -1,3 +1,5 @@
+jail:
+  server: "jail"
 japanizer: true
 Discord:
   Token: ""

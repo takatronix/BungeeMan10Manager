@@ -1,9 +1,6 @@
 package red.man10.bungee.manager
-import com.github.ucchyocean.lc.japanize.IMEConverter
 import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
-import com.github.ucchyocean.lc.japanize.KanaConverter
-import com.iwebpp.crypto.TweetNaclFast
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.md_5.bungee.api.ChatColor
@@ -14,10 +11,8 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
-import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import javax.xml.bind.JAXBElement
 import kotlin.collections.HashMap
 
 
@@ -27,6 +22,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         private const val prefix = "§f[§dMan§f10§aBot§f]"
     }
 
+    var jailServerName: String? = null
 
     //      オンラインのプレイヤーの情報
     var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
@@ -34,7 +30,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
 
-    var discord = DiscordBot(this)
+    var discord = DiscordBot()
 
 
     override fun onEnable() { // Plugin startup logic
@@ -43,7 +39,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         proxy.pluginManager.registerListener(this, this)
         discord.system("Started.")
 
-        MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
+    //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
     }
 
@@ -63,6 +59,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         var config = ConfigFile(this).getConfig()
         try {
             this.enableJapanizer = config?.getBoolean("japanizer")
+            this.jailServerName = config?.getString("jail.server")
             ////////////////////////////////////////////
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
@@ -95,6 +92,13 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
         GlobalScope.launch {
             initPlayerData(e.player)
+
+            if(playerDataDic[e.player.uniqueId]?.isJailed()!!){
+                discord.admin(e.player.name +" was sent to the jail.")
+                val target = ProxyServer.getInstance().getServerInfo(jailServerName)
+                e.player.connect(target)
+            }
+
         }
 
 
@@ -132,12 +136,18 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
         playerDataDic[p.uniqueId]!!.add(message!!)
 
-        if (data.isMuted() || data.isBanned()){
-            e.isCancelled = true
-            return
-        }
 
-        if (e.isCommand || data.isJailed())return
+        //      ジェイルされている場合
+        //      コマンド実行禁止
+        if (data.isJailed()){
+            if(e.isProxyCommand  || e.isCommand){
+                ProxyServer.getInstance().getPlayer(data.uuid).sendMessage(TextComponent("You are jailed!!"))
+                e.isCancelled = true;
+                return
+            }
+
+            return;
+        }
 
         discord.chat("<${e.sender}@${p.server.info.name}>${message}")
     }
@@ -149,6 +159,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         logger.info("ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress}")
 
         discord.log("connect")
+
     }
 
 
@@ -237,7 +248,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     //  プレイヤーがタブ補完を使用したときに呼び出されるイベント
     @EventHandler
     fun onTabComplete(e: TabCompleteEvent) {
-        logger.info("TabCompleteEvent sender:${e.sender} receiver:${e.receiver}")
+        //logger.info("TabCompleteEvent sender:${e.sender} receiver:${e.receiver}")
     }
 
     //  An event which occurs in the communication between two nodes.
@@ -253,6 +264,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     }
 
     fun initPlayerData(p:ProxiedPlayer){
+
         playerDataDic[p.uniqueId] = PlayerData(p,this)
     }
 
