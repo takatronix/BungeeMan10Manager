@@ -10,13 +10,6 @@ class History{
     lateinit var message: String        //  プレイヤーの入力メッセージ
 }
 
-enum class PlayerStatus{
-    OK,
-    Muted,
-    Jailed,
-    Kicked,
-    Banned,
-}
 
 enum class Type{
     COMMAND,
@@ -32,7 +25,7 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     var jailUntil: Date? = null        //      ジェイル期限
     var banUntil: Date? = null         //      BAN期限
 
-    fun isFronzen() : Boolean{
+    fun isFrozen() : Boolean{
         if(freezeUntil == null)
             return false
         return true
@@ -55,7 +48,7 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     //      ミュート時間を追加
     fun addMuteTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
         if(muteUntil == null){
-            muteUntil = Date();         //  現在時刻を設定
+            muteUntil = Date()      //  現在時刻を設定
         }
 
 
