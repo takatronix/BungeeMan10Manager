@@ -22,6 +22,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         log("started")
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
+        discord.system("Started.")
     }
 
     override fun onDisable() {

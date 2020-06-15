@@ -75,11 +75,7 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
             systemChannel = guild?.getTextChannelById(this.systemChannelID)
             notificationChannel = guild?.getTextChannelById(this.notificationChannelID)
             adminChannel = guild?.getTextChannelById(this.adminChannelID)
-            this.chat("chat channel connected")
-            this.log("log channel connected")
-            this.system("system channel connected")
-            this.notification("notification channel connected")
-            this.admin("admin channel connected")
+
             } catch (e: LoginException) {
                 e.printStackTrace()
                 plugin?.error(e.localizedMessage)
@@ -98,14 +94,11 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
         }
 
         override fun onReady(event: ReadyEvent) {
-
-
             plugin?.log("Discord bot ready")
+        }
 
+        override fun onMessageReceived(event: MessageReceivedEvent) {
+            val msg = event.message
 
-    }
-    override fun onMessageReceived(event: MessageReceivedEvent) {
-        val msg = event.message
-
-    }
+        }
 }
