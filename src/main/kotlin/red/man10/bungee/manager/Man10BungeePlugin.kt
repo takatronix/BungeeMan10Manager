@@ -113,33 +113,33 @@ class Man10BungeePlugin : Plugin() ,Listener{
     @EventHandler
     fun onChat(e: ChatEvent) {
 
+        ////////////////////////////////////////////////////
+        //      プレイヤーデータがない場合処理を行わない
         val p = e.sender
-
         if (p !is ProxiedPlayer)return
-
         val data = playerDataDic[p.uniqueId]
-
         if (data == null){
             e.isCancelled = true
             return
         }
 
-        logger.info("chatEvent ${e.message} isCommand:${e.isCommand} sender:${e.sender} receiver:${e.receiver}")
-
+        ////////////////////////////////////////////////////
+        //      メッセージ整形:ローマ字
         var message = removeColorCode(e.message)
-
         if(enableJapanizer!!){
             var jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
             if(jmsg != ""){
                 message += "($jmsg)"
             }
         }
+        ////////////////////////////////////////////////////
+        //      整形: takatronix@lobby>ohaman(おはまん)
+        var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
 
-        playerDataDic[p.uniqueId]!!.add(message!!)
 
         ////////////////////////////////////////////////////
-        //      takatronix@lobby>ohaman(おはまん)
-        var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
+        //      SPAM判定用に履歴保存
+        playerDataDic[p.uniqueId]!!.add(message!!)
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
@@ -175,9 +175,14 @@ class Man10BungeePlugin : Plugin() ,Listener{
         }
 
         //////////////////////////////////////////////////////
-        //    Discordへ送信
-        discord.admin(chatMessage)
-        discord.chat(chatMessage)
+        //      コマンド類はDiscordへ通知しない
+        if(e.isCommand || e.isProxyCommand){
+            log("[Command] $message");
+            discord.admin("[Command] $message")
+        }else{
+            log(chatMessage)
+            discord.chat(chatMessage)
+        }
     }
 
     //  Event called to represent an initial client connection.
