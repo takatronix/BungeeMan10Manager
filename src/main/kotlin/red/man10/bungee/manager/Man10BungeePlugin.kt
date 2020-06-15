@@ -112,6 +112,13 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
         if (p !is ProxiedPlayer)return
 
+        val data = playerDataDic[p.uniqueId]
+
+        if (data == null){
+            e.isCancelled = true
+            return
+        }
+
         logger.info("chatEvent ${e.message} isCommand:${e.isCommand} sender:${e.sender} receiver:${e.receiver}")
 
         var message = removeColorCode(e.message)
@@ -125,7 +132,12 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
         playerDataDic[p.uniqueId]!!.add(message!!)
 
-        if (e.isCommand)return
+        if (data.isMuted() || data.isBanned()){
+            e.isCancelled = true
+            return
+        }
+
+        if (e.isCommand || data.isJailed())return
 
         discord.chat("<${e.sender}@${p.server.info.name}>${message}")
     }
