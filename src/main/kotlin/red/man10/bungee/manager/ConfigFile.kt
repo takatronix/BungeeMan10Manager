@@ -1,4 +1,4 @@
-
+package red.man10.bungee.manager
 
 import com.google.common.io.ByteStreams
 import net.md_5.bungee.api.plugin.Plugin

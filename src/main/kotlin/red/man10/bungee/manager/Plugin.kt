@@ -1,6 +1,4 @@
 package red.man10.bungee.manager
-
-import ConfigFile
 import kotlinx.coroutines.runBlocking
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
@@ -13,40 +11,59 @@ import net.md_5.bungee.event.EventHandler
 
 class Plugin : Plugin() ,Listener{
 
-    private lateinit var config: Configuration;
+    companion object {
+        private const val prefix = "§f[§dMan§f10§aBot§f]"
+    }
+
+    var enableJapanizer:Boolean? = false
+    var discord = DiscordBot(this)
+
     override fun onEnable() { // Plugin startup logic
-
-
-
-        logger.info("Started.")
-        //      イベント登録
+        log("started")
+        loadConfig()
         proxy.pluginManager.registerListener(this, this)
-        //      コマンド登録
-        proxy.pluginManager.registerCommand(this,PluginCommand("test","red.man10.template.test"))
 
-        var cf = ConfigFile(this)
-        var config = cf?.getConfig()
-        //  BotToken
+        discord.log("log channel connected")
+        discord.system("system channel connected")
+        discord.notification("notification channel connected")
+        discord.chat("chat channel connected")
+
+
+        //proxy.pluginManager.registerCommand(this,PluginCommand("test","red.man10.template.test"))
+    }
+
+    override fun onDisable() {
+        discord.shutdown()
+    }
+
+
+    fun log(text: String){
+        logger.info("${Companion.prefix}$text")
+    }
+    fun error(text: String){
+        logger.severe("${Companion.prefix}§c$text")
+    }
+
+    private fun loadConfig(){
+        var config = ConfigFile(this).getConfig()
         try {
-            var token = config?.getString("token")
-            var channelID = config?.getString("channel")
-            var lunachat = config?.getString("lunachat")
-            logger.info("token:${token} channelID:${channelID}")
+
+            this.enableJapanizer = config?.getBoolean("japanizer")
+
+            ////////////////////////////////////////////
+            //      discord bot initialization
+            discord.token = config?.getString("Discord.Token")
+            discord.chatChannelID = config?.getLong("Discord.ChatChannel")!!
+            discord.systemChannelID = config.getLong("Discord.SystemChannel")
+            discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
+            discord.logChannelID = config.getLong("Discord.LogChannel")
+            discord.setup()
+
         } catch (e: NullPointerException) {
             e.printStackTrace()
+            error(e.localizedMessage)
         }
-
-        logger.info("aaa")
-        runBlocking {
-            logger.info("run")
-
-            logger.info("done")
-;        }
     }
-
-    override fun onDisable() { // Plugin shutdown logic
-    }
-
 
 
     //  Event called to represent a player first making their presence and username known.
@@ -173,6 +190,8 @@ class Plugin : Plugin() ,Listener{
     fun onTargeted(e: TargetedEvent) {
         logger.info("TargetedEvent sender:${e.sender} receiver:${e.receiver}")
     }
+
+
 
 
 }

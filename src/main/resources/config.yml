@@ -1,10 +1,15 @@
-token: ""
-channel: ""
-lunachat: true
-mysql:
-  host: localhost
-  user: root
-  pass: pass
-  port: 3306
-  ssl: true
-  db: man10_system
+japanizer: true
+Discord:
+  Token: ""
+  ChatChannel:
+  SystemChannel:
+  LogChannel:
+  NotificationChannel:
+
+MySQL:
+  Host: localhost
+  User: root
+  Password: ""
+  Port: 3306
+  SSL: true
+  Database: man10_system
