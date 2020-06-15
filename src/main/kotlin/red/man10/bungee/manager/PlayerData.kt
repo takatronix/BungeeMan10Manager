@@ -32,7 +32,7 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     var jailUntil: Date? = null        //      ジェイル期限
     var banUntil: Date? = null         //      BAN期限
 
-    fun isFronzen() : Boolean{
+    fun isFrozen() : Boolean{
         if(freezeUntil == null)
             return false
         return true
