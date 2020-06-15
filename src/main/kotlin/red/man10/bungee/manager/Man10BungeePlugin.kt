@@ -21,6 +21,8 @@ class Man10BungeePlugin : Plugin() ,Listener{
     companion object {
         private const val prefix = "§f[§dMan§f10§aBot§f]"
     }
+
+
     //      オンラインのプレイヤーの情報
     var playerDataDic = HashMap<UUID,PlayerData>()
 
