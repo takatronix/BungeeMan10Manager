@@ -169,7 +169,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         }
 
         ////////////////////////////////////////////////////
-        //   拘束中の場合コマンド実行禁止->チャットは可能
+        //   拘束中の場合コマンド実行禁止
         if (data.isFrozen()){
             warning("[Frozen] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
@@ -177,6 +177,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
                 e.isCancelled = true;
                 return
             }
+            return
         }
 
         //////////////////////////////////////////////////////
