@@ -13,6 +13,7 @@ import javax.security.auth.login.LoginException
 
 
 class DiscordBot() : ListenerAdapter() {
+
     var plugin:Man10BungeePlugin? = null
 
     lateinit var jda: JDA

@@ -36,7 +36,7 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
         return true
     }
     fun isJailed() : Boolean{
-        //return true
+        return true
         if(jailUntil == null)
             return false
         return true

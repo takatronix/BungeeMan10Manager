@@ -5,6 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
@@ -29,7 +30,6 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
     var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
-
     var discord = DiscordBot()
 
 
@@ -137,16 +137,18 @@ class Man10BungeePlugin : Plugin() ,Listener{
         playerDataDic[p.uniqueId]!!.add(message!!)
 
 
-        //      ジェイルされている場合
-        //      コマンド実行禁止
+
+        ////////////////////////////////////////////////////
+        //   ジェイルされている場合コマンド実行禁止
         if (data.isJailed()){
+            //      adminチャンネルへは何をしているか通知
+            discord.admin("<${e.sender}@${p.server.info.name}>${message}")
             if(e.isProxyCommand  || e.isCommand){
-                ProxyServer.getInstance().getPlayer(data.uuid).sendMessage(TextComponent("You are jailed!!"))
+                sendText(data.uuid,"§eYou are jailed!!")
                 e.isCancelled = true;
                 return
             }
-
-            return;
+            return
         }
 
         discord.chat("<${e.sender}@${p.server.info.name}>${message}")
@@ -161,6 +163,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         discord.log("connect")
 
     }
+
 
 
     //  Called when a player has left the proxy,
@@ -258,6 +261,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         logger.info("TargetedEvent sender:${e.sender} receiver:${e.receiver}")
     }
 
+    fun sendText(uuid: UUID ,text:String){
+        ProxyServer.getInstance().getPlayer(uuid).sendMessage(TextComponent(text))
+    }
 
     fun removeColorCode(msg: String?): String? {
         return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg))
