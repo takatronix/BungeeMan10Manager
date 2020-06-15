@@ -182,6 +182,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         }else{
             log(chatMessage)
             discord.chat(chatMessage)
+            discord.admin(chatMessage)
         }
     }
 
