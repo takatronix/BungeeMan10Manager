@@ -1,11 +1,14 @@
 package red.man10.bungee.manager
-import kotlinx.coroutines.runBlocking
+import com.github.ucchyocean.lc.japanize.IMEConverter
+import com.github.ucchyocean.lc.japanize.JapanizeType
+import com.github.ucchyocean.lc.japanize.Japanizer
+import com.github.ucchyocean.lc.japanize.KanaConverter
+import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
-import net.md_5.bungee.config.Configuration
 import net.md_5.bungee.event.EventHandler
 import red.man10.bungee.manager.db.MySQLManager
 
@@ -18,6 +21,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
     var enableJapanizer:Boolean? = false
     var discord = DiscordBot(this)
+    var dic = HashMap<String?, String?> ()
 
     override fun onEnable() { // Plugin startup logic
         log("started")
@@ -85,7 +89,16 @@ class Man10BungeePlugin : Plugin() ,Listener{
     fun onChat(e: ChatEvent) {
         logger.info("chatEvent ${e.message} isCommand:${e.isCommand} sender:${e.sender} receiver:${e.receiver}")
 
-        discord.chat("${e.sender}@${e.message}")
+        var message = removeColorCode(e.message)
+
+        if(enableJapanizer!!){
+            var jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
+            if(jmsg != ""){
+                message += "($jmsg)"
+            }
+        }
+
+        discord.chat("<${e.sender}>${message}")
     }
 
     //  Event called to represent an initial client connection.
@@ -194,6 +207,8 @@ class Man10BungeePlugin : Plugin() ,Listener{
     }
 
 
-
+    fun removeColorCode(msg: String?): String? {
+        return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg))
+    }
 
 }
