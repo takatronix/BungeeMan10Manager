@@ -102,10 +102,8 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
         }
 
-
-        for (player in ProxyServer.getInstance().players) {
-            player.sendMessage(TextComponent(e.player.name.toString() + " has joined the network."))
-        }
+        //      グローバル通知
+        sendGlobalMessage("${e.player.name} has joined the network.");
     }
 
     //  Event called when a player sends a message to a server.
@@ -146,7 +144,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         if(data.isMuted()){
             //      adminチャンネルへは何をしているか通知
             discord.admin("[Muted] ($chatMessage)")
-            sendText(data.uuid,"§eYou are muted!!")
+            sendMessage(data.uuid,"§eYou are muted!!")
             e.isCancelled = true;
             return
         }
@@ -157,7 +155,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
             //      adminチャンネルへは何をしているか通知
             discord.admin("[Jailed] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
-                sendText(data.uuid,"§eYou are jailed!!")
+                sendMessage(data.uuid,"§eYou are jailed!!")
                 e.isCancelled = true;
                 return
             }
@@ -169,7 +167,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         if(enableSendMessageToOtherServer){
             for (player in ProxyServer.getInstance().players) {
                 if(player.server.info.name != p.server.info.name){
-                    sendText(player.uniqueId,chatMessage)
+                    sendMessage(player.uniqueId,chatMessage)
                 }
             }
         }
@@ -293,8 +291,14 @@ class Man10BungeePlugin : Plugin() ,Listener{
         logger.info("TargetedEvent sender:${e.sender} receiver:${e.receiver}")
     }
 
-    fun sendText(uuid: UUID ,text:String){
+    fun sendMessage(uuid: UUID ,text:String){
         ProxyServer.getInstance().getPlayer(uuid).sendMessage(TextComponent(text))
+    }
+
+    fun sendGlobalMessage(text:String){
+        for (player in ProxyServer.getInstance().players) {
+            player.sendMessage(TextComponent(text))
+        }
     }
 
     fun removeColorCode(msg: String?): String? {
