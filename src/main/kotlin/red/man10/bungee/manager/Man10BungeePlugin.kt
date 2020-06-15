@@ -11,6 +11,7 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -25,6 +26,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
     var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
+
     var discord = DiscordBot(this)
 
 
@@ -33,6 +35,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
         discord.system("Started.")
+
+        MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
+
     }
 
     override fun onDisable() {
