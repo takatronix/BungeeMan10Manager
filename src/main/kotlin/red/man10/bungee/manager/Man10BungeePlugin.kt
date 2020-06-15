@@ -50,10 +50,12 @@ class Man10BungeePlugin : Plugin() ,Listener{
             ////////////////////////////////////////////
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
-            discord.chatChannelID = config?.getLong("Discord.ChatChannel")!!
+            discord.guildID = config?.getLong("Discord.Guild")!!
+            discord.chatChannelID = config?.getLong("Discord.ChatChannel")
             discord.systemChannelID = config.getLong("Discord.SystemChannel")
             discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
             discord.logChannelID = config.getLong("Discord.LogChannel")
+            discord.adminChannelID = config.getLong("Discord.AdminChannel")
             discord.setup()
 
         } catch (e: NullPointerException) {
@@ -93,6 +95,8 @@ class Man10BungeePlugin : Plugin() ,Listener{
     @EventHandler
     fun onClientConnect(e: ClientConnectEvent) {
         logger.info("ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress}")
+
+        discord.log("connect")
     }
 
 
@@ -131,6 +135,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     @EventHandler
     fun onProxyReload(e: ProxyReloadEvent) {
         logger.info("ProxyReloadEvent sender:${e.sender}")
+
     }
 
     //  Not to be confused with ServerConnectEvent,

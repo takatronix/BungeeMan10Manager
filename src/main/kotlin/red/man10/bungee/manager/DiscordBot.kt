@@ -3,6 +3,8 @@ package red.man10.bungee.manager
 import net.dv8tion.jda.api.AccountType
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.GuildChannel
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.events.ReadyEvent
@@ -18,11 +20,16 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
     lateinit var jda: JDA
     var token:String? = null
 
+    var guild:Guild? = null;
+
+    var guildID:Long = 0
     var chatChannelID:Long = 0
     var logChannelID:Long = 0
     var systemChannelID:Long = 0
     var notificationChannelID:Long = 0
+    var adminChannelID:Long = 0
 
+    var adminChannel:GuildChannel? = null
     var chatChannel:TextChannel? = null
     var systemChannel:TextChannel? = null
     var logChannel:TextChannel? = null
@@ -44,7 +51,10 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
         notificationChannel?.sendMessage(text)
         plugin.log("[discord.notification]$text")
     }
-
+    fun admin(text:String){
+        //adminChannel?.sendMessage(text)
+        plugin.log("[discord.notification]$text")
+    }
     init{
 
     }
@@ -62,22 +72,26 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
         }
         try {
 
-            jda = JDABuilder(AccountType.BOT).setToken(token).addEventListeners(this).build()
+       //     jda = JDABuilder(AccountType.BOT).setToken(token).addEventListeners(this).build()
 
+            var jda = JDABuilder(token).addEventListeners(this).build()
+            jda.awaitReady()
       //      var builder = DefaultShardManagerBuilder().setToken(token!!)
 
-
-
-//            jda.addEventListener(this)
-            plugin.log("token:${token}")
-            plugin.log("chatChannelID:${chatChannelID}")
-            plugin.log("logChannelID:${logChannelID}")
-            plugin.log("systemChannelID:${systemChannelID}")
-            plugin.log("notificationChannelID:${notificationChannelID}")
+            guild = jda.getGuildById(this.guildID);
+            /*
             chatChannel = jda.getTextChannelById(this.chatChannelID)
             logChannel = jda.getTextChannelById(this.logChannelID)
             systemChannel = jda.getTextChannelById(this.systemChannelID)
             notificationChannel = jda.getTextChannelById(this.notificationChannelID)
+            adminChannel = jda.getTextChannelById(this.adminChannelID)
+*/
+            chatChannel = guild?.getTextChannelById(this.chatChannelID)
+            logChannel = guild?.getTextChannelById(this.logChannelID)
+            systemChannel = guild?.getTextChannelById(this.systemChannelID)
+            notificationChannel = guild?.getTextChannelById(this.notificationChannelID)
+            adminChannel = guild?.getTextChannelById(this.adminChannelID)
+
         } catch (e: LoginException) {
             e.printStackTrace()
             plugin.error(e.localizedMessage)
@@ -102,6 +116,7 @@ class DiscordBot(plugin: Man10BungeePlugin) : ListenerAdapter() {
     }
     override fun onMessageReceived(event: MessageReceivedEvent) {
         val msg = event.message
+        plugin.log("${msg.contentRaw}")
         if (msg.contentRaw.equals("!ping")) {
             val channel = event.channel
             val time = System.currentTimeMillis()

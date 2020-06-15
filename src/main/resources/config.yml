@@ -1,10 +1,12 @@
 japanizer: true
 Discord:
   Token: ""
+  Guild:
   ChatChannel:
   SystemChannel:
   LogChannel:
   NotificationChannel:
+  AdminChannel:
 
 MySQL:
   Host: localhost
