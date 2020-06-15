@@ -175,7 +175,8 @@ class Man10BungeePlugin : Plugin() ,Listener{
         }
 
         //////////////////////////////////////////////////////
-        //     同一サーバにいないプレイヤーにチャットを送る
+        //    Discordへ送信
+        discord.admin(chatMessage)
         discord.chat(chatMessage)
     }
 
