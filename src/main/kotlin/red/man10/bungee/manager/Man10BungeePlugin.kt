@@ -150,7 +150,6 @@ class Man10BungeePlugin : Plugin() ,Listener{
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
         if(data.isMuted()){
-            //      adminチャンネルへは何をしているか通知
             warning("[Muted] ($chatMessage)")
             sendMessage(data.uuid,"§eYou are muted!!")
             e.isCancelled = true;
@@ -160,7 +159,6 @@ class Man10BungeePlugin : Plugin() ,Listener{
         ////////////////////////////////////////////////////
         //   ジェイルされている場合コマンド実行禁止
         if (data.isJailed()){
-            //      adminチャンネルへは何をしているか通知
             warning("[Jailed] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendMessage(data.uuid,"§eYou are jailed!!")
@@ -168,6 +166,17 @@ class Man10BungeePlugin : Plugin() ,Listener{
                 return
             }
             return
+        }
+
+        ////////////////////////////////////////////////////
+        //   拘束中の場合コマンド実行禁止->チャットは可能
+        if (data.isFrozen()){
+            warning("[Frozen] ($chatMessage)")
+            if(e.isProxyCommand  || e.isCommand){
+                sendMessage(data.uuid,"§eYou are frozen!!")
+                e.isCancelled = true;
+                return
+            }
         }
 
         //////////////////////////////////////////////////////
