@@ -3,6 +3,7 @@ import com.github.ucchyocean.lc.japanize.IMEConverter
 import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
 import com.github.ucchyocean.lc.japanize.KanaConverter
+import com.iwebpp.crypto.TweetNaclFast
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
@@ -10,6 +11,8 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class Man10BungeePlugin : Plugin() ,Listener{
@@ -17,10 +20,13 @@ class Man10BungeePlugin : Plugin() ,Listener{
     companion object {
         private const val prefix = "§f[§dMan§f10§aBot§f]"
     }
+    //      オンラインのプレイヤーの情報
+    var playerDataDic = HashMap<UUID,PlayerData>()
 
+    var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
     var discord = DiscordBot(this)
-    var dic = HashMap<String?, String?> ()
+
 
     override fun onEnable() { // Plugin startup logic
         log("started")
