@@ -136,10 +136,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         var message = removeColorCode(e.message)
         if(enableJapanizer!!){
             var jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
-            if(jmsg != ""){
-                message += "($jmsg)"
-            }
+            if(jmsg != "") message += "($jmsg)"
         }
+
         ////////////////////////////////////////////////////
         //      整形: takatronix@lobby>ohaman(おはまん)
         var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
@@ -185,9 +184,11 @@ class Man10BungeePlugin : Plugin() ,Listener{
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand){
             log("[Command] $message");
+            //  TODO: DBにコマンド履歴を保存
         }else{
             log(chatMessage)
             discord.chat(chatMessage)
+            //  TODO: DBにチャット履歴を保存
         }
     }
 
