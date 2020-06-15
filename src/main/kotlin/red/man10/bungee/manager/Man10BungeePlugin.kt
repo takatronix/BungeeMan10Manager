@@ -32,6 +32,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     var enableJapanizer:Boolean? = false
     var discord = DiscordBot()
 
+    var enableSendMessageToOtherServer = true
 
     override fun onEnable() { // Plugin startup logic
         log("started")
@@ -159,6 +160,17 @@ class Man10BungeePlugin : Plugin() ,Listener{
             }
             return
         }
+
+        //////////////////////////////////////////////////////
+        //     同一サーバにいないプレイヤーにチャットを送る
+        if(enableSendMessageToOtherServer){
+            for (player in ProxyServer.getInstance().players) {
+                if(player.server.info.name != p.server.info.name){
+                    sendText(player.uniqueId,"<${e.sender}@${p.server.info.name}>${message}")
+                }
+            }
+        }
+
 
         discord.chat("<${e.sender}@${p.server.info.name}>${message}")
     }
