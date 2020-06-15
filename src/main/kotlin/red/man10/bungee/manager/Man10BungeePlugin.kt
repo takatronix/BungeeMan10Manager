@@ -137,12 +137,15 @@ class Man10BungeePlugin : Plugin() ,Listener{
 
         playerDataDic[p.uniqueId]!!.add(message!!)
 
+        ////////////////////////////////////////////////////
+        //      takatronix@lobby>ohaman(おはまん)
+        var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
         if(data.isMuted()){
             //      adminチャンネルへは何をしているか通知
-            discord.admin("[Muted]<${e.sender}@${p.server.info.name}>${message}")
+            discord.admin("[Muted] ($chatMessage)")
             sendText(data.uuid,"§eYou are muted!!")
             e.isCancelled = true;
             return
@@ -152,7 +155,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         //   ジェイルされている場合コマンド実行禁止
         if (data.isJailed()){
             //      adminチャンネルへは何をしているか通知
-            discord.admin("[Jailed]<${e.sender}@${p.server.info.name}>${message}")
+            discord.admin("[Jailed] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendText(data.uuid,"§eYou are jailed!!")
                 e.isCancelled = true;
@@ -166,13 +169,14 @@ class Man10BungeePlugin : Plugin() ,Listener{
         if(enableSendMessageToOtherServer){
             for (player in ProxyServer.getInstance().players) {
                 if(player.server.info.name != p.server.info.name){
-                    sendText(player.uniqueId,"<${e.sender}@${p.server.info.name}>${message}")
+                    sendText(player.uniqueId,chatMessage)
                 }
             }
         }
 
-
-        discord.chat("<${e.sender}@${p.server.info.name}>${message}")
+        //////////////////////////////////////////////////////
+        //     同一サーバにいないプレイヤーにチャットを送る
+        discord.chat(chatMessage)
     }
 
     //  Event called to represent an initial client connection.
