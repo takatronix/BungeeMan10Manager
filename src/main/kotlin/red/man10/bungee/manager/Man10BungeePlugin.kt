@@ -137,12 +137,21 @@ class Man10BungeePlugin : Plugin() ,Listener{
         playerDataDic[p.uniqueId]!!.add(message!!)
 
 
+        ////////////////////////////////////////////////////
+        //   ミュートされている場合チャット＆コマンドも禁止
+        if(data.isMuted()){
+            //      adminチャンネルへは何をしているか通知
+            discord.admin("[Muted]<${e.sender}@${p.server.info.name}>${message}")
+            sendText(data.uuid,"§eYou are muted!!")
+            e.isCancelled = true;
+            return
+        }
 
         ////////////////////////////////////////////////////
         //   ジェイルされている場合コマンド実行禁止
         if (data.isJailed()){
             //      adminチャンネルへは何をしているか通知
-            discord.admin("<${e.sender}@${p.server.info.name}>${message}")
+            discord.admin("[Jailed]<${e.sender}@${p.server.info.name}>${message}")
             if(e.isProxyCommand  || e.isCommand){
                 sendText(data.uuid,"§eYou are jailed!!")
                 e.isCancelled = true;
