@@ -17,13 +17,6 @@ class PlayerCommand{
     lateinit var type:Type              //メッセージのタイプ(チャットかコマンドか)
 }
 
-enum class PlayerStatus{
-    OK,
-    Muted,
-    Jailed,
-    Kicked,
-    Banned,
-}
 
 enum class Type{
     COMMAND,
@@ -60,9 +53,9 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
         return true
     }
     //      ミュート時間を追加
-    fun AddMuteTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
+    fun addMuteTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
         if(muteUntil == null){
-            muteUntil = Date();         //  現在時刻を設定
+            muteUntil = Date()      //  現在時刻を設定
         }
 
         //muteUntil += ...
