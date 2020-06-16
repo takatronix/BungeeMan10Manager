@@ -12,7 +12,10 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.command.MBan
+import red.man10.bungee.manager.command.MFreeze
 import red.man10.bungee.manager.command.MJail
+import red.man10.bungee.manager.command.MMute
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
@@ -41,6 +44,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         proxy.pluginManager.registerListener(this, this)
 
         proxy.pluginManager.registerCommand(this,MJail("mjail","bungeeManager.mjail",this))
+        proxy.pluginManager.registerCommand(this,MMute("mmute","bungeeManager.mmute",this))
+        proxy.pluginManager.registerCommand(this,MFreeze("mfreeze","bungeeManager.mfreeze",this))
+        proxy.pluginManager.registerCommand(this, MBan("mban","bungeeManager.mban",this))
 
         discord.system("Started.")
 

@@ -71,12 +71,30 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
         return muteUntil
     }
 
+    fun addFrozenTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
+        if(freezeUntil == null){
+            freezeUntil = Date()      //  現在時刻を設定
+        }
+
+        freezeUntil = addDate(freezeUntil!!,min,hour,day)
+
+        return freezeUntil
+    }
+
     fun addJailTime(min:Int=30,hour:Int=0,day:Int=0){
         if (jailUntil == null){
             jailUntil = Date()
         }
 
         jailUntil = addDate(jailUntil!!,min,hour,day)
+    }
+
+    fun addBanTime(min:Int=30,hour:Int=0,day:Int=0){
+        if (banUntil == null){
+            banUntil = Date()
+        }
+
+        banUntil = addDate(banUntil!!,min,hour,day)
     }
 
 
