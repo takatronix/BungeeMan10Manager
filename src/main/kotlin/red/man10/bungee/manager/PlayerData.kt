@@ -11,12 +11,7 @@ class History{
 }
 
 
-enum class Type{
-    COMMAND,
-    MESSAGE
-}
-
-class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
+class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
     var uuid: UUID = player.uniqueId
     var mcid: String = player.name
 
@@ -26,24 +21,43 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
     var banUntil: Date? = null         //      BAN期限
 
     fun isFrozen() : Boolean{
-        if(freezeUntil == null)
+        if(freezeUntil == null)return false
+
+        if ((freezeUntil!!.time - Date().time)<0){
+            jailUntil = null
             return false
+        }
+
         return true
     }
     fun isMuted() : Boolean{
-        if(muteUntil == null)
+        if(muteUntil == null)return false
+
+        if ((muteUntil!!.time - Date().time)<0){
+            jailUntil = null
             return false
+        }
+
         return true
     }
     fun isJailed() : Boolean{
-        return true
-        if(jailUntil == null)
+        if(jailUntil == null)return false
+
+        if ((jailUntil!!.time - Date().time)<0){
+            jailUntil = null
             return false
+        }
+
         return true
     }
     fun isBanned() : Boolean{
-        if(banUntil == null)
+        if(banUntil == null)return false
+
+        if ((banUntil!!.time - Date().time)<0){
+            jailUntil = null
             return false
+        }
+
         return true
     }
     //      ミュート時間を追加
@@ -52,11 +66,42 @@ class PlayerData(player:ProxiedPlayer, private val plugin: Man10BungeePlugin) {
             muteUntil = Date()      //  現在時刻を設定
         }
 
+        muteUntil = addDate(muteUntil!!,min,hour,day)
+
+        return muteUntil
+    }
+
+    fun addJailTime(min:Int=30,hour:Int=0,day:Int=0){
+        if (jailUntil == null){
+            jailUntil = Date()
+        }
+
+        muteUntil = addDate(jailUntil!!,min,hour,day)
+    }
 
 
-        //muteUntil += ...
+    fun addDate(date:Date,min:Int,hour:Int,day:Int):Date{
 
-        return muteUntil;
+        val calender = Calendar.getInstance()
+
+        calender.time = date
+        calender.add(Calendar.MINUTE,min)
+        calender.add(Calendar.HOUR,hour)
+        calender.add(Calendar.DATE,day)
+
+        return calender.time
+    }
+
+    fun reduceDate(date:Date,min:Int,hour:Int,day:Int):Date{
+        val calender = Calendar.getInstance()
+
+        calender.time = date
+        calender.add(Calendar.MINUTE,-min)
+        calender.add(Calendar.HOUR,-hour)
+        calender.add(Calendar.DATE,-day)
+
+        return calender.time
+
     }
 
 
