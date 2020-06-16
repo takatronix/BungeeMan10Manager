@@ -17,6 +17,7 @@ class MJail(name: String, permission: String,private val plugin:Man10BungeePlugi
         if (args.isNullOrEmpty()){
 
             sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> <期間+(d/h/m)> <投獄理由>").create())
+            sender.sendMessage(*ComponentBuilder("§d§l期間をマイナスにすると刑期が縮みます").create())
 
             return
         }
@@ -43,6 +44,11 @@ class MJail(name: String, permission: String,private val plugin:Man10BungeePlugi
                 return
             }
 
+            if (!pd.isJailed() && time <0){
+                sender.sendMessage(*ComponentBuilder("§c§lこのユーザーは既に釈放されています！").create())
+                return
+            }
+
             when(unit){
 
                 'd' ->pd.addJailTime(0,0,time)
@@ -54,10 +60,25 @@ class MJail(name: String, permission: String,private val plugin:Man10BungeePlugi
                     return
                 }
 
+
             }
 
-            ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は「${args[2]}」の理由により、投獄されました！").create())
-            ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
+            if (time <0){
+
+                if (!pd.isJailed()){
+                    ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は釈放されました").create())
+                    plugin.playerDataDic[p.uniqueId] = pd
+                    return
+                }
+
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は「${args[2]}」の理由により、刑期が縮みました").create())
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
+
+            }else{
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は「${args[2]}」の理由により、投獄されました！").create())
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
+
+            }
 
             plugin.playerDataDic[p.uniqueId] = pd
         }

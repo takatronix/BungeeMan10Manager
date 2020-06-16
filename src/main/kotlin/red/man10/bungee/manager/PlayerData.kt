@@ -92,18 +92,6 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
         return calender.time
     }
 
-    fun reduceDate(date:Date,min:Int,hour:Int,day:Int):Date{
-        val calender = Calendar.getInstance()
-
-        calender.time = date
-        calender.add(Calendar.MINUTE,-min)
-        calender.add(Calendar.HOUR,-hour)
-        calender.add(Calendar.DATE,-day)
-
-        return calender.time
-
-    }
-
 
     init {
         load()
