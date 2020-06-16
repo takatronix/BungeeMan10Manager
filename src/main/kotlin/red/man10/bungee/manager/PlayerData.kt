@@ -76,7 +76,7 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
             jailUntil = Date()
         }
 
-        muteUntil = addDate(jailUntil!!,min,hour,day)
+        jailUntil = addDate(jailUntil!!,min,hour,day)
     }
 
 

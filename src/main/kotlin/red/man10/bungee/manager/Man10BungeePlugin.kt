@@ -12,6 +12,7 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.command.MJail
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
@@ -38,6 +39,9 @@ class Man10BungeePlugin : Plugin() ,Listener{
         log("started")
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
+
+        proxy.pluginManager.registerCommand(this,MJail("mjail","bungeeManager.mjail",this))
+
         discord.system("Started.")
 
     //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
