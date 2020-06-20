@@ -19,7 +19,7 @@ class DiscordBot() : ListenerAdapter() {
     lateinit var jda: JDA
     var token:String? = null
 
-    var guild:Guild? = null;
+    var guild:Guild? = null
 
     var guildID:Long = 0
     var chatChannelID:Long = 0
@@ -79,7 +79,7 @@ class DiscordBot() : ListenerAdapter() {
             jda = JDABuilder(AccountType.BOT).setToken(token).addEventListeners(this).build()
             jda.awaitReady()
 
-            guild = jda.getGuildById(this.guildID);
+            guild = jda.getGuildById(this.guildID)
             chatChannel = guild?.getTextChannelById(this.chatChannelID)
             logChannel = guild?.getTextChannelById(this.logChannelID)
             systemChannel = guild?.getTextChannelById(this.systemChannelID)
