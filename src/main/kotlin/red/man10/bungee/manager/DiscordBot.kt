@@ -3,12 +3,10 @@ import net.dv8tion.jda.api.AccountType
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import sun.plugin2.main.server.Plugin
 import javax.security.auth.login.LoginException
 
 
@@ -22,6 +20,7 @@ class DiscordBot() : ListenerAdapter() {
     var guild:Guild? = null
 
     var guildID:Long = 0
+
     var chatChannelID:Long = 0
     var logChannelID:Long = 0
     var systemChannelID:Long = 0
@@ -37,9 +36,7 @@ class DiscordBot() : ListenerAdapter() {
 
     //      チャットチャンネル出力
     fun chat(text:String){
-
-        if (text.indexOf("/") == 0)return
-
+        if (text.indexOf("/") == 0) return
         chatChannel?.sendMessage(text)?.queue()
     }
     //      ログチャンネル出力
@@ -92,15 +89,6 @@ class DiscordBot() : ListenerAdapter() {
                 return
             }
             plugin?.log("discord setup done!")
-        }
-
-        fun checkChannel(channel:TextChannel?){
-            if(channel == null){
-                plugin?.log("channel null")
-                return
-            }
-            plugin?.log("cantalk:${channel.canTalk()}")
-
         }
 
         override fun onReady(event: ReadyEvent) {

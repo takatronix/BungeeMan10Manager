@@ -5,7 +5,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
@@ -48,29 +47,30 @@ class Man10BungeePlugin : Plugin() ,Listener{
         proxy.pluginManager.registerCommand(this,MFreeze("mfreeze","bungeeManager.mfreeze",this))
         proxy.pluginManager.registerCommand(this, MBan("mban","bungeeManager.mban",this))
 
-        discord.system("Started.")
+        discord.system("サーバー開始しました")
 
     //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
     }
 
     override fun onDisable() {
+        discord.system("サーバーシャットダウンしました")
         discord.shutdown()
     }
 
 
     fun log(text: String){
         logger.info("${Companion.prefix}$text")
-        discord.admin("[log]$text")
+        discord.admin("$text")
     }
     fun warning(text: String){
         logger.warning("${Companion.prefix}$text")
-        discord.admin("[warning]$text")
+        discord.admin("[Warning]$text")
     }
 
     fun error(text: String){
         logger.severe("${Companion.prefix}§c$text")
-        discord.admin("[error]$text")
+        discord.admin("[Error]$text")
     }
 
     private fun loadConfig(){
@@ -100,7 +100,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     //  プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
     @EventHandler
     fun onPreLogin(e: PreLoginEvent) {
-        logger.info("PreLoginEvent connection:${e.connection}")
+        log("PreLoginEvent connection:${e.connection}")
     }
 
     //  Event called as soon as a connection has a ProxiedPlayer and is ready to be connected to a server.
@@ -160,7 +160,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
         if(data.isMuted()){
-            warning("[Muted] ($chatMessage)")
+            warning("[Muted] <${e.sender}> ($chatMessage)")
             sendMessage(data.uuid,"§eYou are muted!!")
             e.isCancelled = true;
             return
@@ -169,7 +169,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         ////////////////////////////////////////////////////
         //   ジェイルされている場合コマンド実行禁止
         if (data.isJailed()){
-            warning("[Jailed] ($chatMessage)")
+            warning("[Jailed] <${e.sender}> ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendMessage(data.uuid,"§eYou are jailed!!")
                 e.isCancelled = true;
@@ -203,7 +203,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
         //////////////////////////////////////////////////////
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand){
-            log("[Command] $message");
+            log("[Command] <${e.sender}> $message");
             //  TODO: DBにコマンド履歴を保存
         }else{
             log(chatMessage)
@@ -216,7 +216,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     //  クライアントの初期接続を表すために呼び出されるイベント。
     @EventHandler
     fun onClientConnect(e: ClientConnectEvent) {
-        logger.info("ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress}")
+        log("ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress}")
         //discord.log("connect")
     }
 
@@ -240,7 +240,7 @@ class Man10BungeePlugin : Plugin() ,Listener{
     //       プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
     @EventHandler
     fun onPlayerHandshake(e: PlayerHandshakeEvent) {
-        logger.info("PlayerHandshakeEvent connection:${e.connection} handshake:${e.handshake}")
+        log("PlayerHandshakeEvent connection:${e.connection} handshake:${e.handshake}")
     }
 
     //  Event called when a plugin message is sent to the client or server.
@@ -272,26 +272,26 @@ class Man10BungeePlugin : Plugin() ,Listener{
     // セッションの制御をプレイヤーに引き渡そうとしているときに呼び出されます。
     @EventHandler
     fun onServerConnected(e: ServerConnectedEvent) {
-        logger.info("ServerConnectedEvent playser:${e.player} server:${e.server}")
+        log("ServerConnectedEvent player:${e.player} server:${e.server}")
     }
 
     //  Called when deciding to connect to a server.
     //  サーバーへの接続を決定する際に呼び出されます。
     @EventHandler
     fun onServerConnect(e: ServerConnectEvent) {
-        logger.info("ServerConnectEvent player:${e.player} reason:${e.reason}")
+        log("ServerConnectEvent player:${e.player} reason:${e.reason}")
     }
 
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
-        logger.info("ServerDisconnectEvent player:${e.player} target:${e.target}")
+        log("ServerDisconnectEvent player:${e.player} target:${e.target}")
     }
 
     //  Represents a player getting kicked from a server
     //  サーバーからキックされるプレイヤーを表します。
     @EventHandler
     fun onServerKick(e: ServerKickEvent) {
-        logger.info("ServerKickEvent ${e.player}")
+        log("ServerKickEvent ${e.player}")
     }
     //  Called when a player has changed servers.
     //  プレイヤーがサーバーを変更したときに呼び出されます。
@@ -333,11 +333,13 @@ class Man10BungeePlugin : Plugin() ,Listener{
         }
     }
 
-    fun removeColorCode(msg: String?): String? {
+
+
+    private fun removeColorCode(msg: String?): String? {
         return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg))
     }
 
-    fun initPlayerData(p:ProxiedPlayer){
+    private fun initPlayerData(p:ProxiedPlayer){
         playerDataDic[p.uniqueId] = PlayerData(p,this)
     }
 
