@@ -3,6 +3,8 @@ import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.dv8tion.jda.api.events.ReadyEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
@@ -20,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
 
 
-class Man10BungeePlugin : Plugin() ,Listener{
+class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     companion object {
         private const val prefix = "§f[§dMan§f10§aBot§f]"
@@ -82,12 +84,13 @@ class Man10BungeePlugin : Plugin() ,Listener{
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
             discord.guildID = config?.getLong("Discord.Guild")!!
-            discord.chatChannelID = config?.getLong("Discord.ChatChannel")
+            discord.chatChannelID = config.getLong("Discord.ChatChannel")
             discord.systemChannelID = config.getLong("Discord.SystemChannel")
             discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
             discord.logChannelID = config.getLong("Discord.LogChannel")
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
             discord.plugin = this
+            discord.discordEvent = this;
             discord.setup()
         } catch (e: NullPointerException) {
             e.printStackTrace()
@@ -343,4 +346,19 @@ class Man10BungeePlugin : Plugin() ,Listener{
         playerDataDic[p.uniqueId] = PlayerData(p,this)
     }
 
+    override fun onDiscordReadyEvent(event: ReadyEvent){
+        discord.admin("Discord Ready")
+    }
+
+    //      Discordからのメッセージイベント -> すべてのプレイヤーに通知
+    override  fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent){
+
+        val message = event.message
+        val user = message.author
+        if (user.isBot) return
+
+        val channel= message.channel
+        val text = "§5${user.name}@discord: ${message.contentDisplay}";
+        sendGlobalMessage(text)
+    }
 }

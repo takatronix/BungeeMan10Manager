@@ -10,6 +10,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import javax.security.auth.login.LoginException
 
 
+interface IDiscordEvent{
+    fun onDiscordReadyEvent(event: ReadyEvent)
+    fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent)
+}
+
 class DiscordBot() : ListenerAdapter() {
 
     var plugin:Man10BungeePlugin? = null
@@ -33,6 +38,7 @@ class DiscordBot() : ListenerAdapter() {
     var notificationChannel:TextChannel? = null
     var adminChannel:TextChannel? = null
 
+    var discordEvent:IDiscordEvent? = null
 
     //      チャットチャンネル出力
     fun chat(text:String){
@@ -92,11 +98,9 @@ class DiscordBot() : ListenerAdapter() {
         }
 
         override fun onReady(event: ReadyEvent) {
-            plugin?.log("Discord bot ready")
+            discordEvent?.onDiscordReadyEvent(event)
         }
-
         override fun onMessageReceived(event: MessageReceivedEvent) {
-            val msg = event.message
-
+            discordEvent?.onDiscordMessageReceivedEvent(event)
         }
 }
