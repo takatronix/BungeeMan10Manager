@@ -358,7 +358,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (user.isBot) return
 
         val channel= message.channel
-        val text = "§5${user.name}@discord: ${message.contentDisplay}";
+        val text = "§b§l${user.name}@discord: §f${message.contentDisplay}";
         sendGlobalMessage(text)
     }
 }
