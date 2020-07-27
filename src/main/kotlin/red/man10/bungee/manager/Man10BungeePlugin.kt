@@ -28,16 +28,16 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         private const val prefix = "§f[§dMan§f10§aBot§f]"
     }
 
+    //region 設定
     var jailServerName: String? = null
 
     //      オンラインのプレイヤーの情報
     var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
-
     var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
     var discord = DiscordBot()
-
     var enableSendMessageToOtherServer = true
+    //endregion
 
     override fun onEnable() { // Plugin startup logic
         log("started")
@@ -60,11 +60,12 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         discord.shutdown()
     }
 
-
+    //region ログ関数
     fun log(text: String){
         logger.info("${Companion.prefix}$text")
         discord.admin("$text")
     }
+
     fun warning(text: String){
         logger.warning("${Companion.prefix}$text")
         discord.admin("[Warning]$text")
@@ -74,6 +75,18 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         logger.severe("${Companion.prefix}§c$text")
         discord.admin("[Error]$text")
     }
+    //endregion
+
+    //region 共通関数
+    public fun sendToServer(player:ProxiedPlayer,server: String){
+        val target = ProxyServer.getInstance().getServerInfo(server)
+        player.connect(target)
+    }
+    public fun sendToJail(player:ProxiedPlayer){
+        val target = ProxyServer.getInstance().getServerInfo(jailServerName)
+        player.connect(target)
+    }
+    //endregion
 
     private fun loadConfig(){
         var config = ConfigFile(this).getConfig()
@@ -118,9 +131,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             ///////////////////////////////////////////////////
             //      ログインしたユーザーがジェイル民なら転送
             if(playerDataDic[e.player.uniqueId]?.isJailed()!!){
-                discord.admin(e.player.name +" was sent to the jail.")
-                val target = ProxyServer.getInstance().getServerInfo(jailServerName)
-                e.player.connect(target)
+                sendToJail(e.player)
+                warning("${e.player}はログインしたがジェイルに転送された")
             }
 
         }
@@ -134,6 +146,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onChat(e: ChatEvent) {
 
+        log("chatevent")
         ////////////////////////////////////////////////////
         //      プレイヤーデータがない場合処理を行わない
         val p = e.sender
@@ -141,6 +154,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val data = playerDataDic[p.uniqueId]
         if (data == null){
             e.isCancelled = true
+            log("chatevent")
             return
         }
 
@@ -358,7 +372,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (user.isBot) return
 
         val channel= message.channel
-        val text = "§b§l${user.name}@discord: §f${message.contentDisplay}";
+        val text = "§b§l${user.name}@discord §f&l${message.contentDisplay}";
         sendGlobalMessage(text)
     }
 }

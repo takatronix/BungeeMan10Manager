@@ -5,8 +5,8 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
-import java.lang.Exception
 import java.text.SimpleDateFormat
+
 
 class MJail(name: String, permission: String,private val plugin:Man10BungeePlugin) : Command(name, permission) {
 
@@ -78,6 +78,8 @@ class MJail(name: String, permission: String,private val plugin:Man10BungeePlugi
                 ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は「${args[2]}」の理由により、投獄されました！").create())
                 ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
 
+                //  ジェイルした瞬間に強制的にジェイルサーバーへ転送
+                plugin.sendToJail(p);
             }
 
             plugin.playerDataDic[p.uniqueId] = pd
