@@ -1,14 +1,11 @@
 package red.man10.bungee.manager.db
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import net.md_5.bungee.api.plugin.Plugin
 import red.man10.bungee.manager.ConfigFile
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Statement
-import java.util.concurrent.LinkedBlockingDeque
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.logging.Level
 
