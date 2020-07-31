@@ -113,15 +113,18 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
 
     //  Event called to represent a player first making their presence and username known.
-    //  プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
+    //  (3)プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
     @EventHandler
     fun onPreLogin(e: PreLoginEvent) {
-        log("PreLoginEvent connection:${e.connection}")
+        log("(3)PreLoginEvent connection:${e.connection} ${e.connection.name} uuid:${e.connection.uniqueId}")
     }
 
     //  Event called as soon as a connection has a ProxiedPlayer and is ready to be connected to a server.
-    //  接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
+    //  (4)接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
     @EventHandler fun  onPostLogin(e: PostLoginEvent){
+        log("(4) PostLogin ${e.player} locale:${e.player.locale} ${e.player.socketAddress}")
+
+
         logger.info("${e.player.name} is logged in")
 
         GlobalScope.launch {
@@ -230,10 +233,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     //  Event called to represent an initial client connection.
-    //  クライアントの初期接続を表すために呼び出されるイベント。
+    //  (1) クライアントの初期接続を表すために呼び出されるイベント。
     @EventHandler
     fun onClientConnect(e: ClientConnectEvent) {
-        log("ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress}")
+        log("(1)ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress} ${e.listener}")
         //discord.log("connect")
     }
 
@@ -245,7 +248,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     //  渡されたプレイヤーのインスタンスに対してアクションを実行するメソッドを呼び出すのは安全ではありません。
     @EventHandler
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
-        logger.info("PlayerDisconnectEvent ${e.player} ")
+        logger.info("(x)PlayerDisconnectEvent ${e.player} ")
 
         var msg = "${e.player} is disconnected";
         sendGlobalMessage(msg)
@@ -254,10 +257,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     //      Event called to represent a player first making their presence and username known.
-    //       プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
+    //      (2)プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
     @EventHandler
     fun onPlayerHandshake(e: PlayerHandshakeEvent) {
-        log("PlayerHandshakeEvent connection:${e.connection} handshake:${e.handshake}")
+        log("(2)PlayerHandshakeEvent connection:${e.connection} handshake:${e.handshake}")
     }
 
     //  Event called when a plugin message is sent to the client or server.
@@ -289,19 +292,19 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     // セッションの制御をプレイヤーに引き渡そうとしているときに呼び出されます。
     @EventHandler
     fun onServerConnected(e: ServerConnectedEvent) {
-        log("ServerConnectedEvent player:${e.player} server:${e.server}")
+        log("ServerConnectedEvent player:${e.player} server:${e.server} ")
     }
 
     //  Called when deciding to connect to a server.
     //  サーバーへの接続を決定する際に呼び出されます。
     @EventHandler
     fun onServerConnect(e: ServerConnectEvent) {
-        log("ServerConnectEvent player:${e.player} reason:${e.reason}")
+        log("(5)ServerConnectEvent player:${e.player} target:${e.target} reason:${e.reason}")
     }
 
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
-        log("ServerDisconnectEvent player:${e.player} target:${e.target}")
+        log("ServerDisconnectEvent player:${e.player} target:${e.target} ${e.target.name} ${e.target}")
     }
 
     //  Represents a player getting kicked from a server
