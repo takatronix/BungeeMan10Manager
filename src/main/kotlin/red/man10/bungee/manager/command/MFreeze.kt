@@ -35,7 +35,7 @@ class MFreeze (name: String, permission: String, private val plugin: Man10Bungee
 
             val unit = args[1][args[1].length-1]
 
-            var time = 0
+            var time: Int
             try {
                 time = args[1].replace(unit.toString(),"").toInt()
             }catch (e: Exception){

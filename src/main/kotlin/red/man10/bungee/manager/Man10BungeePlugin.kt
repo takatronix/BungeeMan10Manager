@@ -62,34 +62,34 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //region ログ関数
     fun log(text: String){
-        logger.info("${Companion.prefix}$text")
+        logger.info("$prefix$text")
         discord.admin(text)
     }
 
     fun warning(text: String){
-        logger.warning("${Companion.prefix}$text")
+        logger.warning("$prefix$text")
         discord.admin("[Warning]$text")
     }
 
     fun error(text: String){
-        logger.severe("${Companion.prefix}§c$text")
+        logger.severe("${prefix}§c$text")
         discord.admin("[Error]$text")
     }
     //endregion
 
     //region 共通関数
-    public fun sendToServer(player:ProxiedPlayer,server: String){
+    fun sendToServer(player:ProxiedPlayer,server: String){
         val target = ProxyServer.getInstance().getServerInfo(server)
         player.connect(target)
     }
-    public fun sendToJail(player:ProxiedPlayer){
+    fun sendToJail(player:ProxiedPlayer){
         val target = ProxyServer.getInstance().getServerInfo(jailServerName)
         player.connect(target)
     }
     //endregion
 
     private fun loadConfig(){
-        var config = ConfigFile(this).getConfig()
+        val config = ConfigFile(this).getConfig()
         try {
             this.enableJapanizer = config?.getBoolean("japanizer")
             this.jailServerName = config?.getString("jail.server")
@@ -165,13 +165,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //      メッセージ整形:ローマ字
         var message = removeColorCode(e.message)
         if(enableJapanizer!!){
-            var jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
+            val jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
             if(jmsg != "") message += "($jmsg)"
         }
 
         ////////////////////////////////////////////////////
         //      整形: takatronix@lobby>ohaman(おはまん)
-        var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
+        val chatMessage = "${e.sender}@${p.server.info.name}>${message}"
 
         ////////////////////////////////////////////////////
         //      SPAM判定用に履歴保存
@@ -250,7 +250,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
         logger.info("(x)PlayerDisconnectEvent ${e.player} ")
 
-        var msg = "${e.player} is disconnected";
+        val msg = "${e.player} is disconnected";
         sendGlobalMessage(msg)
         discord.admin(msg)
         discord.chat(msg)
