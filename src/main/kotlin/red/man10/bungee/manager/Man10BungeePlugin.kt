@@ -63,7 +63,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     //region ログ関数
     fun log(text: String){
         logger.info("${Companion.prefix}$text")
-        discord.admin("$text")
+        discord.admin(text)
     }
 
     fun warning(text: String){
