@@ -166,12 +166,12 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         var message = removeColorCode(e.message)
         if(enableJapanizer!!){
             val jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
-            if(jmsg != "") message += "($jmsg)"
+            if(jmsg != "") message += " §6($jmsg)"
         }
 
         ////////////////////////////////////////////////////
-        //      整形: takatronix@lobby>ohaman(おはまん)
-        val chatMessage = "${e.sender}@${p.server.info.name}>${message}"
+        //      整形: 【man10】forest611: ohaman (おはまん)
+        val chatMessage = "§f【§3${p.server.info.name}§f】${e.sender}§b:§f $message"
 
         ////////////////////////////////////////////////////
         //      SPAM判定用に履歴保存
@@ -212,7 +212,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //////////////////////////////////////////////////////
         //     同一サーバにいないプレイヤーにチャットを送る
-        if(enableSendMessageToOtherServer){
+        if(enableSendMessageToOtherServer && !e.isCommand){
             for (player in ProxyServer.getInstance().players) {
                 if(player.server.info.name != p.server.info.name){
                     sendMessage(player.uniqueId,chatMessage)
@@ -375,7 +375,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (user.isBot) return
 
         val channel= message.channel
-        val text = "§b§l${user.name}@discord §f&l${message.contentDisplay}";
+        val text = "§b§l${user.name}@discord §f${message.contentDisplay}"
         sendGlobalMessage(text)
     }
 }
