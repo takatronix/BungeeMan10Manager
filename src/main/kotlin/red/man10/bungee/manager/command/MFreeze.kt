@@ -43,7 +43,7 @@ class MFreeze (name: String, permission: String, private val plugin: Man10Bungee
                 return
             }
 
-            if (!pd.isMuted() && time <0){
+            if (!pd.isFrozen() && time <0){
                 sender.sendMessage(*ComponentBuilder("§c§lこのユーザーは既にフリーズを解除されています！").create())
                 return
             }
