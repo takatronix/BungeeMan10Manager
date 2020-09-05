@@ -21,7 +21,7 @@ class MMute (name: String, permission: String,private val plugin: Man10BungeePlu
             return
         }
 
-        //mjail <user> <time> <reason>
+        //mmute <user> <time> <reason>
         if (args.size == 3){
 
             val p = plugin.proxy.getPlayer(args[0])

@@ -22,7 +22,7 @@ class MBan (name: String, permission: String,private val plugin: Man10BungeePlug
             return
         }
 
-        //mjail <user> <time> <reason>
+        //mban <user> <time> <reason>
         if (args.size == 3){
 
             val p = plugin.proxy.getPlayer(args[0])

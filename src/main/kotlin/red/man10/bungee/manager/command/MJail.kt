@@ -79,7 +79,7 @@ class MJail(name: String, permission: String,private val plugin:Man10BungeePlugi
                 ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
 
                 //  ジェイルした瞬間に強制的にジェイルサーバーへ転送
-                plugin.sendToJail(p);
+                plugin.sendToJail(p)
             }
 
             plugin.playerDataDic[p.uniqueId] = pd

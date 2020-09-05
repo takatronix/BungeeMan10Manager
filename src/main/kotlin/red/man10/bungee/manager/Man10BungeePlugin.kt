@@ -103,7 +103,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.logChannelID = config.getLong("Discord.LogChannel")
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
             discord.plugin = this
-            discord.discordEvent = this;
+            discord.discordEvent = this
             discord.setup()
         } catch (e: NullPointerException) {
             e.printStackTrace()
@@ -141,7 +141,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         }
 
         //      グローバル通知
-        sendGlobalMessage("${e.player.name} has joined the network.");
+        sendGlobalMessage("${e.player.name} has joined the network.")
     }
 
     //  Event called when a player sends a message to a server.
@@ -182,7 +182,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if(data.isMuted()){
             warning("[Muted] <${e.sender}> ($chatMessage)")
             sendMessage(data.uuid,"§eYou are muted!!")
-            e.isCancelled = true;
+            e.isCancelled = true
             return
         }
 
@@ -192,7 +192,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             warning("[Jailed] <${e.sender}> ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendMessage(data.uuid,"§eYou are jailed!!")
-                e.isCancelled = true;
+                e.isCancelled = true
                 return
             }
             return
@@ -204,7 +204,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             warning("[Frozen] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendMessage(data.uuid,"§eYou are frozen!!")
-                e.isCancelled = true;
+                e.isCancelled = true
                 return
             }
             return
@@ -223,7 +223,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //////////////////////////////////////////////////////
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand){
-            log("[Command] <${e.sender}> $message");
+            log("[Command] <${e.sender}> $message")
             //  TODO: DBにコマンド履歴を保存
         }else{
             log(chatMessage)
@@ -250,7 +250,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
         logger.info("(x)PlayerDisconnectEvent ${e.player} ")
 
-        val msg = "${e.player} is disconnected";
+        val msg = "${e.player} is disconnected"
         sendGlobalMessage(msg)
         discord.admin(msg)
         discord.chat(msg)

@@ -21,7 +21,7 @@ class MFreeze (name: String, permission: String, private val plugin: Man10Bungee
             return
         }
 
-        //mjail <user> <time> <reason>
+        //mfreeze <user> <time> <reason>
         if (args.size == 3){
 
             val p = plugin.proxy.getPlayer(args[0])
