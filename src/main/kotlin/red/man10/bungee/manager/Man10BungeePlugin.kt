@@ -141,7 +141,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         }
 
         //      グローバル通知
-        sendGlobalMessage("${e.player.name} has joined the network.");
+        sendGlobalMessage("§e${e.player.name} has joined the network.");
     }
 
     //  Event called when a player sends a message to a server.

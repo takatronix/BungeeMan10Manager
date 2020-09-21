@@ -1,6 +1,7 @@
 package red.man10.bungee.manager
 
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import red.man10.bungee.manager.db.MySQLManager
 import java.sql.Time
 import java.util.*
 
@@ -18,6 +19,8 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
     var muteUntil: Date? = null        //      ミュート期限
     var jailUntil: Date? = null        //      ジェイル期限
     var banUntil: Date? = null         //      BAN期限
+
+    var score:Int = 0                  //      スコア
 
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
@@ -137,9 +140,27 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
 
     fun load(){
 
-       // val mysql = MySQLManager(plugin,"BungeeManager Loading")
+        val mysql = MySQLManager(plugin,"BungeeManager Loading")
 
-        //val rs = mysql.query("SELECT * ")
+        val rs = mysql.query("SELECT * from player_data where '$uuid';")
+
+        if (rs == null || !rs.next()){
+
+            mysql.execute("INSERT INTO player_data (uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
+                    "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
+
+            plugin.logger.info("create $mcid's data.")
+
+            return
+        }
+
+        jailUntil = rs.getDate("jail_until")?:null
+        banUntil = rs.getDate("ban_until")?:null
+        freezeUntil = rs.getDate("freeze_until")?:null
+        muteUntil = rs.getDate("mute_until")?:null
+
+        score = rs.getInt("score")
+
 
     }
 

@@ -7,6 +7,7 @@ create table player_data
 	mute_until datetime null,
 	jail_until datetime null,
 	ban_until datetime null,
+	score int default 0,
 	constraint player_data_pk
 		primary key (id)
 )
