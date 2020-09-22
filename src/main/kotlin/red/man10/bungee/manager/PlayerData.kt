@@ -20,96 +20,85 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
     var jailUntil: Date? = null        //      ジェイル期限
     var banUntil: Date? = null         //      BAN期限
 
-    var score:Int = 0                  //      スコア
+    private var score:Int = 0                  //      スコア
 
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
-
-        if ((freezeUntil!!.time - Date().time)<0){
-            jailUntil = null
-            return false
-        }
 
         return true
     }
     fun isMuted() : Boolean{
         if(muteUntil == null)return false
 
-        if ((muteUntil!!.time - Date().time)<0){
-            jailUntil = null
-            return false
-        }
-
         return true
     }
     fun isJailed() : Boolean{
         if(jailUntil == null)return false
-
-        if ((jailUntil!!.time - Date().time)<0){
-            jailUntil = null
-            return false
-        }
 
         return true
     }
     fun isBanned() : Boolean{
         if(banUntil == null)return false
 
-        if ((banUntil!!.time - Date().time)<0){
-            jailUntil = null
-            return false
-        }
-
         return true
     }
     //      ミュート時間を追加
-    fun addMuteTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
-        if(muteUntil == null){
-            muteUntil = Date()      //  現在時刻を設定
-        }
+    fun addMuteTime(min:Int=30,hour:Int=0,day:Int=0){
 
-        muteUntil = addDate(muteUntil!!,min,hour,day)
-
-        return muteUntil
+        muteUntil = addDate(muteUntil,min,hour,day)
+        save()
     }
 
-    fun addFrozenTime(min:Int=30,hour:Int=0,day:Int=0):Date?{
-        if(freezeUntil == null){
-            freezeUntil = Date()      //  現在時刻を設定
-        }
+    fun addFrozenTime(min:Int=30,hour:Int=0,day:Int=0){
 
-        freezeUntil = addDate(freezeUntil!!,min,hour,day)
-
-        return freezeUntil
+        freezeUntil = addDate(freezeUntil,min,hour,day)
+        save()
     }
 
     fun addJailTime(min:Int=30,hour:Int=0,day:Int=0){
-        if (jailUntil == null){
-            jailUntil = Date()
-        }
 
-        jailUntil = addDate(jailUntil!!,min,hour,day)
+        jailUntil = addDate(jailUntil,min,hour,day)
+        save()
     }
 
     fun addBanTime(min:Int=30,hour:Int=0,day:Int=0){
-        if (banUntil == null){
-            banUntil = Date()
-        }
 
-        banUntil = addDate(banUntil!!,min,hour,day)
+        banUntil = addDate(banUntil,min,hour,day)
+        save()
+
     }
 
 
-    fun addDate(date:Date,min:Int,hour:Int,day:Int):Date{
+    fun addDate(date:Date?,min:Int,hour:Int,day:Int): Date? {
 
         val calender = Calendar.getInstance()
 
-        calender.time = date
+        calender.time = date?:Date()
         calender.add(Calendar.MINUTE,min)
         calender.add(Calendar.HOUR,hour)
         calender.add(Calendar.DATE,day)
 
-        return calender.time
+        val time = calender.time
+
+        if (time.time<Date().time){
+            return null
+        }
+
+        return time
+    }
+
+    fun addScore(int: Int){
+        score += int
+        setScore(score)
+    }
+
+    fun setScore(int:Int){
+        score = int
+        MySQLManager.executeQueue("UPDATE player_data t SET score = $score WHERE uuid = '$uuid'")
+    }
+
+    fun getScore():Int{
+        return score
     }
 
 
@@ -161,6 +150,18 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
 
         score = rs.getInt("score")
 
+
+    }
+
+    fun save(){
+
+        MySQLManager.executeQueue("UPDATE player_data SET " +
+                "mcid='$mcid'," +
+                "freeze_until='${freezeUntil?.time}'," +
+                "mute_until='${muteUntil?.time}'," +
+                "jail_until='${jailUntil?.time}'," +
+                "ban_until='${banUntil?.time}'," +
+                "score=$score;")
 
     }
 

@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
+import red.man10.bungee.manager.db.PlayerDatabase
 import java.text.SimpleDateFormat
 
 
@@ -27,22 +28,46 @@ class MJail(name: String, permission: String,private val plugin:Man10BungeePlugi
 
             val p = plugin.proxy.getPlayer(args[0])
 
-            if (p == null){
-                sender.sendMessage(*ComponentBuilder("§c§lそのユーザーは現在オンラインではありません！").create())
-                return
-            }
-
-            val pd = plugin.playerDataDic[p.uniqueId]!!
 
             val unit = args[1][args[1].length-1]
 
             var time = 0
+
             try {
                 time = args[1].replace(unit.toString(),"").toInt()
             }catch (e:Exception){
                 sender.sendMessage(*ComponentBuilder("§c§l時間の指定方法が不適切です").create())
                 return
             }
+
+            if (p == null){
+                val mcid = args[0]
+
+                val didFrozen =  when(unit){
+
+                    'd' -> Man10BungeePlugin.playerDatabase.addTime(PlayerDatabase.Punishment.JAIL,mcid,0,0,time)
+                    'h' -> Man10BungeePlugin.playerDatabase.addTime(PlayerDatabase.Punishment.JAIL,mcid,0,time,0)
+                    'm' -> Man10BungeePlugin.playerDatabase.addTime(PlayerDatabase.Punishment.JAIL,mcid,time,0,0)
+
+                    else -> {
+                        sender.sendMessage(*ComponentBuilder("§c§l時間の指定方法が不適切です").create())
+                        return
+                    }
+                }
+
+                if (!didFrozen){
+                    sender.sendMessage(*ComponentBuilder("§c§l存在しないユーザーです").create())
+                    return
+                }
+
+                sender.sendMessage(*ComponentBuilder("§c§l${mcid}をJailしました！").create())
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${mcid}は「${args[2]}」の理由により、投獄されました！").create())
+
+                return
+            }
+
+            val pd = plugin.playerDataDic[p.uniqueId]!!
+
 
             if (!pd.isJailed() && time <0){
                 sender.sendMessage(*ComponentBuilder("§c§lこのユーザーは既に釈放されています！").create())
@@ -71,12 +96,12 @@ class MJail(name: String, permission: String,private val plugin:Man10BungeePlugi
                     return
                 }
 
-                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は「${args[2]}」の理由により、刑期が縮みました").create())
-                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
+//                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は「${args[2]}」の理由により、刑期が縮みました").create())
+//                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
 
             }else{
                 ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p.name}は「${args[2]}」の理由により、投獄されました！").create())
-                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
+//                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(pd.jailUntil)}").create())
 
                 //  ジェイルした瞬間に強制的にジェイルサーバーへ転送
                 plugin.sendToJail(p);

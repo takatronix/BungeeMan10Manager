@@ -17,6 +17,8 @@ import red.man10.bungee.manager.command.MBan
 import red.man10.bungee.manager.command.MFreeze
 import red.man10.bungee.manager.command.MJail
 import red.man10.bungee.manager.command.MMute
+import red.man10.bungee.manager.db.MySQLManager
+import red.man10.bungee.manager.db.PlayerDatabase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
@@ -25,6 +27,9 @@ import kotlin.collections.HashMap
 class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     companion object {
+
+        lateinit var playerDatabase : PlayerDatabase
+
         private const val prefix = "§f[§dMan§f10§aBot§f]"
     }
 
@@ -51,7 +56,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         discord.system("サーバー開始しました")
 
-    //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
+        MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
+
+        playerDatabase = PlayerDatabase(this)
 
     }
 

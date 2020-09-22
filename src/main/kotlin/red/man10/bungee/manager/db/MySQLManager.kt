@@ -207,17 +207,17 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
         /////////////////////////////////////
         fun setupBlockingQueue(plugin: Plugin,conName: String){
 
-            Thread(Runnable {
-                val sql = MySQLManager(plugin,conName)
-                try{
-                    while (true){
+            Thread {
+                val sql = MySQLManager(plugin, conName)
+                try {
+                    while (true) {
                         val take = blockingQueue.take()
                         sql.execute(take)
                     }
-                }catch (e:InterruptedException){
+                } catch (e: InterruptedException) {
 
                 }
-            }).start()
+            }.start()
         }
 
         //キューにクエリを入れる
