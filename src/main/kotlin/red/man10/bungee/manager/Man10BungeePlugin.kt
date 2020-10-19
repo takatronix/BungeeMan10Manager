@@ -13,10 +13,7 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
-import red.man10.bungee.manager.command.MBan
-import red.man10.bungee.manager.command.MFreeze
-import red.man10.bungee.manager.command.MJail
-import red.man10.bungee.manager.command.MMute
+import red.man10.bungee.manager.db.LogDatabase
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -46,10 +43,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
 
-        proxy.pluginManager.registerCommand(this,MJail("mjail","bungeeManager.mjail",this))
-        proxy.pluginManager.registerCommand(this,MMute("mmute","bungeeManager.mmute",this))
-        proxy.pluginManager.registerCommand(this,MFreeze("mfreeze","bungeeManager.mfreeze",this))
-        proxy.pluginManager.registerCommand(this, MBan("mban","bungeeManager.mban",this))
+//        proxy.pluginManager.registerCommand(this,MJail("mjail","bungeeManager.mjail",this))
+//        proxy.pluginManager.registerCommand(this,MMute("mmute","bungeeManager.mmute",this))
+//        proxy.pluginManager.registerCommand(this,MFreeze("mfreeze","bungeeManager.mfreeze",this))
+//        proxy.pluginManager.registerCommand(this, MBan("mban","bungeeManager.mban",this))
 
         discord.system("サーバー開始しました")
 
@@ -124,7 +121,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //  Event called as soon as a connection has a ProxiedPlayer and is ready to be connected to a server.
     //  (4)接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
-    @EventHandler fun  onPostLogin(e: PostLoginEvent){
+    @EventHandler
+    fun  onPostLogin(e: PostLoginEvent){
         log("(4) PostLogin ${e.player} locale:${e.player.locale} ${e.player.socketAddress}")
 
 
@@ -164,9 +162,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
+        var message = removeColorCode(e.message)?:return
+
         ////////////////////////////////////////////////////
         //      メッセージ整形:ローマ字
-        var message = removeColorCode(e.message)
         if(enableJapanizer!!){
             val jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
             if(jmsg != "") message += " §6($jmsg)"
@@ -225,14 +224,16 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //////////////////////////////////////////////////////
         //      コマンド類はDiscordへ通知しない
-        if(e.isCommand || e.isProxyCommand){
+        if(e.isCommand || e.isProxyCommand) {
             log("[Command] <${e.sender}> $message");
-            //  TODO: DBにコマンド履歴を保存
-        }else{
-            log(chatMessage)
-            discord.chat(chatMessage)
-            //  TODO: DBにチャット履歴を保存
+            LogDatabase.insertCommandLog(p, message)
+            return
         }
+
+        //メッセージをログ、db、discordに送信
+        log(chatMessage)
+        discord.chat(chatMessage)
+        LogDatabase.insertMessageLog(p,message)
     }
 
     //  Event called to represent an initial client connection.
@@ -303,11 +304,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onServerConnect(e: ServerConnectEvent) {
         log("(5)ServerConnectEvent player:${e.player} target:${e.target} reason:${e.reason}")
+        LogDatabase.connect(e.player)
     }
 
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
         log("ServerDisconnectEvent player:${e.player} target:${e.target} ${e.target.name} ${e.target}")
+        LogDatabase.insertConnectionLog(e.player)
     }
 
     //  Represents a player getting kicked from a server
