@@ -13,6 +13,10 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.command.BanCommand
+import red.man10.bungee.manager.command.FreezeCommand
+import red.man10.bungee.manager.command.JailCommand
+import red.man10.bungee.manager.command.MuteCommand
 import red.man10.bungee.manager.db.LogDatabase
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
@@ -25,6 +29,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     companion object {
 
         private const val prefix = "§f[§dMan§f10§aBot§f]"
+        lateinit var plugin : Man10BungeePlugin
+
     }
 
     //region 設定
@@ -40,6 +46,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     override fun onEnable() { // Plugin startup logic
         log("started")
+
+        plugin = this
+
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
 
@@ -47,6 +56,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 //        proxy.pluginManager.registerCommand(this,MMute("mmute","bungeeManager.mmute",this))
 //        proxy.pluginManager.registerCommand(this,MFreeze("mfreeze","bungeeManager.mfreeze",this))
 //        proxy.pluginManager.registerCommand(this, MBan("mban","bungeeManager.mban",this))
+        proxy.pluginManager.registerCommand(this,JailCommand)
+        proxy.pluginManager.registerCommand(this, MuteCommand)
+        proxy.pluginManager.registerCommand(this, BanCommand)
+        proxy.pluginManager.registerCommand(this, FreezeCommand)
 
         discord.system("サーバー開始しました")
 
@@ -83,8 +96,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         player.connect(target)
     }
     fun sendToJail(player:ProxiedPlayer){
-        val target = ProxyServer.getInstance().getServerInfo(jailServerName)
-        player.connect(target)
+//        val target = ProxyServer.getInstance().getServerInfo(jailServerName)
+//        player.connect(target)
+        sendToServer(player,jailServerName?:"jail")
     }
     //endregion
 
@@ -177,7 +191,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         ////////////////////////////////////////////////////
         //      SPAM判定用に履歴保存
-        playerDataDic[p.uniqueId]!!.add(message!!)
+        playerDataDic[p.uniqueId]!!.add(message)
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
@@ -226,14 +240,14 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand) {
             log("[Command] <${e.sender}> $message");
-            LogDatabase.insertCommandLog(p, message)
+            LogDatabase.commandLog(p, message)
             return
         }
 
         //メッセージをログ、db、discordに送信
         log(chatMessage)
         discord.chat(chatMessage)
-        LogDatabase.insertMessageLog(p,message)
+        LogDatabase.messageLog(p,message)
     }
 
     //  Event called to represent an initial client connection.
@@ -310,7 +324,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
         log("ServerDisconnectEvent player:${e.player} target:${e.target} ${e.target.name} ${e.target}")
-        LogDatabase.insertConnectionLog(e.player)
+        LogDatabase.connectionLog(e.player)
     }
 
     //  Represents a player getting kicked from a server

@@ -22,6 +22,13 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
 
     private var score:Int = 0                  //      スコア
 
+    //////////////////////////////////////////
+    //mcidからデータを取得
+//    constructor(mcid: String, plugin: Man10BungeePlugin){
+//        this.mcid = mcid
+//        this.uuid = plugin.proxy.getPlayer(mcid).uniqueId
+//    }
+
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
 
@@ -94,7 +101,7 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
 
     fun setScore(int:Int){
         score = int
-        MySQLManager.executeQueue("UPDATE player_data t SET score = $score WHERE uuid = '$uuid'")
+        save()
     }
 
     fun getScore():Int{
@@ -131,7 +138,7 @@ class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
 
         val mysql = MySQLManager(plugin,"BungeeManager Loading")
 
-        val rs = mysql.query("SELECT * from player_data where '$uuid';")
+        val rs = mysql.query("SELECT * from player_data where uuid='$uuid';")
 
         if (rs == null || !rs.next()){
 

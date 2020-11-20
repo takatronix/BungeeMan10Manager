@@ -1,7 +1,6 @@
 package red.man10.bungee.manager.db
 
 import net.md_5.bungee.api.connection.ProxiedPlayer
-import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashMap
@@ -10,14 +9,15 @@ object LogDatabase {
 
     val connectData = HashMap<ProxiedPlayer, ConnectionData>()
 
-    fun insertMessageLog(p:ProxiedPlayer,message:String){
+
+    fun messageLog(p:ProxiedPlayer, message:String){
 
         MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) " +
                 "VALUES ('${p.uniqueId}', '${p.name}', '$message', DEFAULT);")
 
     }
 
-    fun insertCommandLog(p:ProxiedPlayer,command: String){
+    fun commandLog(p:ProxiedPlayer, command: String){
 
         MySQLManager.executeQueue("INSERT INTO command_log (uuid,mcid,message,date) " +
                 "VALUES ('${p.uniqueId}','${p.name}','$command',DEFAULT);")
@@ -34,7 +34,7 @@ object LogDatabase {
         connectData[p] = data
     }
 
-    fun insertConnectionLog(p:ProxiedPlayer){
+    fun connectionLog(p:ProxiedPlayer){
 
         val data = connectData[p]?:return
 
