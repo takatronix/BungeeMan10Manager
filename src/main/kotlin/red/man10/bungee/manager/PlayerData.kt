@@ -1,6 +1,7 @@
 package red.man10.bungee.manager
 
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.db.MySQLManager
 import java.sql.Time
 import java.util.*
@@ -11,7 +12,7 @@ class History{
 }
 
 
-class PlayerData(player:ProxiedPlayer, var plugin: Man10BungeePlugin) {
+class PlayerData(player:ProxiedPlayer) {
     var uuid: UUID = player.uniqueId
     var mcid: String = player.name
 

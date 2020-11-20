@@ -13,6 +13,7 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.command.BanCommand
 import red.man10.bungee.manager.command.FreezeCommand
 import red.man10.bungee.manager.command.JailCommand
@@ -31,17 +32,26 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         private const val prefix = "§f[§dMan§f10§aBot§f]"
         lateinit var plugin : Man10BungeePlugin
 
+        //region 設定
+        var jailServerName: String? = null
+
+        //      オンラインのプレイヤーの情報
+        var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
+        var dic = HashMap<String?, String?> ()
+
+        var enableSendMessageToOtherServer = true
+
+
+        fun getData(mcid:String): PlayerData? {
+
+            val p = plugin.proxy.getPlayer(mcid)?:return null
+
+            return Man10BungeePlugin.playerDataDic[p.uniqueId]?: PlayerData(p)
+        }
     }
 
-    //region 設定
-    var jailServerName: String? = null
-
-    //      オンラインのプレイヤーの情報
-    var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
-    var dic = HashMap<String?, String?> ()
+//    var discord = DiscordBot()
     var enableJapanizer:Boolean? = false
-    var discord = DiscordBot()
-    var enableSendMessageToOtherServer = true
     //endregion
 
     override fun onEnable() { // Plugin startup logic
@@ -61,7 +71,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
 
-        discord.system("サーバー開始しました")
+        //discord.system("サーバー開始しました")
 
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
@@ -69,24 +79,24 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     override fun onDisable() {
-        discord.system("サーバーシャットダウンしました")
-        discord.shutdown()
+        //discord.system("サーバーシャットダウンしました")
+        //discord.shutdown()
     }
 
     //region ログ関数
     fun log(text: String){
         logger.info("$prefix$text")
-        discord.admin(text)
+        //discord.admin(text)
     }
 
     fun warning(text: String){
         logger.warning("$prefix$text")
-        discord.admin("[Warning]$text")
+        //discord.admin("[Warning]$text")
     }
 
     fun error(text: String){
         logger.severe("${prefix}§c$text")
-        discord.admin("[Error]$text")
+        //discord.admin("[Error]$text")
     }
     //endregion
 
@@ -105,20 +115,20 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     private fun loadConfig(){
         val config = ConfigFile(this).getConfig()
         try {
-            this.enableJapanizer = config?.getBoolean("japanizer")
-            this.jailServerName = config?.getString("jail.server")
+            enableJapanizer = config?.getBoolean("japanizer")
+            jailServerName = config?.getString("jail.server")
             ////////////////////////////////////////////
-            //      discord bot initialization
-            discord.token = config?.getString("Discord.Token")
-            discord.guildID = config?.getLong("Discord.Guild")!!
-            discord.chatChannelID = config.getLong("Discord.ChatChannel")
-            discord.systemChannelID = config.getLong("Discord.SystemChannel")
-            discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
-            discord.logChannelID = config.getLong("Discord.LogChannel")
-            discord.adminChannelID = config.getLong("Discord.AdminChannel")
-            discord.plugin = this
-            discord.discordEvent = this;
-            discord.setup()
+            //      //discord bot initialization
+            //discord.token = config?.getString("Discord.Token")
+            //discord.guildID = config?.getLong("Discord.Guild")!!
+            //discord.chatChannelID = config.getLong("Discord.ChatChannel")
+            //discord.systemChannelID = config.getLong("Discord.SystemChannel")
+            //discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
+            //discord.logChannelID = config.getLong("Discord.LogChannel")
+            //discord.adminChannelID = config.getLong("Discord.AdminChannel")
+            //discord.plugin = this
+            //discord.discordEvent = this;
+            //discord.setup()
         } catch (e: NullPointerException) {
             e.printStackTrace()
             error(e.localizedMessage)
@@ -246,7 +256,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //メッセージをログ、db、discordに送信
         log(chatMessage)
-        discord.chat(chatMessage)
+        //discord.chat(chatMessage)
         LogDatabase.messageLog(p,message)
     }
 
@@ -270,8 +280,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val msg = "${e.player} is disconnected";
         sendGlobalMessage(msg)
-        discord.admin(msg)
-        discord.chat(msg)
+        //discord.admin(msg)
+        //discord.chat(msg)
     }
 
     //      Event called to represent a player first making their presence and username known.
@@ -380,11 +390,12 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     private fun initPlayerData(p:ProxiedPlayer){
-        playerDataDic[p.uniqueId] = PlayerData(p,this)
+        playerDataDic[p.uniqueId] = PlayerData(p)
     }
 
+
     override fun onDiscordReadyEvent(event: ReadyEvent){
-        discord.admin("Discord Ready")
+        //discord.admin("Discord Ready")
     }
 
     //      Discordからのメッセージイベント -> すべてのプレイヤーに通知
