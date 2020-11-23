@@ -8,12 +8,14 @@ import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
 import red.man10.bungee.manager.command.BanCommand
 import red.man10.bungee.manager.command.FreezeCommand
 import red.man10.bungee.manager.command.JailCommand
@@ -44,7 +46,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             val p = plugin.proxy.getPlayer(mcid)?:return null
 
-            return Man10BungeePlugin.playerDataDic[p.uniqueId]?: PlayerData(p)
+            return playerDataDic[p.uniqueId]?: PlayerData(p)
         }
     }
 
