@@ -1,4 +1,5 @@
 package red.man10.bungee.manager
+
 import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
 import kotlinx.coroutines.GlobalScope
@@ -13,7 +14,6 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.command.BanCommand
 import red.man10.bungee.manager.command.FreezeCommand
 import red.man10.bungee.manager.command.JailCommand
@@ -22,7 +22,6 @@ import red.man10.bungee.manager.db.LogDatabase
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.HashMap
 
 
 class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
@@ -62,11 +61,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
 
-//        proxy.pluginManager.registerCommand(this,MJail("mjail","bungeeManager.mjail",this))
-//        proxy.pluginManager.registerCommand(this,MMute("mmute","bungeeManager.mmute",this))
-//        proxy.pluginManager.registerCommand(this,MFreeze("mfreeze","bungeeManager.mfreeze",this))
-//        proxy.pluginManager.registerCommand(this, MBan("mban","bungeeManager.mban",this))
-        proxy.pluginManager.registerCommand(this,JailCommand)
+        proxy.pluginManager.registerCommand(this, JailCommand)
         proxy.pluginManager.registerCommand(this, MuteCommand)
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
