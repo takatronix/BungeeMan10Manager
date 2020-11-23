@@ -40,7 +40,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         var enableSendMessageToOtherServer = true
 
-
         fun getData(mcid:String): PlayerData? {
 
             val p = plugin.proxy.getPlayer(mcid)?:return null
@@ -49,7 +48,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         }
     }
 
-//    var discord = DiscordBot()
+    var discord = DiscordBot()
     var enableJapanizer:Boolean? = false
     //endregion
 
@@ -66,7 +65,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
 
-        //discord.system("サーバー開始しました")
+        discord.system("サーバー開始しました")
 
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
@@ -74,24 +73,24 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     override fun onDisable() {
-        //discord.system("サーバーシャットダウンしました")
-        //discord.shutdown()
+        discord.system("サーバーシャットダウンしました")
+        discord.shutdown()
     }
 
     //region ログ関数
     fun log(text: String){
         logger.info("$prefix$text")
-        //discord.admin(text)
+        discord.admin(text)
     }
 
     fun warning(text: String){
         logger.warning("$prefix$text")
-        //discord.admin("[Warning]$text")
+        discord.admin("[Warning]$text")
     }
 
     fun error(text: String){
         logger.severe("${prefix}§c$text")
-        //discord.admin("[Error]$text")
+        discord.admin("[Error]$text")
     }
     //endregion
 
@@ -113,17 +112,17 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             enableJapanizer = config?.getBoolean("japanizer")
             jailServerName = config?.getString("jail.server")
             ////////////////////////////////////////////
-            //      //discord bot initialization
-            //discord.token = config?.getString("Discord.Token")
-            //discord.guildID = config?.getLong("Discord.Guild")!!
-            //discord.chatChannelID = config.getLong("Discord.ChatChannel")
-            //discord.systemChannelID = config.getLong("Discord.SystemChannel")
-            //discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
-            //discord.logChannelID = config.getLong("Discord.LogChannel")
-            //discord.adminChannelID = config.getLong("Discord.AdminChannel")
-            //discord.plugin = this
-            //discord.discordEvent = this;
-            //discord.setup()
+            //      discord bot initialization
+            discord.token = config?.getString("Discord.Token")
+            discord.guildID = config?.getLong("Discord.Guild")!!
+            discord.chatChannelID = config.getLong("Discord.ChatChannel")
+            discord.systemChannelID = config.getLong("Discord.SystemChannel")
+            discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
+            discord.logChannelID = config.getLong("Discord.LogChannel")
+            discord.adminChannelID = config.getLong("Discord.AdminChannel")
+            discord.plugin = this
+            discord.discordEvent = this;
+            discord.setup()
         } catch (e: NullPointerException) {
             e.printStackTrace()
             error(e.localizedMessage)
@@ -251,7 +250,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //メッセージをログ、db、discordに送信
         log(chatMessage)
-        //discord.chat(chatMessage)
+        discord.chat(chatMessage)
         LogDatabase.messageLog(p,message)
     }
 
@@ -260,7 +259,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onClientConnect(e: ClientConnectEvent) {
         log("(1)ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress} ${e.listener}")
-        //discord.log("connect")
+        discord.log("connect")
     }
 
 
@@ -275,8 +274,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val msg = "${e.player} is disconnected";
         sendGlobalMessage(msg)
-        //discord.admin(msg)
-        //discord.chat(msg)
+        discord.admin(msg)
+        discord.chat(msg)
     }
 
     //      Event called to represent a player first making their presence and username known.
@@ -390,7 +389,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
 
     override fun onDiscordReadyEvent(event: ReadyEvent){
-        //discord.admin("Discord Ready")
+        discord.admin("Discord Ready")
     }
 
     //      Discordからのメッセージイベント -> すべてのプレイヤーに通知
