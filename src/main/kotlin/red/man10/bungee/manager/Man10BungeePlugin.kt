@@ -20,6 +20,8 @@ import red.man10.bungee.manager.command.BanCommand
 import red.man10.bungee.manager.command.FreezeCommand
 import red.man10.bungee.manager.command.JailCommand
 import red.man10.bungee.manager.command.MuteCommand
+import red.man10.bungee.manager.command.privateMessage.ReplyCommand
+import red.man10.bungee.manager.command.privateMessage.TellCommand
 import red.man10.bungee.manager.db.LogDatabase
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
@@ -66,6 +68,16 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, MuteCommand)
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
+
+        //tell commandを置き換える
+        for (command in arrayOf(
+                "tell", "msg", "message", "m", "w", "t")) {
+            proxy.pluginManager.registerCommand(this, TellCommand(this, command))
+        }
+        //reply commandを置き換える
+        for (command in arrayOf("reply", "r")) {
+            proxy.pluginManager.registerCommand(this, ReplyCommand(this, command))
+        }
 
         discord.system("サーバー開始しました")
 
