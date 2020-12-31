@@ -27,7 +27,17 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     companion object {
         private const val prefix = "§f[§dMan§f10§aBot§f]"
+
         lateinit var plugin: Man10BungeePlugin
+
+        var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
+
+        fun getData(mcid:String): PlayerData? {
+
+            val p = plugin.proxy.getPlayer(mcid)?:return null
+
+            return playerDataDic[p.uniqueId]?: PlayerData(p)
+        }
     }
 
     //region 設定
@@ -67,7 +77,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     //region ログ関数
     fun log(text: String){
         logger.info("${Companion.prefix}$text")
-        discord.admin("$text")
+        discord.admin(text)
     }
 
     fun warning(text: String){
@@ -86,7 +96,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val target = ProxyServer.getInstance().getServerInfo(server)
         player.connect(target)
     }
-    public fun sendToJail(player:ProxiedPlayer){
+    fun sendToJail(player:ProxiedPlayer){
         val target = ProxyServer.getInstance().getServerInfo(jailServerName)
         player.connect(target)
     }
@@ -169,13 +179,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //      メッセージ整形:ローマ字
         var message = removeColorCode(e.message)
         if(enableJapanizer!!){
-            var jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
+            val jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
             if(jmsg != "") message += "($jmsg)"
         }
 
         ////////////////////////////////////////////////////
         //      整形: takatronix@lobby>ohaman(おはまん)
-        var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
+        val chatMessage = "${e.sender}@${p.server.info.name}>${message}"
 
         ////////////////////////////////////////////////////
         //      SPAM判定用に履歴保存
@@ -254,7 +264,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
         logger.info("(x)PlayerDisconnectEvent ${e.player} ")
 
-        var msg = "${e.player} is disconnected";
+        val msg = "${e.player} is disconnected";
         sendGlobalMessage(msg)
         discord.admin(msg)
         discord.chat(msg)
