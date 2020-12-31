@@ -1,4 +1,5 @@
 package red.man10.bungee.manager
+
 import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
 import kotlinx.coroutines.GlobalScope
@@ -22,6 +23,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     companion object {
         private const val prefix = "§f[§dMan§f10§aBot§f]"
+        lateinit var plugin: Man10BungeePlugin
     }
 
     //region 設定
@@ -41,6 +43,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerListener(this, this)
 
         discord.system("サーバー開始しました")
+
+        plugin = this
 
     //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
@@ -351,7 +355,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     private fun initPlayerData(p:ProxiedPlayer){
-        playerDataDic[p.uniqueId] = PlayerData(p,this)
+        playerDataDic[p.uniqueId] = PlayerData(p)
     }
 
     override fun onDiscordReadyEvent(event: ReadyEvent){
