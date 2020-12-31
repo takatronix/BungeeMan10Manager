@@ -14,6 +14,10 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.command.BanCommand
+import red.man10.bungee.manager.command.FreezeCommand
+import red.man10.bungee.manager.command.JailCommand
+import red.man10.bungee.manager.command.MuteCommand
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
@@ -45,6 +49,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         discord.system("サーバー開始しました")
 
         plugin = this
+
+        proxy.pluginManager.registerCommand(this, JailCommand)
+        proxy.pluginManager.registerCommand(this, MuteCommand)
+        proxy.pluginManager.registerCommand(this, BanCommand)
+        proxy.pluginManager.registerCommand(this, FreezeCommand)
 
     //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
