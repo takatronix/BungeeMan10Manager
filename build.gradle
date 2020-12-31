@@ -30,7 +30,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     def jda_version = '4.1.1_165'
     compile "net.dv8tion:JDA:$jda_version"
-    compile 'org.slf4j:slf4j-log4j12:1.7.21'
+    compile 'org.slf4j:slf4j-log4j12:1.7.28'
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
