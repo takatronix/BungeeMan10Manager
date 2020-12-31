@@ -1,5 +1,4 @@
 package red.man10.bungee.manager
-
 import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
 import kotlinx.coroutines.GlobalScope
@@ -8,69 +7,42 @@ import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
-import red.man10.bungee.manager.command.BanCommand
-import red.man10.bungee.manager.command.FreezeCommand
-import red.man10.bungee.manager.command.JailCommand
-import red.man10.bungee.manager.command.MuteCommand
-import red.man10.bungee.manager.db.LogDatabase
-import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.HashMap
 
 
 class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     companion object {
-
         private const val prefix = "§f[§dMan§f10§aBot§f]"
-        lateinit var plugin : Man10BungeePlugin
-
-        //region 設定
-        var jailServerName: String? = null
-
-        //      オンラインのプレイヤーの情報
-        var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
-        var dic = HashMap<String?, String?> ()
-
-        var enableSendMessageToOtherServer = true
-
-        fun getData(mcid:String): PlayerData? {
-
-            val p = plugin.proxy.getPlayer(mcid)?:return null
-
-            return playerDataDic[p.uniqueId]?: PlayerData(p)
-        }
     }
 
-    var discord = DiscordBot()
+    //region 設定
+    var jailServerName: String? = null
+
+    //      オンラインのプレイヤーの情報
+    var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
+    var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
+    var discord = DiscordBot()
+    var enableSendMessageToOtherServer = true
     //endregion
 
     override fun onEnable() { // Plugin startup logic
         log("started")
-
-        plugin = this
-
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
 
-        proxy.pluginManager.registerCommand(this, JailCommand)
-        proxy.pluginManager.registerCommand(this, MuteCommand)
-        proxy.pluginManager.registerCommand(this, BanCommand)
-        proxy.pluginManager.registerCommand(this, FreezeCommand)
-
         discord.system("サーバー開始しました")
 
-        MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
-
+    //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
     }
 
@@ -81,38 +53,37 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //region ログ関数
     fun log(text: String){
-        logger.info("$prefix$text")
-        discord.admin(text)
+        logger.info("${Companion.prefix}$text")
+        discord.admin("$text")
     }
 
     fun warning(text: String){
-        logger.warning("$prefix$text")
+        logger.warning("${Companion.prefix}$text")
         discord.admin("[Warning]$text")
     }
 
     fun error(text: String){
-        logger.severe("${prefix}§c$text")
+        logger.severe("${Companion.prefix}§c$text")
         discord.admin("[Error]$text")
     }
     //endregion
 
     //region 共通関数
-    fun sendToServer(player:ProxiedPlayer,server: String){
+    public fun sendToServer(player:ProxiedPlayer,server: String){
         val target = ProxyServer.getInstance().getServerInfo(server)
         player.connect(target)
     }
-    fun sendToJail(player:ProxiedPlayer){
-//        val target = ProxyServer.getInstance().getServerInfo(jailServerName)
-//        player.connect(target)
-        sendToServer(player,jailServerName?:"jail")
+    public fun sendToJail(player:ProxiedPlayer){
+        val target = ProxyServer.getInstance().getServerInfo(jailServerName)
+        player.connect(target)
     }
     //endregion
 
     private fun loadConfig(){
-        val config = ConfigFile(this).getConfig()
+        var config = ConfigFile(this).getConfig()
         try {
-            enableJapanizer = config?.getBoolean("japanizer")
-            jailServerName = config?.getString("jail.server")
+            this.enableJapanizer = config?.getBoolean("japanizer")
+            this.jailServerName = config?.getString("jail.server")
             ////////////////////////////////////////////
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
@@ -141,8 +112,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //  Event called as soon as a connection has a ProxiedPlayer and is ready to be connected to a server.
     //  (4)接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
-    @EventHandler
-    fun  onPostLogin(e: PostLoginEvent){
+    @EventHandler fun  onPostLogin(e: PostLoginEvent){
         log("(4) PostLogin ${e.player} locale:${e.player.locale} ${e.player.socketAddress}")
 
 
@@ -162,7 +132,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         }
 
         //      グローバル通知
-        sendGlobalMessage("§e${e.player.name} has joined the network.");
+        sendGlobalMessage("${e.player.name} has joined the network.");
     }
 
     //  Event called when a player sends a message to a server.
@@ -182,22 +152,21 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
-        var message = removeColorCode(e.message)?:return
-
         ////////////////////////////////////////////////////
         //      メッセージ整形:ローマ字
+        var message = removeColorCode(e.message)
         if(enableJapanizer!!){
-            val jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
-            if(jmsg != "") message += " §6($jmsg)"
+            var jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
+            if(jmsg != "") message += "($jmsg)"
         }
 
         ////////////////////////////////////////////////////
-        //      整形: 【man10】forest611: ohaman (おはまん)
-        val chatMessage = "§f【§3${p.server.info.name}§f】${e.sender}§b:§f $message"
+        //      整形: takatronix@lobby>ohaman(おはまん)
+        var chatMessage = "${e.sender}@${p.server.info.name}>${message}"
 
         ////////////////////////////////////////////////////
         //      SPAM判定用に履歴保存
-        playerDataDic[p.uniqueId]!!.add(message)
+        playerDataDic[p.uniqueId]!!.add(message!!)
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
@@ -234,7 +203,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //////////////////////////////////////////////////////
         //     同一サーバにいないプレイヤーにチャットを送る
-        if(enableSendMessageToOtherServer && !e.isCommand){
+        if(enableSendMessageToOtherServer){
             for (player in ProxyServer.getInstance().players) {
                 if(player.server.info.name != p.server.info.name){
                     sendMessage(player.uniqueId,chatMessage)
@@ -244,16 +213,14 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //////////////////////////////////////////////////////
         //      コマンド類はDiscordへ通知しない
-        if(e.isCommand || e.isProxyCommand) {
+        if(e.isCommand || e.isProxyCommand){
             log("[Command] <${e.sender}> $message");
-            LogDatabase.commandLog(p, message)
-            return
+            //  TODO: DBにコマンド履歴を保存
+        }else{
+            log(chatMessage)
+            discord.chat(chatMessage)
+            //  TODO: DBにチャット履歴を保存
         }
-
-        //メッセージをログ、db、discordに送信
-        log(chatMessage)
-        discord.chat(chatMessage)
-        LogDatabase.messageLog(p,message)
     }
 
     //  Event called to represent an initial client connection.
@@ -261,7 +228,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onClientConnect(e: ClientConnectEvent) {
         log("(1)ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress} ${e.listener}")
-        discord.log("connect")
+        //discord.log("connect")
     }
 
 
@@ -274,7 +241,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
         logger.info("(x)PlayerDisconnectEvent ${e.player} ")
 
-        val msg = "${e.player} is disconnected";
+        var msg = "${e.player} is disconnected";
         sendGlobalMessage(msg)
         discord.admin(msg)
         discord.chat(msg)
@@ -324,13 +291,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onServerConnect(e: ServerConnectEvent) {
         log("(5)ServerConnectEvent player:${e.player} target:${e.target} reason:${e.reason}")
-        LogDatabase.connect(e.player)
     }
 
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
         log("ServerDisconnectEvent player:${e.player} target:${e.target} ${e.target.name} ${e.target}")
-        LogDatabase.connectionLog(e.player)
     }
 
     //  Represents a player getting kicked from a server
@@ -386,9 +351,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     private fun initPlayerData(p:ProxiedPlayer){
-        playerDataDic[p.uniqueId] = PlayerData(p)
+        playerDataDic[p.uniqueId] = PlayerData(p,this)
     }
-
 
     override fun onDiscordReadyEvent(event: ReadyEvent){
         discord.admin("Discord Ready")
@@ -402,7 +366,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (user.isBot) return
 
         val channel= message.channel
-        val text = "§b§l${user.name}@discord §f${message.contentDisplay}"
+        val text = "§b§l${user.name}@discord §f&l${message.contentDisplay}";
         sendGlobalMessage(text)
     }
 }

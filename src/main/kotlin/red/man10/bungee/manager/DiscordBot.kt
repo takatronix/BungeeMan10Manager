@@ -79,7 +79,8 @@ class DiscordBot() : ListenerAdapter() {
         }
         try {
 
-            jda = JDABuilder(AccountType.BOT).setToken(token).addEventListeners(this).build()
+//            jda = JDABuilder(AccountType.BOT).setToken(token).addEventListeners(this).build()
+            jda = JDABuilder.createDefault(token!!).build()
             jda.awaitReady()
 
             guild = jda.getGuildById(this.guildID)
