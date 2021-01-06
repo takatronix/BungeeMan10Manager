@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
+import red.man10.bungee.manager.PlayerData
 import java.text.SimpleDateFormat
 
 object BanCommand : Command("mban","bungeemanager.ban"){
@@ -20,7 +21,7 @@ object BanCommand : Command("mban","bungeemanager.ban"){
 
             val p = args[0]
 
-            val data = Man10BungeePlugin.getData(p)
+            val data = PlayerData.getData(p)
 
             if (data ==null){
                 sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())

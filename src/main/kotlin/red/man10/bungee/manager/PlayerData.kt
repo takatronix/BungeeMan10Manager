@@ -23,13 +23,6 @@ class PlayerData(player:ProxiedPlayer) {
 
     private var score:Int = 0                  //      スコア
 
-    //////////////////////////////////////////
-    //mcidからデータを取得
-//    constructor(mcid: String, plugin: Man10BungeePlugin){
-//        this.mcid = mcid
-//        this.uuid = plugin.proxy.getPlayer(mcid).uniqueId
-//    }
-
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
 
@@ -169,7 +162,8 @@ class PlayerData(player:ProxiedPlayer) {
                 "mute_until='${muteUntil?.time}'," +
                 "jail_until='${jailUntil?.time}'," +
                 "ban_until='${banUntil?.time}'," +
-                "score=$score;")
+                "score=$score " +
+                "where uuid='${uuid}';")
 
     }
 
@@ -177,5 +171,38 @@ class PlayerData(player:ProxiedPlayer) {
     private val commandHistory = mutableListOf<History>()
     private val messageHistory = mutableListOf<History>()
 
+    companion object{
+
+        val mysql = MySQLManager(plugin,"BungeeManager Get UUID")
+
+        @Synchronized //mcidからuuidを取得する
+        fun getUUID(mcid:String):UUID?{
+
+            var uuid = plugin.proxy.getPlayer(mcid).uniqueId
+
+            if (uuid ==null){
+
+                val rs = mysql.query("select uuid from player_data where mcid='$mcid';")
+
+                if (rs ==null){
+                    mysql.close()
+                    return null
+                }
+
+                rs.next()
+                uuid = UUID.fromString(rs.getString("uuid"))
+                rs.close()
+                mysql.close()
+            }
+
+            return uuid
+        }
+
+        //プレイヤー名からユーザーデータを取り出す
+        fun getData(mcid:String): PlayerData? {
+            return Man10BungeePlugin.playerDataDic[getUUID(mcid)?:return null]
+        }
+
+    }
 
 }

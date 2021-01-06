@@ -32,12 +32,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
 
-        fun getData(mcid:String): PlayerData? {
-
-            val p = plugin.proxy.getPlayer(mcid)?:return null
-
-            return playerDataDic[p.uniqueId]?: PlayerData(p)
-        }
     }
 
     //region 設定
@@ -103,7 +97,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     //endregion
 
     private fun loadConfig(){
-        var config = ConfigFile(this).getConfig()
+        val config = ConfigFile(this).getConfig()
         try {
             this.enableJapanizer = config?.getBoolean("japanizer")
             this.jailServerName = config?.getString("jail.server")
@@ -180,12 +174,14 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         var message = removeColorCode(e.message)
         if(enableJapanizer!!){
             val jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
-            if(jmsg != "") message += "($jmsg)"
+            if(jmsg != "") message += " §6($jmsg)"
         }
 
         ////////////////////////////////////////////////////
         //      整形: takatronix@lobby>ohaman(おはまん)
-        val chatMessage = "${e.sender}@${p.server.info.name}>${message}"
+//        val chatMessage = "${e.sender}@${p.server.info.name}>${message}"
+        val chatMessage = "§f【§3${p.server.info.name}§f】${p.name}§b:§f$message"
+
 
         ////////////////////////////////////////////////////
         //      SPAM判定用に履歴保存
