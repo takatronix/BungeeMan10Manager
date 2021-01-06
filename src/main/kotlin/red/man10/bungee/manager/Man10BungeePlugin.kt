@@ -19,6 +19,7 @@ import red.man10.bungee.manager.command.BanCommand
 import red.man10.bungee.manager.command.FreezeCommand
 import red.man10.bungee.manager.command.JailCommand
 import red.man10.bungee.manager.command.MuteCommand
+import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
@@ -60,7 +61,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
 
-    //    MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
+        MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
     }
 
