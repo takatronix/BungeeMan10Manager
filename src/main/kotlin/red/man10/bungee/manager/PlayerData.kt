@@ -187,7 +187,7 @@ class PlayerData(val player: ProxiedPlayer) {
 
         val data = ConnectionData()
 
-        data.server = player.server.info.name
+        data.server = player.server.info.name?:""
         data.connect = Timestamp(Date().time)
 
         connectData[player] = data

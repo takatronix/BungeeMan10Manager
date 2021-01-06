@@ -151,8 +151,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             val data  = PlayerData(p)
 
-            data.connect()
-
             ///////////////////////////////////////////////////
             //      ログインしたユーザーがジェイル民なら転送
             if(data.isJailed()){
@@ -160,6 +158,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
                 warning("${p}はログインしたがジェイルに転送された")
             }
 
+            data.connect()
 
             playerDataDic[uuid] = data
 
@@ -255,15 +254,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         }
     }
 
-    //  Event called to represent an initial client connection.
-    //  (1) クライアントの初期接続を表すために呼び出されるイベント。
-    @EventHandler
-    fun onClientConnect(e: ClientConnectEvent) {
-        log("(1)ClientConnectEvent listener:${e.listener} sockAddress:${e.socketAddress} ${e.listener}")
-        //discord.log("connect")
-    }
-
-
 
     //  Called when a player has left the proxy,
     //  it is not safe to call any methods that perform an action on the passed player instance.
@@ -343,21 +333,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onServerSwitch(e: ServerSwitchEvent) {
         logger.info("ServerSwitchEvent player:${e.player} from:${e.from}")
-    }
-
-    //  Called after a ProxiedPlayer changed one or more of the following (client-side) settings:
-    //  View distance Locale Displayed skin parts Chat visibility Chat colors Main hand side (left or right)
-    //  ProxiedPlayer が以下の（クライアント側の）設定を変更した後に呼び出されます。
-    //  表示距離 ロケール 表示されたスキンパーツ チャットの可視性 チャットの色 メインハンドサイド（左または右)
-    @EventHandler
-    fun onSettingsChanged(e: SettingsChangedEvent) {
-//        logger.info("SettingsChangedEvent ${e.player}")
-    }
-    //  Event called when a player uses tab completion.
-    //  プレイヤーがタブ補完を使用したときに呼び出されるイベント
-    @EventHandler
-    fun onTabComplete(e: TabCompleteEvent) {
-        //logger.info("TabCompleteEvent sender:${e.sender} receiver:${e.receiver}")
     }
 
     //  An event which occurs in the communication between two nodes.
