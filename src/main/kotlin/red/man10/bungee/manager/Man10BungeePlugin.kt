@@ -133,7 +133,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         log("(4) PostLogin ${e.player} locale:${e.player.locale} ${e.player.socketAddress}")
 
 
-        logger.info("${e.player.name} is logged in")
+        logger.info("**${e.player.name} is logged in**")
 
         GlobalScope.launch {
             initPlayerData(e.player)
@@ -259,7 +259,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
         logger.info("(x)PlayerDisconnectEvent ${e.player} ")
 
-        val msg = "${e.player} is disconnected";
+        val msg = "**${e.player} is disconnected**";
         sendGlobalMessage(msg)
         discord.admin(msg)
         discord.chat(msg)
@@ -335,7 +335,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     //  表示距離 ロケール 表示されたスキンパーツ チャットの可視性 チャットの色 メインハンドサイド（左または右)
     @EventHandler
     fun onSettingsChanged(e: SettingsChangedEvent) {
-        logger.info("SettingsChangedEvent ${e.player}")
+//        logger.info("SettingsChangedEvent ${e.player}")
     }
     //  Event called when a player uses tab completion.
     //  プレイヤーがタブ補完を使用したときに呼び出されるイベント
