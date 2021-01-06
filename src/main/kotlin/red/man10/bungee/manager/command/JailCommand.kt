@@ -65,6 +65,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}").create())
             Man10BungeePlugin.playerDataDic[data.uuid] = data
 
+            plugin.sendToJail(ProxyServer.getInstance().getPlayer(p))
 
             return
 
