@@ -4,6 +4,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.db.MySQLManager
 import java.sql.Time
+import java.sql.Timestamp
 import java.util.*
 
 class History{
@@ -12,7 +13,7 @@ class History{
 }
 
 
-class PlayerData(player:ProxiedPlayer) {
+class PlayerData(val player: ProxiedPlayer) {
     var uuid: UUID = player.uniqueId
     var mcid: String = player.name
 
@@ -22,6 +23,13 @@ class PlayerData(player:ProxiedPlayer) {
     var banUntil: Date? = null         //      BAN期限
 
     private var score:Int = 0                  //      スコア
+
+    val connectData = HashMap<ProxiedPlayer, ConnectionData>() //接続時間
+
+    //      ログインしてからのCommand/Chat履歴
+    private val commandHistory = mutableListOf<History>()
+    private val messageHistory = mutableListOf<History>()
+
 
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
@@ -175,9 +183,48 @@ class PlayerData(player:ProxiedPlayer) {
         MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', '${Date().time}');")
     }
 
-    //      ログインしてからのCommand/Chat履歴
-    private val commandHistory = mutableListOf<History>()
-    private val messageHistory = mutableListOf<History>()
+    fun connect(){
+
+        val data = ConnectionData()
+
+        data.server = player.server.info.name
+        data.connect = Timestamp(Date().time)
+
+        connectData[player] = data
+    }
+
+    fun disconnect(){
+
+        val data = connectData[player]?:return
+
+        data.disconnect = Timestamp(Date().time)
+
+        MySQLManager.executeQueue("INSERT INTO connection_log " +
+                "(ip, uuid, server, connected_time, disconnected_time, connection_seconds, mcid) " +
+                "VALUES (" +
+                "'${player.socketAddress}', " +
+                "'${data.server}', " +
+                "'${data.connect}', " +
+                "'${data.disconnect}', " +
+                "'${data.getConnectionSeconds()}', " +
+                "'${player.uniqueId}');")
+
+    }
+
+
+    class ConnectionData{
+
+        var server = ""
+        lateinit var connect : Timestamp
+        lateinit var disconnect : Timestamp
+
+        fun getConnectionSeconds():Int{
+            return disconnect.compareTo(connect)
+        }
+
+    }
+
+
 
     companion object{
 

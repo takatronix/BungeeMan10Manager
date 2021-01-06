@@ -16,7 +16,7 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
         if (sender==null)return
 
 
-        //mban <forest611> <100d> <reason>
+        //mmute <forest611> <100d> <reason>
         if (!args.isNullOrEmpty() && args.size == 3){
 
             val p = args[0]

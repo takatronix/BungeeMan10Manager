@@ -138,13 +138,21 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         GlobalScope.launch {
             initPlayerData(e.player)
 
+            val uuid = e.player.uniqueId
+
+            val data  = PlayerData(e.player)
+
+            data.connect()
 
             ///////////////////////////////////////////////////
             //      ログインしたユーザーがジェイル民なら転送
-            if(playerDataDic[e.player.uniqueId]?.isJailed()!!){
+            if(data.isJailed()){
                 sendToJail(e.player)
                 warning("${e.player}はログインしたがジェイルに転送された")
             }
+
+
+            playerDataDic[uuid] = data
 
         }
 
@@ -263,6 +271,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         sendGlobalMessage(msg)
         discord.admin(msg)
         discord.chat(msg)
+        playerDataDic[e.player.uniqueId]!!.disconnect()
     }
 
     //      Event called to represent a player first making their presence and username known.
