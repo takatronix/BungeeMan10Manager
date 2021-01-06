@@ -167,6 +167,14 @@ class PlayerData(player:ProxiedPlayer) {
 
     }
 
+    fun saveCommand(command:String){
+        MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date) VALUES ('$uuid', '$mcid', '$command', '${Date().time}');")
+    }
+
+    fun saveMessage(message:String){
+        MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', '${Date().time}');")
+    }
+
     //      ログインしてからのCommand/Chat履歴
     private val commandHistory = mutableListOf<History>()
     private val messageHistory = mutableListOf<History>()

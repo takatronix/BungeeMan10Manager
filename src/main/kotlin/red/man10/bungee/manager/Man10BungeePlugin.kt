@@ -179,13 +179,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         ////////////////////////////////////////////////////
         //      整形: takatronix@lobby>ohaman(おはまん)
-//        val chatMessage = "${e.sender}@${p.server.info.name}>${message}"
         val chatMessage = "§f【§3${p.server.info.name}§f】${p.name}§b:§f$message"
 
-
-        ////////////////////////////////////////////////////
-        //      SPAM判定用に履歴保存
-        playerDataDic[p.uniqueId]!!.add(message!!)
+        //discord用メッセージ
+        val discordMessage = "**<${p.name}@${p.server.info.name}>**:${removeColorCode(message)}"
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
@@ -234,11 +231,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand){
             log("[Command] <${e.sender}> $message");
-            //  TODO: DBにコマンド履歴を保存
+
+            data.saveCommand(message!!)
         }else{
-            log(chatMessage)
-            discord.chat(chatMessage)
-            //  TODO: DBにチャット履歴を保存
+            log(chatMessage)//ログを残す
+            discord.chat(discordMessage)
+
+            data.saveMessage(chatMessage)
         }
     }
 
