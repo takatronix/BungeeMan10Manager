@@ -14,6 +14,7 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.prefix
 import red.man10.bungee.manager.command.BanCommand
 import red.man10.bungee.manager.command.FreezeCommand
 import red.man10.bungee.manager.command.JailCommand
@@ -70,17 +71,17 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //region ログ関数
     fun log(text: String){
-        logger.info("${Companion.prefix}$text")
+        logger.info("$prefix$text")
         discord.admin(text)
     }
 
     fun warning(text: String){
-        logger.warning("${Companion.prefix}$text")
+        logger.warning("$prefix$text")
         discord.admin("[Warning]$text")
     }
 
     fun error(text: String){
-        logger.severe("${Companion.prefix}§c$text")
+        logger.severe("${prefix}§c$text")
         discord.admin("[Error]$text")
     }
     //endregion
@@ -135,29 +136,33 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         logger.info("**${e.player.name} is logged in**")
 
+        val p = e.player
+
+        sendGlobalMessage("§e${p}がサーバーからログインしました")
+        discord.admin("**$p is connect**")
+        discord.chat("**$p is connect**")
+
+
         GlobalScope.launch {
             initPlayerData(e.player)
 
-            val uuid = e.player.uniqueId
+            val uuid = p.uniqueId
 
-            val data  = PlayerData(e.player)
+            val data  = PlayerData(p)
 
             data.connect()
 
             ///////////////////////////////////////////////////
             //      ログインしたユーザーがジェイル民なら転送
             if(data.isJailed()){
-                sendToJail(e.player)
-                warning("${e.player}はログインしたがジェイルに転送された")
+                sendToJail(p)
+                warning("${p}はログインしたがジェイルに転送された")
             }
 
 
             playerDataDic[uuid] = data
 
         }
-
-        //      グローバル通知
-        sendGlobalMessage("${e.player.name} has joined the network.");
     }
 
     //  Event called when a player sends a message to a server.
@@ -190,7 +195,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val chatMessage = "§f【§3${p.server.info.name}§f】${p.name}§b:§f$message"
 
         //discord用メッセージ
-        val discordMessage = "**<${p.name}@${p.server.info.name}>**:${removeColorCode(message)}"
+        val discordMessage = "<${p.name}@${p.server.info.name}>:${removeColorCode(message)}"
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
@@ -267,11 +272,12 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun onPlayerDisconnect(e: PlayerDisconnectEvent) {
         logger.info("(x)PlayerDisconnectEvent ${e.player} ")
 
-        val msg = "**${e.player} is disconnected**";
-        sendGlobalMessage(msg)
-        discord.admin(msg)
-        discord.chat(msg)
-        playerDataDic[e.player.uniqueId]!!.disconnect()
+        val p = e.player
+
+        sendGlobalMessage("§e${p}がサーバーからログアウトしました")
+        discord.admin("**$p is disconnected**")
+        discord.chat("**$p is disconnected**")
+        playerDataDic[p.uniqueId]!!.disconnect()
     }
 
     //      Event called to represent a player first making their presence and username known.

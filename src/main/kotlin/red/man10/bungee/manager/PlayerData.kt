@@ -24,7 +24,7 @@ class PlayerData(val player: ProxiedPlayer) {
 
     private var score:Int = 0                  //      スコア
 
-    val connectData = HashMap<ProxiedPlayer, ConnectionData>() //接続時間
+    private val connectData = HashMap<ProxiedPlayer, ConnectionData>() //接続時間
 
     //      ログインしてからのCommand/Chat履歴
     private val commandHistory = mutableListOf<History>()
@@ -225,10 +225,9 @@ class PlayerData(val player: ProxiedPlayer) {
     }
 
 
-
     companion object{
 
-        val mysql = MySQLManager(plugin,"BungeeManager Get UUID")
+        private val mysql = MySQLManager(plugin,"BungeeManager Get UUID")
 
         @Synchronized //mcidからuuidを取得する
         fun getUUID(mcid:String):UUID?{
