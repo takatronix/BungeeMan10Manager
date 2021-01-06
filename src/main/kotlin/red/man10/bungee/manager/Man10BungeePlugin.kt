@@ -273,10 +273,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //      Event called to represent a player first making their presence and username known.
     //      (2)プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
-    @EventHandler
-    fun onPlayerHandshake(e: PlayerHandshakeEvent) {
-        log("(2)PlayerHandshakeEvent connection:${e.connection} handshake:${e.handshake}")
-    }
+//    @EventHandler
+//    fun onPlayerHandshake(e: PlayerHandshakeEvent) {
+//        log("(2)PlayerHandshakeEvent connection:${e.connection} handshake:${e.handshake}")
+//    }
 
     //  Event called when a plugin message is sent to the client or server.
     //  プラグインメッセージがクライアントまたはサーバに送信されたときに呼び出されるイベント

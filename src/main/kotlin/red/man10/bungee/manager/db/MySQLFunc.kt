@@ -1,5 +1,6 @@
 package red.man10.bungee.manager.db
 
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
@@ -31,7 +32,7 @@ class MySQLFunc(host: String, db: String, user: String, pass: String, port: Stri
             this.con = DriverManager.getConnection("jdbc:mysql://" + this.HOST + ":" + this.PORT + "/" + this.DB + "?useSSL=false", this.USER, this.PASS)
             return this.con
         } catch (e:Exception) {
-//            Bukkit.getLogger().log(Level.SEVERE, "Could not connect to MySQL server, error message: ${e.message}")
+            plugin.logger.log(Level.SEVERE, "Could not connect to MySQL server, error message: ${e.message}")
 
         }
 
