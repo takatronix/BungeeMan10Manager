@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import javax.security.auth.login.LoginException
 
@@ -83,6 +84,8 @@ class DiscordBot() : ListenerAdapter() {
             jda = JDABuilder.createDefault(token!!).build()
             jda.awaitReady()
 
+            jda.addEventListener(this)
+
             guild = jda.getGuildById(this.guildID)
             chatChannel = guild?.getTextChannelById(this.chatChannelID)
             logChannel = guild?.getTextChannelById(this.logChannelID)
@@ -98,10 +101,23 @@ class DiscordBot() : ListenerAdapter() {
             plugin?.log("discord setup done!")
         }
 
-        override fun onReady(event: ReadyEvent) {
-            discordEvent?.onDiscordReadyEvent(event)
-        }
-        override fun onMessageReceived(event: MessageReceivedEvent) {
-            discordEvent?.onDiscordMessageReceivedEvent(event)
-        }
+    override fun onMessageReceived(event: MessageReceivedEvent) {
+//        println("chat event")
+
+        val message = event.message
+        val user = message.author
+
+        if (user.isBot) return
+
+        val channel= message.channel
+
+        if (channel.idLong != chatChannelID)return
+
+        val text = "§f【§3@Discord§f】${user.name}§b:§f${message.contentDisplay}"
+        plugin!!.sendGlobalMessage(text)
+    }
+
+    override fun onReady(event: ReadyEvent) {
+        discordEvent?.onDiscordReadyEvent(event)
+    }
 }

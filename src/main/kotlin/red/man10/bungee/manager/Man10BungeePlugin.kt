@@ -367,15 +367,19 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         discord.admin("Discord Ready")
     }
 
-    //      Discordからのメッセージイベント -> すべてのプレイヤーに通知
-    override  fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent){
+    override fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent) {
+        println("chat event")
 
         val message = event.message
         val user = message.author
         if (user.isBot) return
 
         val channel= message.channel
+
+        if (channel.idLong != discord.chatChannelID)return
+
         val text = "§b§l${user.name}@discord §f&l${message.contentDisplay}";
         sendGlobalMessage(text)
     }
+
 }
