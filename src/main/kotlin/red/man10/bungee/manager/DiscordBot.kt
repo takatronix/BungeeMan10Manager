@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import javax.security.auth.login.LoginException
 
@@ -113,8 +112,10 @@ class DiscordBot() : ListenerAdapter() {
 
         if (channel.idLong != chatChannelID)return
 
-        val text = "§f【§3@Discord§f】${user.name}§b:§f${message.contentDisplay}"
-        plugin!!.sendGlobalMessage(text)
+        val text = if (message.contentDisplay.length >=256) "※文章量が多いため省略されました" else message.contentDisplay
+
+        val outText = "§f【§3@Discord§f】${event.member!!.nickname}§b:§f$text"
+        plugin!!.sendGlobalMessage(outText)
     }
 
     override fun onReady(event: ReadyEvent) {
