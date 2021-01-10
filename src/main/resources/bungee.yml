@@ -3,3 +3,8 @@ main: red.man10.bungee.manager.Man10BungeePlugin
 version: 1.0
 author: takatronix,forest611
 description: Man10 Server management system
+command:
+  mban:
+  mjail:
+  mmute:
+  mfreeze:

@@ -21,7 +21,11 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
 
             val p = args[0]
 
-            val data = PlayerData.getData(p)
+            val pData = ProxyServer.getInstance().getPlayer(args[0])
+
+            val isOnline = pData !=null
+
+            val data = if (isOnline) Man10BungeePlugin.playerDataDic[pData.uniqueId] else PlayerData.getData(p)
 
             if (data ==null){
                 sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())

@@ -170,7 +170,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onChat(e: ChatEvent) {
 
-        log("chatevent")
         ////////////////////////////////////////////////////
         //      プレイヤーデータがない場合処理を行わない
         val p = e.sender
@@ -178,7 +177,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val data = playerDataDic[p.uniqueId]
         if (data == null){
             e.isCancelled = true
-            log("chatevent")
+//            log("chatevent")
             return
         }
 
@@ -245,12 +244,12 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if(e.isCommand || e.isProxyCommand){
             log("[Command] <${e.sender}> $message")
 
-            data.saveCommand(message!!)
+            data.saveCommand(e.message)
         }else{
             log(chatMessage)//ログを残す
             discord.chat(discordMessage)
 
-            data.saveMessage(chatMessage)
+            data.saveMessage(e.message)
         }
     }
 

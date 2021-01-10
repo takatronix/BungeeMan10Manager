@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.PlayerData
 import java.text.SimpleDateFormat
@@ -20,7 +21,11 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
 
             val p = args[0]
 
-            val data = PlayerData.getData(p)
+            val pData = ProxyServer.getInstance().getPlayer(args[0])
+
+            val isOnline = pData !=null
+
+            val data = if (isOnline) playerDataDic[pData.uniqueId] else PlayerData.getData(p)
 
             if (data ==null){
                 sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())
@@ -57,15 +62,17 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
 
             if (!data.isJailed()){
                 ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p}は釈放されました").create())
-                Man10BungeePlugin.playerDataDic[data.uuid] = data
+                playerDataDic[data.uuid] = data
                 return
             }
 
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p}は「${args[2]}」の理由により、Jailされました！").create())
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}").create())
-            Man10BungeePlugin.playerDataDic[data.uuid] = data
+            playerDataDic[data.uuid] = data
 
-            plugin.sendToJail(ProxyServer.getInstance().getPlayer(p))
+            if (isOnline){
+                plugin.sendToJail(ProxyServer.getInstance().getPlayer(p))
+            }
 
             return
 

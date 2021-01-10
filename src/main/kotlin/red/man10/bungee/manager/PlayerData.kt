@@ -5,6 +5,7 @@ import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.db.MySQLManager
 import java.sql.Time
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.util.*
 
 class History{
@@ -149,6 +150,8 @@ class PlayerData(val player: ProxiedPlayer) {
 
             plugin.logger.info("create $mcid's data.")
 
+            mysql.close()
+
             return
         }
 
@@ -159,28 +162,29 @@ class PlayerData(val player: ProxiedPlayer) {
 
         score = rs.getInt("score")
 
-
+        mysql.close()
+        rs.close()
     }
 
     fun save(){
 
         MySQLManager.executeQueue("UPDATE player_data SET " +
                 "mcid='$mcid'," +
-                "freeze_until='${freezeUntil?.time}'," +
-                "mute_until='${muteUntil?.time}'," +
-                "jail_until='${jailUntil?.time}'," +
-                "ban_until='${banUntil?.time}'," +
+                "freeze_until='${dateToDatetime(freezeUntil)}'," +
+                "mute_until='${dateToDatetime(muteUntil)}'," +
+                "jail_until='${dateToDatetime(jailUntil)}'," +
+                "ban_until='${dateToDatetime(banUntil)}'," +
                 "score=$score " +
                 "where uuid='${uuid}';")
 
     }
 
     fun saveCommand(command:String){
-        MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date) VALUES ('$uuid', '$mcid', '$command', '${Date().time}');")
+        MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date) VALUES ('$uuid', '$mcid', '$command', '${dateToDatetime(Date())}');")
     }
 
     fun saveMessage(message:String){
-        MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', '${Date().time}');")
+        MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', '${dateToDatetime(Date())}');")
     }
 
     fun connect(){
@@ -200,14 +204,15 @@ class PlayerData(val player: ProxiedPlayer) {
         data.disconnect = Timestamp(Date().time)
 
         MySQLManager.executeQueue("INSERT INTO connection_log " +
-                "(ip, uuid, server, connected_time, disconnected_time, connection_seconds, mcid) " +
+                "(ip,mcid, uuid, server, connected_time, disconnected_time, connection_seconds) " +
                 "VALUES (" +
-                "'${player.socketAddress}', " +
+                "'${player.socketAddress}'," +
+                "'${player.name}', " +
+                "'${player.uniqueId}'," +
                 "'${data.server}', " +
                 "'${data.connect}', " +
                 "'${data.disconnect}', " +
-                "'${data.getConnectionSeconds()}', " +
-                "'${player.uniqueId}');")
+                "'${data.getConnectionSeconds()}');")
 
     }
 
@@ -218,8 +223,8 @@ class PlayerData(val player: ProxiedPlayer) {
         lateinit var connect : Timestamp
         lateinit var disconnect : Timestamp
 
-        fun getConnectionSeconds():Int{
-            return disconnect.compareTo(connect)
+        fun getConnectionSeconds(): Long {
+            return (disconnect.time-connect.time)*1000
         }
 
     }
@@ -229,7 +234,7 @@ class PlayerData(val player: ProxiedPlayer) {
 
         private val mysql = MySQLManager(plugin,"BungeeManager Get UUID")
 
-        @Synchronized //mcidからuuidを取得する
+        //mcidからuuidを取得する
         fun getUUID(mcid:String):UUID?{
 
             var uuid = plugin.proxy.getPlayer(mcid).uniqueId
@@ -255,6 +260,11 @@ class PlayerData(val player: ProxiedPlayer) {
         //プレイヤー名からユーザーデータを取り出す
         fun getData(mcid:String): PlayerData? {
             return Man10BungeePlugin.playerDataDic[getUUID(mcid)?:return null]
+        }
+
+        //mysql datetime を保存するやつ
+        fun dateToDatetime(date: Date?):String{
+            return SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
         }
 
     }
