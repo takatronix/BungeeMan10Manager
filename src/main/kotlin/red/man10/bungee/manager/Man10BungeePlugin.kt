@@ -62,10 +62,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
+        discord.chat("**サーバーが起動しました**")
+
     }
 
     override fun onDisable() {
         discord.system("サーバーシャットダウンしました")
+        discord.chat("**サーバーがシャットダウンしました**")
         discord.shutdown()
     }
 
@@ -136,9 +139,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val p = e.player
 
-        sendGlobalMessage("§e${p}がサーバーからログインしました")
+        sendGlobalMessage("§e${p}がMan10Networkにログインしました")
         discord.admin("**$p is connect**")
-        discord.chat("**$p is connect**")
+        discord.chat("**${p}がログインしました**")
 
 
         GlobalScope.launch {
@@ -262,9 +265,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val p = e.player
 
-        sendGlobalMessage("§e${p}がサーバーからログアウトしました")
+        sendGlobalMessage("§e${p}がMan10Networkからログアウトしました")
         discord.admin("**$p is disconnected**")
-        discord.chat("**$p is disconnected**")
+        discord.chat("**${p}がログアウトしました**")
         playerDataDic[p.uniqueId]!!.disconnect()
     }
 
