@@ -14,7 +14,6 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.prefix
 import red.man10.bungee.manager.command.BanCommand
 import red.man10.bungee.manager.command.FreezeCommand
 import red.man10.bungee.manager.command.JailCommand
@@ -85,13 +84,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         logger.severe("${prefix}§c$text")
         discord.admin("[Error]$text")
     }
-    //endregion
 
-    //region 共通関数
-    public fun sendToServer(player:ProxiedPlayer,server: String){
-        val target = ProxyServer.getInstance().getServerInfo(server)
-        player.connect(target)
-    }
+    //    public fun sendToServer(player:ProxiedPlayer,server: String){
+//        val target = ProxyServer.getInstance().getServerInfo(server)
+//        player.connect(target)
+//    }
     fun sendToJail(player:ProxiedPlayer){
         val target = ProxyServer.getInstance().getServerInfo(jailServerName)
         player.connect(target)
@@ -113,7 +110,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.logChannelID = config.getLong("Discord.LogChannel")
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
             discord.plugin = this
-            discord.discordEvent = this;
+            discord.discordEvent = this
             discord.setup()
         } catch (e: NullPointerException) {
             e.printStackTrace()
@@ -192,17 +189,17 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         ////////////////////////////////////////////////////
         //      整形: takatronix@lobby>ohaman(おはまん)
-        val chatMessage = "§f【§3${p.server.info.name}§f】${p.name}§b:§f$message"
+        val chatMessage = "§f[§3@${p.server.info.name}§f]${p.name}§b:§f$message"
 
         //discord用メッセージ
-        val discordMessage = "<${p.name}@${p.server.info.name}>:${removeColorCode(message)}"
+        val discordMessage = "<${p.name}@${p.server.info.name}> ${removeColorCode(message)}"
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
         if(data.isMuted()){
             warning("[Muted] <${e.sender}> ($chatMessage)")
             sendMessage(data.uuid,"§eYou are muted!!")
-            e.isCancelled = true;
+            e.isCancelled = true
             return
         }
 
@@ -212,7 +209,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             warning("[Jailed] <${e.sender}> ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendMessage(data.uuid,"§eYou are jailed!!")
-                e.isCancelled = true;
+                e.isCancelled = true
                 return
             }
             return
@@ -224,7 +221,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             warning("[Frozen] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
                 sendMessage(data.uuid,"§eYou are frozen!!")
-                e.isCancelled = true;
+                e.isCancelled = true
                 return
             }
             return
@@ -232,7 +229,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //////////////////////////////////////////////////////
         //     同一サーバにいないプレイヤーにチャットを送る
-        if(enableSendMessageToOtherServer){
+        if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand)){
             for (player in ProxyServer.getInstance().players) {
                 if(player.server.info.name != p.server.info.name){
                     sendMessage(player.uniqueId,chatMessage)
@@ -243,7 +240,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //////////////////////////////////////////////////////
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand){
-            log("[Command] <${e.sender}> $message");
+            log("[Command] <${e.sender}> $message")
 
             data.saveCommand(message!!)
         }else{
@@ -368,18 +365,18 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     override fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent) {
-        println("chat event")
-
-        val message = event.message
-        val user = message.author
-        if (user.isBot) return
-
-        val channel= message.channel
-
-        if (channel.idLong != discord.chatChannelID)return
-
-        val text = "§b§l${user.name}@discord §f&l${message.contentDisplay}";
-        sendGlobalMessage(text)
+//        println("chat event")
+//
+//        val message = event.message
+//        val user = message.author
+//        if (user.isBot) return
+//
+//        val channel= message.channel
+//
+//        if (channel.idLong != discord.chatChannelID)return
+//
+//        val text = "§b§l${user.name}@discord §f&l${message.contentDisplay}"
+//        sendGlobalMessage(text)
     }
 
 }
