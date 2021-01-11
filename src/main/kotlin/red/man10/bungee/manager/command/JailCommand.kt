@@ -4,10 +4,7 @@ import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
-import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.PlayerData
 import java.text.SimpleDateFormat
 
 object JailCommand : Command("mjail","bungeemanager.jail"){
@@ -23,12 +20,10 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
 
             val pData = ProxyServer.getInstance().getPlayer(args[0])
 
-            val isOnline = pData !=null
-
-            val data = if (isOnline) playerDataDic[pData.uniqueId] else PlayerData.getData(p)
+            val data = playerDataDic[pData.uniqueId]
 
             if (data ==null){
-                sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())
+                sender.sendMessage(*ComponentBuilder("§4オフラインのユーザーです").create())
                 return
             }
 
@@ -70,9 +65,9 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}").create())
             playerDataDic[data.uuid] = data
 
-            if (isOnline){
-                plugin.sendToJail(ProxyServer.getInstance().getPlayer(p))
-            }
+//            if (isOnline){
+//                plugin.sendToJail(ProxyServer.getInstance().getPlayer(p))
+//            }
 
             return
 

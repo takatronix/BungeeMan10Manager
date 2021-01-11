@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.*
@@ -62,13 +63,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
-        discord.chat("**サーバーが起動しました**")
+        discord.chat(":ballot_box_with_check:**サーバーが起動しました**")
 
     }
 
     override fun onDisable() {
         discord.system("サーバーシャットダウンしました")
-        discord.chat("**サーバーがシャットダウンしました**")
+        discord.chat(":octagonal_sign:**サーバーがシャットダウンしました**")
         discord.shutdown()
     }
 
@@ -131,18 +132,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //  Event called as soon as a connection has a ProxiedPlayer and is ready to be connected to a server.
     //  (4)接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
-    @EventHandler fun  onPostLogin(e: PostLoginEvent){
+    @EventHandler
+    fun  onPostLogin(e: PostLoginEvent){
         log("(4) PostLogin ${e.player} locale:${e.player.locale} ${e.player.socketAddress}")
 
-
-        logger.info("**${e.player.name} is logged in**")
-
         val p = e.player
-
-        sendGlobalMessage("§e${p}がMan10Networkにログインしました")
-        discord.admin("**$p is connect**")
-        discord.chat("**${p}がログインしました**")
-
 
         GlobalScope.launch {
             initPlayerData(e.player)
@@ -151,6 +145,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             val data  = PlayerData(p)
 
+            if (data.isBanned()){
+
+                p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
+                return@launch
+            }
+
+            playerDataDic[uuid] = data
             ///////////////////////////////////////////////////
             //      ログインしたユーザーがジェイル民なら転送
             if(data.isJailed()){
@@ -158,10 +159,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
                 warning("${p}はログインしたがジェイルに転送された")
             }
 
-            data.connect()
-
-            playerDataDic[uuid] = data
-
+            sendGlobalMessage("§e${p}がMan10Networkにログインしました")
+            discord.admin("**$p is connected**")
+            discord.chat("**${p}がログインしました**")
         }
     }
 

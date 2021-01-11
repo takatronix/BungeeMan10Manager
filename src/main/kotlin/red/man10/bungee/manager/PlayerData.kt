@@ -3,18 +3,12 @@ package red.man10.bungee.manager
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.db.MySQLManager
-import java.sql.Time
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
-class History{
-    lateinit var time: Time             //  イベントの発生した時刻
-    lateinit var message: String        //  プレイヤーの入力メッセージ
-}
+class PlayerData(private val player: ProxiedPlayer) {
 
-
-class PlayerData(val player: ProxiedPlayer) {
     var uuid: UUID = player.uniqueId
     var mcid: String = player.name
 
@@ -26,11 +20,6 @@ class PlayerData(val player: ProxiedPlayer) {
     private var score:Int = 0                  //      スコア
 
     private val connectData = HashMap<ProxiedPlayer, ConnectionData>() //接続時間
-
-    //      ログインしてからのCommand/Chat履歴
-    private val commandHistory = mutableListOf<History>()
-    private val messageHistory = mutableListOf<History>()
-
 
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
@@ -118,25 +107,6 @@ class PlayerData(val player: ProxiedPlayer) {
         plugin.logger.info("Loaded ${mcid}'s player data ")
     }
 
-    //   チャットとコマンドを履歴に登録する
-    //   条件によって Mute/Jail/Kickを返す
-
-    fun add(commandOrChat:String){
-
-        val pc =History()
-
-        pc.message = commandOrChat
-        pc.time = Time(Date().time)
-
-        if (commandOrChat.indexOf("/") == 0){
-            commandHistory.add(pc)
-        }else {
-            messageHistory.add(pc)
-        }
-
-        return
-    }
-
     fun load(){
 
         val mysql = MySQLManager(plugin,"BungeeManager Loading")
@@ -216,6 +186,11 @@ class PlayerData(val player: ProxiedPlayer) {
 
     }
 
+    //mysql datetime を保存するやつ
+    fun dateToDatetime(date: Date?):String{
+        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
+    }
+
 
     class ConnectionData{
 
@@ -237,7 +212,7 @@ class PlayerData(val player: ProxiedPlayer) {
         //mcidからuuidを取得する
         fun getUUID(mcid:String):UUID?{
 
-            var uuid = plugin.proxy.getPlayer(mcid).uniqueId
+            var uuid = plugin.proxy.getPlayer(mcid)?.uniqueId
 
             if (uuid ==null){
 
@@ -258,15 +233,8 @@ class PlayerData(val player: ProxiedPlayer) {
         }
 
         //プレイヤー名からユーザーデータを取り出す
-        fun getData(mcid:String): PlayerData? {
+        fun get(mcid:String): PlayerData? {
             return Man10BungeePlugin.playerDataDic[getUUID(mcid)?:return null]
         }
-
-        //mysql datetime を保存するやつ
-        fun dateToDatetime(date: Date?):String{
-            return SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
-        }
-
     }
-
 }

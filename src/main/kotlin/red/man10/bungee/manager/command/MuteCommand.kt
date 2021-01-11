@@ -5,8 +5,6 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.PlayerData
 import java.text.SimpleDateFormat
 
 object MuteCommand : Command("mmute","bungeemanager.mute"){
@@ -23,12 +21,10 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
 
             val pData = ProxyServer.getInstance().getPlayer(args[0])
 
-            val isOnline = pData !=null
-
-            val data = if (isOnline) Man10BungeePlugin.playerDataDic[pData.uniqueId] else PlayerData.getData(p)
+            val data = Man10BungeePlugin.playerDataDic[pData.uniqueId]
 
             if (data ==null){
-                sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())
+                sender.sendMessage(*ComponentBuilder("§4オフラインのユーザーです").create())
                 return
             }
 

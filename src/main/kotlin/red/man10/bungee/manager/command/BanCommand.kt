@@ -4,9 +4,8 @@ import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
-import red.man10.bungee.manager.Man10BungeePlugin
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.PlayerData
 import java.text.SimpleDateFormat
 
 object BanCommand : Command("mban","bungeemanager.ban"){
@@ -23,12 +22,10 @@ object BanCommand : Command("mban","bungeemanager.ban"){
 
             val pData = ProxyServer.getInstance().getPlayer(args[0])
 
-            val isOnline = pData !=null
-
-            val data = if (isOnline) Man10BungeePlugin.playerDataDic[pData.uniqueId] else PlayerData.getData(p)
+            val data = playerDataDic[pData.uniqueId]
 
             if (data ==null){
-                sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())
+                sender.sendMessage(*ComponentBuilder("§4オフラインのユーザーです").create())
                 return
             }
 
@@ -62,13 +59,13 @@ object BanCommand : Command("mban","bungeemanager.ban"){
 
             if (!data.isBanned()){
                 ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p}はBAN解除されました").create())
-                Man10BungeePlugin.playerDataDic[data.uuid] = data
+                playerDataDic[data.uuid] = data
                 return
             }
 
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p}は「${args[2]}」の理由により、BANされました！").create())
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.banUntil)}").create())
-            Man10BungeePlugin.playerDataDic[data.uuid] = data
+            playerDataDic[data.uuid] = data
 
 
             return
