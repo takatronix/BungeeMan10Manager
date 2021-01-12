@@ -67,6 +67,8 @@ object BanCommand : Command("mban","bungeemanager.ban"){
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.banUntil)}").create())
             playerDataDic[data.uuid] = data
 
+            pData.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
+
 
             return
 
