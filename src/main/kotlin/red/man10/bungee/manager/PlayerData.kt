@@ -80,6 +80,7 @@ class PlayerData(private val player: ProxiedPlayer) {
         val time = calender.time
 
         if (time.time<Date().time){
+            print("null")
             return null
         }
 
@@ -140,21 +141,21 @@ class PlayerData(private val player: ProxiedPlayer) {
 
         MySQLManager.executeQueue("UPDATE player_data SET " +
                 "mcid='$mcid'," +
-                "freeze_until='${dateToDatetime(freezeUntil)}'," +
-                "mute_until='${dateToDatetime(muteUntil)}'," +
-                "jail_until='${dateToDatetime(jailUntil)}'," +
-                "ban_until='${dateToDatetime(banUntil)}'," +
+                "freeze_until=${dateToDatetime(freezeUntil)}," +
+                "mute_until=${dateToDatetime(muteUntil)}," +
+                "jail_until=${dateToDatetime(jailUntil)}," +
+                "ban_until=${dateToDatetime(banUntil)}," +
                 "score=$score " +
                 "where uuid='${uuid}';")
 
     }
 
     fun saveCommand(command:String){
-        MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date) VALUES ('$uuid', '$mcid', '$command', '${dateToDatetime(Date())}');")
+        MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date) VALUES ('$uuid', '$mcid', '$command', ${dateToDatetime(Date())});")
     }
 
     fun saveMessage(message:String){
-        MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', '${dateToDatetime(Date())}');")
+        MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
     }
 
     fun connect(){
@@ -187,8 +188,8 @@ class PlayerData(private val player: ProxiedPlayer) {
     }
 
     //mysql datetime を保存するやつ
-    fun dateToDatetime(date: Date?):String{
-        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
+    fun dateToDatetime(date: Date?): String? {
+        return "'${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date?:return null)}'"
     }
 
 

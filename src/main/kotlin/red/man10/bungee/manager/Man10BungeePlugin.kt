@@ -40,7 +40,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     var jailServerName: String? = null
 
     //      オンラインのプレイヤーの情報
-    var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
     var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
     var discord = DiscordBot()
@@ -134,30 +133,31 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     //  (4)接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
     @EventHandler
     fun  onPostLogin(e: PostLoginEvent){
-        log("(4) PostLogin ${e.player} locale:${e.player.locale} ${e.player.socketAddress}")
+//        log("(4) PostLogin ${e.player} locale:${e.player.locale} ${e.player.socketAddress}")
 
         val p = e.player
 
         GlobalScope.launch {
-            initPlayerData(e.player)
 
             val uuid = p.uniqueId
 
             val data  = PlayerData(p)
 
+            //Banされてたら切断する
             if (data.isBanned()){
 
                 p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
                 return@launch
             }
 
-            playerDataDic[uuid] = data
-            ///////////////////////////////////////////////////
             //      ログインしたユーザーがジェイル民なら転送
             if(data.isJailed()){
                 sendToJail(p)
                 warning("${p}はログインしたがジェイルに転送された")
             }
+
+            playerDataDic[uuid] = data
+
 
             sendGlobalMessage("§e${p}がMan10Networkにログインしました")
             discord.admin("**$p is connected**")
@@ -200,7 +200,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //   ミュートされている場合チャット＆コマンドも禁止
         if(data.isMuted()){
             warning("[Muted] <${e.sender}> ($chatMessage)")
-            sendMessage(data.uuid,"§eYou are muted!!")
+            sendMessage(data.uuid,"§eあなたはミュートされています!!")
             e.isCancelled = true
             return
         }
@@ -210,7 +210,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (data.isJailed()){
             warning("[Jailed] <${e.sender}> ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
-                sendMessage(data.uuid,"§eYou are jailed!!")
+                sendMessage(data.uuid,"§eあなたはJailされています!!")
                 e.isCancelled = true
                 return
             }
@@ -222,7 +222,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (data.isFrozen()){
             warning("[Frozen] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
-                sendMessage(data.uuid,"§eYou are frozen!!")
+                sendMessage(data.uuid,"§eあなたはフリーズされています!!")
                 e.isCancelled = true
                 return
             }
@@ -356,10 +356,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     private fun removeColorCode(msg: String?): String? {
         return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg))
-    }
-
-    private fun initPlayerData(p:ProxiedPlayer){
-        playerDataDic[p.uniqueId] = PlayerData(p)
     }
 
     override fun onDiscordReadyEvent(event: ReadyEvent){
