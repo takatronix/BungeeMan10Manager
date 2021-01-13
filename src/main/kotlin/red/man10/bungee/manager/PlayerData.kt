@@ -23,25 +23,21 @@ class PlayerData(private val player: ProxiedPlayer) {
 
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
-        if (Date().after(freezeUntil))return false
 
         return true
     }
     fun isMuted() : Boolean{
         if(muteUntil == null)return false
-        if (Date().after(muteUntil))return false
 
         return true
     }
     fun isJailed() : Boolean{
         if(jailUntil == null)return false
-        if (Date().after(jailUntil))return false
 
         return true
     }
     fun isBanned() : Boolean{
         if(banUntil == null)return false
-        if (Date().after(banUntil))return false
 
         return true
     }
@@ -84,7 +80,6 @@ class PlayerData(private val player: ProxiedPlayer) {
         val time = calender.time
 
         if (time.time<Date().time){
-            print("null")
             return null
         }
 
@@ -108,6 +103,15 @@ class PlayerData(private val player: ProxiedPlayer) {
 
     init {
         load()
+
+        val now = Date()
+
+        if (jailUntil!=null && now>jailUntil)jailUntil = null
+        if (muteUntil!=null && now>muteUntil)muteUntil = null
+        if (banUntil !=null && now>banUntil)banUntil = null
+        if (freezeUntil != null && now>freezeUntil)freezeUntil = null
+
+        save()
 
         plugin.logger.info("Loaded ${mcid}'s player data ")
     }

@@ -47,6 +47,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
                 'd' ->data.addJailTime(0,0,time)
                 'h' ->data.addJailTime(0,time,0)
                 'm' ->data.addJailTime(time,0,0)
+                'k' ->data.addJailTime(0,0,12600)
 
                 else -> {
                     sender.sendMessage(*ComponentBuilder("§c§l時間の指定方法が不適切です").create())
@@ -63,6 +64,9 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
 
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${p}は「${args[2]}」の理由により、Jailされました！").create())
             ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}").create())
+            if (unit == 'k'){
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§c1050年地下行きっ・・・・・・・・！").create())
+            }
             playerDataDic[data.uuid] = data
 
 //            if (isOnline){
@@ -73,7 +77,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
 
         }
 
-        sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> <期間+(d/h/m)> <Jail理由>").create())
+        sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> <期間+(d/h/m/0k)> <Jail理由>").create())
         sender.sendMessage(*ComponentBuilder("§d§l期間をマイナスにすると期間が縮みます").create())
 
     }
