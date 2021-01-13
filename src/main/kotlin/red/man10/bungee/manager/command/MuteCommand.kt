@@ -62,7 +62,7 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
                 return
             }
 
-
+            sender.sendMessage(*ComponentBuilder("§c§l${args[2]}をミュートしました").create())
             ProxyServer.getInstance().getPlayer(p)!!.sendMessage(*ComponentBuilder("§c§lあなたは「${args[2]}」の理由により、ミュートされました！").create())
             ProxyServer.getInstance().getPlayer(p)!!.sendMessage(*ComponentBuilder("§c§l解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.muteUntil)}").create())
             Man10BungeePlugin.playerDataDic[data.uuid] = data

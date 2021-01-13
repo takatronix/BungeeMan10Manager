@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import java.text.SimpleDateFormat
 
 object JailCommand : Command("mjail","bungeemanager.jail"){
@@ -69,9 +70,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
             }
             playerDataDic[data.uuid] = data
 
-//            if (isOnline){
-//                plugin.sendToJail(ProxyServer.getInstance().getPlayer(p))
-//            }
+            plugin.sendToJail(pData)
 
             return
 

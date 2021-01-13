@@ -102,7 +102,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val config = ConfigFile(this).getConfig()
         try {
             this.enableJapanizer = config?.getBoolean("japanizer")
-            this.jailServerName = config?.getString("jail.server")
+            this.jailServerName = config?.getString("jail.server","jail")
             ////////////////////////////////////////////
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
