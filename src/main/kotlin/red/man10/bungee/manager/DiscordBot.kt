@@ -112,7 +112,7 @@ class DiscordBot() : ListenerAdapter() {
 
         if (channel.idLong != chatChannelID)return
 
-        val text = if (message.contentDisplay.length >=256) "※文章量が多いため省略されました" else message.contentDisplay
+        val text = message.contentDisplay
 
         val outText = "§f[§3@Discord§f]${event.member?.nickname?:user.name}§b:§f$text"
         plugin!!.sendGlobalMessage(outText)
