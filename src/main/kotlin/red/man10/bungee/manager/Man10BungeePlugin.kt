@@ -229,14 +229,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
-        //////////////////////////////////////////////////////
-        //     同一サーバにいないプレイヤーにチャットを送る
-        if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand)){
-            for (player in ProxyServer.getInstance().players) {
-                if(player.server.info.name != p.server.info.name){
-                    sendMessage(player.uniqueId,chatMessage)
-                }
-            }
+        //////////////////////////////////////////////////////////////
+        //     同一サーバにいないプレイヤーにチャットを送る (ユーザーがJailじゃなかった場合)
+        if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed()){
+            sendGlobalMessage(chatMessage)
         }
 
         //////////////////////////////////////////////////////
