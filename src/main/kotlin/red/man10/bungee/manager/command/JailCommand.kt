@@ -48,7 +48,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
                 'd' ->data.addJailTime(0,0,time)
                 'h' ->data.addJailTime(0,time,0)
                 'm' ->data.addJailTime(time,0,0)
-                'k' ->data.addJailTime(0,0,12600)
+                'k' ->data.addJailTime(0,0,278250)
 
                 else -> {
                     sender.sendMessage(*ComponentBuilder("§c§l時間の指定方法が不適切です").create())
