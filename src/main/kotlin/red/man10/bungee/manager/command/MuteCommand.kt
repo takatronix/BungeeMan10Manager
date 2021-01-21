@@ -20,11 +20,12 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
 
             val pData = ProxyServer.getInstance().getPlayer(args[0])
 
-            val data = playerDataDic[pData.uniqueId]
+            if (pData != null){
+                val data = playerDataDic[pData.uniqueId]!!
 
-            if (data !=null){
-                punishment(data,args,sender)
+                BanCommand.punishment(data, args, sender)
                 return
+
             }
 
             val pair = PlayerData.get(args[0])
