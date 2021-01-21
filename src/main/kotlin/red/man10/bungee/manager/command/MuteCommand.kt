@@ -43,12 +43,20 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
 
         }
 
-        sender.sendMessage(*ComponentBuilder("§d§l/mmute <mcid> <期間+(d/h/m)> <ミュート理由>").create())
+        sender.sendMessage(*ComponentBuilder("§d§l/mmute <mcid> <期間+(d/h/m/reset(解除))> <ミュート理由>").create())
         sender.sendMessage(*ComponentBuilder("§d§l期間をマイナスにすると期間が縮みます").create())
 
     }
 
     fun punishment(data:PlayerData,args: Array<out String>,sender: CommandSender){
+
+        if (args[1] == "reset"){
+
+            data.resetMute()
+            playerDataDic[data.uuid] = data
+            ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${data.mcid}はミュート解除されました").create())
+            return
+        }
 
         val unit = args[1][args[1].length - 1]
 

@@ -43,12 +43,21 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
 
         }
 
-        sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> <期間+(d/h/m/0k)> <Jail理由>").create())
+        sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> <期間+(d/h/m/0k/reset(解除))> <Jail理由>").create())
         sender.sendMessage(*ComponentBuilder("§d§l期間をマイナスにすると期間が縮みます").create())
 
     }
 
     fun punishment(data:PlayerData,args: Array<out String>,sender: CommandSender){
+
+        if (args[1] == "reset"){
+
+            data.resetJail()
+            playerDataDic[data.uuid] = data
+            ProxyServer.getInstance().broadcast(*ComponentBuilder("§c§l${data.mcid}は釈放されました").create())
+            return
+        }
+
 
         val unit = args[1][args[1].length - 1]
 

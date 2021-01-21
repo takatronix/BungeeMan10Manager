@@ -65,6 +65,20 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     }
 
+    fun resetMute(){
+        muteUntil = null
+        save()
+    }
+
+    fun resetBan(){
+        banUntil = null
+        save()
+    }
+
+    fun resetJail(){
+        jailUntil = null
+        save()
+    }
 
     fun addDate(date:Date?,min:Int,hour:Int,day:Int): Date? {
 
