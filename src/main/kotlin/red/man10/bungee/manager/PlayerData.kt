@@ -7,10 +7,9 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PlayerData(private val player: ProxiedPlayer) {
+class PlayerData(val uuid: UUID,val mcid: String) {
 
-    var uuid: UUID = player.uniqueId
-    var mcid: String = player.name
+    constructor(p:ProxiedPlayer) : this(p.uniqueId,p.name)
 
     var freezeUntil: Date? = null      //      拘束期限
     var muteUntil: Date? = null        //      ミュート期限
@@ -19,7 +18,6 @@ class PlayerData(private val player: ProxiedPlayer) {
 
     private var score:Int = 0                  //      スコア
 
-    private val connectData = HashMap<ProxiedPlayer, ConnectionData>() //接続時間
 
     fun isFrozen() : Boolean{
         if(freezeUntil == null)return false
@@ -171,51 +169,10 @@ class PlayerData(private val player: ProxiedPlayer) {
         MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
     }
 
-    fun connect(){
-
-        val data = ConnectionData()
-
-        data.server = player.server.info.name?:""
-        data.connect = Timestamp(Date().time)
-
-        connectData[player] = data
-    }
-
-    fun disconnect(){
-
-        val data = connectData[player]?:return
-
-        data.disconnect = Timestamp(Date().time)
-
-        MySQLManager.executeQueue("INSERT INTO connection_log " +
-                "(ip,mcid, uuid, server, connected_time, disconnected_time, connection_seconds) " +
-                "VALUES (" +
-                "'${player.socketAddress}'," +
-                "'${player.name}', " +
-                "'${player.uniqueId}'," +
-                "'${data.server}', " +
-                "'${data.connect}', " +
-                "'${data.disconnect}', " +
-                "'${data.getConnectionSeconds()}');")
-
-    }
 
     //mysql datetime を保存するやつ
     fun dateToDatetime(date: Date?): String? {
         return "'${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date?:return null)}'"
-    }
-
-
-    class ConnectionData{
-
-        var server = ""
-        lateinit var connect : Timestamp
-        lateinit var disconnect : Timestamp
-
-        fun getConnectionSeconds(): Long {
-            return (disconnect.time-connect.time)*1000
-        }
-
     }
 
 
@@ -246,9 +203,10 @@ class PlayerData(private val player: ProxiedPlayer) {
             return uuid
         }
 
-        //プレイヤー名からユーザーデータを取り出す
-        fun get(mcid:String): PlayerData? {
-            return Man10BungeePlugin.playerDataDic[getUUID(mcid)?:return null]
+        //プレイヤー名からユーザーデータをつくる
+        fun get(mcid:String): Pair<PlayerData,UUID>? {
+            val uuid = getUUID(mcid)?:return null
+            return Pair(PlayerData(uuid,mcid),uuid)
         }
     }
 }

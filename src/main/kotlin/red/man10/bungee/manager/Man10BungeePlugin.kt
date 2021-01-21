@@ -265,28 +265,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         sendGlobalMessage("§e${p}がMan10Networkからログアウトしました")
         discord.admin("**$p is disconnected**")
         discord.chat("**${p}がログアウトしました**")
-        playerDataDic[p.uniqueId]!!.disconnect()
-    }
-
-    //      Event called to represent a player first making their presence and username known.
-    //      (2)プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
-//    @EventHandler
-//    fun onPlayerHandshake(e: PlayerHandshakeEvent) {
-//        log("(2)PlayerHandshakeEvent connection:${e.connection} handshake:${e.handshake}")
-//    }
-
-    //  Event called when a plugin message is sent to the client or server.
-    //  プラグインメッセージがクライアントまたはサーバに送信されたときに呼び出されるイベント
-    @EventHandler
-    fun onPluginMessage(e: PluginMessageEvent) {
- //       logger.info("PluginMessageEvent tag:${e.tag} sender:${e.sender}")
-    }
-
-    //  Called when the proxy is pinged with packet 0xFE from the server list.
-    //  プロキシがサーバリストからパケット0xFEでpingされたときに呼び出される。
-    @EventHandler
-    fun onProxyPing(e: ProxyPingEvent) {
-   //     logger.info("ProxyPingEvent connection:${e.connection} response:${e.response}")
     }
 
     //  Called when somebody reloads BungeeCord
@@ -364,18 +342,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     }
 
     override fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent) {
-//        println("chat event")
-//
-//        val message = event.message
-//        val user = message.author
-//        if (user.isBot) return
-//
-//        val channel= message.channel
-//
-//        if (channel.idLong != discord.chatChannelID)return
-//
-//        val text = "§b§l${user.name}@discord §f&l${message.contentDisplay}"
-//        sendGlobalMessage(text)
+
     }
 
 }
