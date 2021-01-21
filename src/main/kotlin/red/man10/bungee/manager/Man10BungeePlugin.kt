@@ -15,10 +15,7 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
-import red.man10.bungee.manager.command.BanCommand
-import red.man10.bungee.manager.command.FreezeCommand
-import red.man10.bungee.manager.command.JailCommand
-import red.man10.bungee.manager.command.MuteCommand
+import red.man10.bungee.manager.command.*
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -59,6 +56,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, MuteCommand)
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
+        proxy.pluginManager.registerCommand(this,ScoreCommand)
 
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 

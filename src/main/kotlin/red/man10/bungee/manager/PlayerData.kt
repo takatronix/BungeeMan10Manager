@@ -91,6 +91,11 @@ class PlayerData(private val player: ProxiedPlayer) {
         setScore(score)
     }
 
+    fun takeScore(int:Int){
+        score -= int
+        setScore(score)
+    }
+
     fun setScore(int:Int){
         score = int
         save()
