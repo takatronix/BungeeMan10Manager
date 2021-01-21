@@ -3,7 +3,6 @@ package red.man10.bungee.manager
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.db.MySQLManager
-import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -98,13 +97,15 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         return time
     }
 
-    fun addScore(int: Int){
+    fun addScore(int: Int,reason:String,issuer: String){
         score += int
+        saveScore(reason,issuer,int)
         setScore(score)
     }
 
-    fun takeScore(int:Int){
+    fun takeScore(int:Int,reason:String,issuer: String){
         score -= int
+        saveScore(reason,issuer,int)
         setScore(score)
     }
 
@@ -181,6 +182,11 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     fun saveMessage(message:String){
         MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
+    }
+
+    fun saveScore(reason: String, issuer:String, score:Int){
+        MySQLManager.executeQueue("INSERT INTO score_log (mcid, uuid, score, note, issuer, date) " +
+                "VALUES ('$mcid', '$uuid', $score, '$reason', '$issuer', '${dateToDatetime(Date())}')")
     }
 
 

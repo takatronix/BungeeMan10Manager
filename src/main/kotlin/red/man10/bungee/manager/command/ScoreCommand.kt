@@ -14,8 +14,8 @@ object ScoreCommand : Command("mscore","bungeemanager.score.op"){
 
         if (args.isNullOrEmpty()){
 
-            sender.sendMessage(*ComponentBuilder("§a/mscore give <player> <score>").create())
-            sender.sendMessage(*ComponentBuilder("§a/mscore take <player> <score>").create())
+            sender.sendMessage(*ComponentBuilder("§a/mscore give <player> <score> <reason>").create())
+            sender.sendMessage(*ComponentBuilder("§a/mscore take <player> <score> <reason>").create())
             sender.sendMessage(*ComponentBuilder("§a/mscore set <player> <score>").create())
             sender.sendMessage(*ComponentBuilder("§a/mscore show <player>").create())
 
@@ -37,14 +37,13 @@ object ScoreCommand : Command("mscore","bungeemanager.score.op"){
 
             "give" ->{
 
-                data.addScore(args[2].toInt())
+                data.addScore(args[2].toInt(),args[3],sender.name)
 
             }
 
             "take" ->{
 
-                //マイナス値
-                data.takeScore(args[2].toInt())
+                data.takeScore(args[2].toInt(),args[3],sender.name)
 
             }
 
