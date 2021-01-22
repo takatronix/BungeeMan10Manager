@@ -324,7 +324,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun sendGlobalMessage(text:String){
         log("[Global]$text")
 
-        val outText = if (text.length>128) "※省略されました" else text
+        val outText = if (text.length>256) "※省略されました" else text
 
         for (player in ProxyServer.getInstance().players) {
             player.sendMessage(TextComponent(outText))
