@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
+import red.man10.bungee.manager.PlayerData
 
 object ScoreCommand : Command("mscore","bungeemanager.score.op"){
 
@@ -25,12 +26,29 @@ object ScoreCommand : Command("mscore","bungeemanager.score.op"){
 
         val pData = ProxyServer.getInstance().getPlayer(args[1])
 
-        val data = Man10BungeePlugin.playerDataDic[pData.uniqueId]
+        if (pData != null){
+            val data = Man10BungeePlugin.playerDataDic[pData.uniqueId]!!
 
-        if (data == null){
-            sender.sendMessage(*ComponentBuilder("§4オフラインのユーザーです").create())
+            setScore(data,sender,args)
+            return
+
+        }
+
+        val pair = PlayerData.get(args[0])
+
+        if (pair ==null){
+            sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())
             return
         }
+
+        Thread{
+            setScore(pair.first,sender,args)
+        }.start()
+
+
+    }
+
+    fun setScore(data:PlayerData,sender:CommandSender,args: Array<out String>){
 
         when(args[0]){
 
@@ -59,7 +77,7 @@ object ScoreCommand : Command("mscore","bungeemanager.score.op"){
 
         sender.sendMessage(*ComponentBuilder("§a${data.mcid}のスコア:${data.getScore()}").create())
 
-        Man10BungeePlugin.playerDataDic[pData.uniqueId] = data
+        Man10BungeePlugin.playerDataDic[data.uuid] = data
 
         return
 
