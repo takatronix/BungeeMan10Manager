@@ -58,6 +58,16 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, FreezeCommand)
         proxy.pluginManager.registerCommand(this,ScoreCommand)
 
+        //tell commandを置き換える
+        for (command in arrayOf(
+            "tell", "msg", "message", "m", "w", "t")) {
+            proxy.pluginManager.registerCommand(this, TellCommand(this, command))
+        }
+        //reply commandを置き換える
+        for (command in arrayOf("reply", "r")) {
+            proxy.pluginManager.registerCommand(this, ReplyCommand(this, command))
+        }
+
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
         discord.chat(":ballot_box_with_check:**サーバーが起動しました**")
