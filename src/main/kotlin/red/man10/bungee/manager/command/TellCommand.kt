@@ -11,49 +11,33 @@ import red.man10.bungee.manager.Man10BungeePlugin
 import java.util.*
 
 
-open class TellCommand(plugin: Man10BungeePlugin, name: String) : Command(name) {
-    var viewlist: ArrayList<UUID>? = ArrayList()
-    open val plugin: Man10BungeePlugin
-    var history = HashMap<String, String>()
+open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Command(name) {
 
-    init {
-        this.plugin = plugin
-    }
 
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
 
+        if (sender == null)return
+
         // 引数が足らないので、Usageを表示して終了する。
         if (args?.size!! <= 1) {
-            sendMessage(sender!!, "§c/$name <player> <message> : Send private message.")
+            sendMessage(sender, "§c/$name <player> <message> : プレイベートメッセージを送ります。 Send private message.")
             return
         }
 
         // 自分自身には送信できない。
-        if (args[0] == sender?.name) {
-            sendMessage(
-                sender, """
-    §c自分自身にはプライベートメッセージを送信することができません。
-    §cCannot send a private message to myself.""${'"'}
-    """.trimIndent()
-            )
+        if (args[0] == sender.name) {
+            sendMessage(sender, "§c自分自身にはプライベートメッセージを送信することができません。" +
+                    "Cannot send a private message to myself.")
             return
         }
 
         // 送信先プレイヤーの取得。取得できないならエラーを表示して終了する。
-
-        // 送信先プレイヤーの取得。取得できないならエラーを表示して終了する。
-        val reciever = plugin.proxy.getPlayer(args[0])
-        if (reciever == null) {
-            sendMessage(
-                sender!!, """
-     §cメッセージ送信先が見つかりません。
-     §cThe destination for the message was not found.
-     """.trimIndent()
-            )
+        val receiver = plugin.proxy.getPlayer(args[0])
+        if (receiver == null) {
+            sendMessage(sender, "§cメッセージ送信先が見つかりません。" +
+                    "§cThe destination for the message was not found.")
             return
         }
-
-        // 送信メッセージの作成
 
         // 送信メッセージの作成
         val str = StringBuilder()
@@ -65,7 +49,7 @@ open class TellCommand(plugin: Man10BungeePlugin, name: String) : Command(name) 
         // 送信
 
         // 送信
-        sendPrivateMessage(sender!!, reciever, message)
+        sendPrivateMessage(sender, receiver, message)
     }
 
     var dic = HashMap<String, String>()
@@ -103,22 +87,30 @@ open class TellCommand(plugin: Man10BungeePlugin, name: String) : Command(name) 
     }
 
 
-    /**
-     * 指定した対象にメッセージを送信する
-     *
-     * @param reciever 送信先
-     * @param message  メッセージ
-     */
-    fun sendMessage(reciever: CommandSender, message: String?) {
-        if (message == null) return
-        reciever.sendMessage(*ComponentBuilder(message).create())
+
+    companion object{
+
+        var history = HashMap<String, String>()
+
+        /**
+         * 指定した対象にメッセージを送信する
+         *
+         * @param receiver 送信先
+         * @param message  メッセージ
+         */
+        fun sendMessage(receiver: CommandSender, message: String?) {
+            if (message == null) return
+            receiver.sendMessage(*ComponentBuilder(message).create())
+        }
+
+        fun putHistory(receiver: String?, sender: String?) {
+            history[receiver!!] = sender!!
+        }
+
+        fun getHistory(receiver: String?): String? {
+            return history[receiver]
+        }
+
     }
 
-    fun putHistory(reciever: String?, sender: String?) {
-        history[reciever!!] = sender!!
-    }
-
-    fun getHistory(reciever: String?): String? {
-        return history[reciever]
-    }
 }
