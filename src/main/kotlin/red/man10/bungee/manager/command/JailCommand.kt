@@ -23,7 +23,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
             if (pData != null){
                 val data = playerDataDic[pData.uniqueId]!!
 
-                BanCommand.punishment(data, args, sender)
+                punishment(data, args, sender)
                 return
 
             }
