@@ -34,15 +34,24 @@ object UserScoreCommand :Command("score","bungeemanager.score.user"){
                 val p = ProxyServer.getInstance().getPlayer(args[1])
 
                 if (p == null){
-                    sender.sendMessage(*ComponentBuilder("相手がオフラインです").create())
+                    sender.sendMessage(*ComponentBuilder("§c${p?.name}はオフラインです。").create())
                     return
                 }
 
                 if (sender.name == p.name){
-                    sender.sendMessage(*ComponentBuilder("§c自分にはThankできません").create())
+                    sender.sendMessage(*ComponentBuilder("§c自分自身に感謝できません。").create())
                     return
                 }
 
+                data.addScore(10, "${p.name}に感謝をした", data.mcid)
+
+                playerDataDic[p.uniqueId]!!.saveScore("${sender.name}から感謝された",sender.name,0)
+
+                playerDataDic[data.uuid] = data
+
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§a${p.name}さんは${sender.name}さんに感謝され、10ポイント獲得しました。").create())
+
+                return
             }
 
             "fuck" ->{
@@ -50,17 +59,17 @@ object UserScoreCommand :Command("score","bungeemanager.score.user"){
                 val p = ProxyServer.getInstance().getPlayer(args[1])
 
                 if (p == null){
-
-                    sender.sendMessage(*ComponentBuilder("相手がオフラインです").create())
-
+                    sender.sendMessage(*ComponentBuilder("§c${p?.name}はオフラインです。").create())
                     return
                 }
 
-                data.takeScore(20,"相手にFuckといった",data.mcid)
+                data.takeScore(20,"${p.name}にFuckといった",data.mcid)
 
-                playerDataDic[p.uniqueId]!!.saveScore("相手からFuckされた",sender.name,0)
+                playerDataDic[p.uniqueId]!!.saveScore("${sender.name}からFuckされた",sender.name,0)
 
                 playerDataDic[data.uuid] = data
+
+                ProxyServer.getInstance().broadcast(*ComponentBuilder("§a${sender.name}さんは${p.name}さんにF**Kと言い、20ポイント失いました。").create())
 
                 return
             }
