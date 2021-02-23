@@ -132,10 +132,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //  Event called to represent a player first making their presence and username known.
     //  (3)プレイヤーの存在とユーザー名を最初に知ってもらうために呼び出されたイベント。
-    @EventHandler
-    fun onPreLogin(e: PreLoginEvent) {
-        log("(3)PreLoginEvent connection:${e.connection} ${e.connection.name} uuid:${e.connection.uniqueId}")
-    }
+//    @EventHandler
+//    fun onPreLogin(e: PreLoginEvent) {
+////        log("(3)PreLoginEvent connection:${e.connection} ${e.connection.name} uuid:${e.connection.uniqueId}")
+//    }
 
     //  Event called as soon as a connection has a ProxiedPlayer and is ready to be connected to a server.
     //  (4)接続に ProxiedPlayer があり、サーバーに接続できる状態になるとすぐに呼び出されるイベント。
