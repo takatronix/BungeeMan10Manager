@@ -17,3 +17,8 @@ MySQL:
   Port: 3306
   SSL: true
   Database: man10_system
+
+BlockAutoMessages:
+  - "Connected with MineChat" # MineChat
+  - "I joined using ChatCraft from my Android device! Download it for free!" # Android ChatCraft
+  - "I joined using ChatCraft from my iOS device! Download it for free!" # iOS ChatCraft
