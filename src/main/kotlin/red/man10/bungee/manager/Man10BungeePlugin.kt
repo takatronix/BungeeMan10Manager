@@ -158,18 +158,17 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
                 return@launch
             }
 
+            sendGlobalMessage("§e${p}がMan10Networkにログインしました")
+            discord.admin("**$p is connected**")
+            discord.chat("**${p}がログインしました**")
+
+            playerDataDic[uuid] = data
+
             //      ログインしたユーザーがジェイル民なら転送
             if(data.isJailed()){
                 sendToJail(p)
                 warning("${p}はログインしたがジェイルに転送された")
             }
-
-            playerDataDic[uuid] = data
-
-
-            sendGlobalMessage("§e${p}がMan10Networkにログインしました")
-            discord.admin("**$p is connected**")
-            discord.chat("**${p}がログインしました**")
         }
     }
 
@@ -221,6 +220,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
                 sendMessage(data.uuid,"§eあなたはJailされています!!")
                 e.isCancelled = true
                 return
+            }
+
+            if (p.server.info.name != jailServerName){
+                sendToJail(p)
             }
             return
         }
