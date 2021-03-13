@@ -36,6 +36,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     //region 設定
     var jailServerName: String? = null
 
+    // 自動メッセージ
+    var blockAutoMessages: MutableList<String>? = mutableListOf("うんこ")
+
     //      オンラインのプレイヤーの情報
     var dic = HashMap<String?, String?> ()
     var enableJapanizer:Boolean? = false
@@ -111,6 +114,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         try {
             this.enableJapanizer = config?.getBoolean("japanizer")
             this.jailServerName = config?.getString("jail.server","jail")
+
+            this.blockAutoMessages = config?.getStringList("BlockAutoMessages")
             ////////////////////////////////////////////
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
@@ -188,9 +193,20 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
+        var message = removeColorCode(e.message)
+
+        ////////////////////////////////////////////////////
+        //      チャットアプリによる自動メッセージSPAM防止
+        if (blockAutoMessages != null) {
+            if (blockAutoMessages!!.contains(message)) {
+                e.isCancelled = true
+                sendMessage(data.uuid, "§cチャットアプリによる自動メッセージをブロックしました!!")
+                return
+            }
+        }
+
         ////////////////////////////////////////////////////
         //      メッセージ整形:ローマ字
-        var message = removeColorCode(e.message)
         if(enableJapanizer!!){
             val jmsg = Japanizer.japanize(message, JapanizeType.GOOGLE_IME ,dic)
             if(jmsg != "") message += " §6($jmsg)"
