@@ -2,9 +2,10 @@ package red.man10.bungee.manager.command
 
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 
 object UserScoreCommand :Command("score","bungeemanager.score.user"){
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
@@ -15,7 +16,7 @@ object UserScoreCommand :Command("score","bungeemanager.score.user"){
 
         if (args.isNullOrEmpty()){
 
-            sender.sendMessage(*ComponentBuilder("§a§l現在のスコア:${data.getScore()}").create())
+            sendMessage(sender,"§a§l現在のスコア:${data.getScore()}")
 
             return
         }
@@ -23,9 +24,9 @@ object UserScoreCommand :Command("score","bungeemanager.score.user"){
         when(args[0]){
 
             "help" ->{
-                sender.sendMessage(*ComponentBuilder("§a§lスコアコマンド").create())
-                sender.sendMessage(*ComponentBuilder("§a§l/score thank <player> : 相手にThankします").create())
-                sender.sendMessage(*ComponentBuilder("§a§l/score fuck <player> : 相手をなじりたいときに使います").create())
+                sendMessage(sender,"§a§lスコアコマンド")
+                sendMessage(sender,"§a§l/score thank <player> : 相手にThankします")
+                sendMessage(sender,"§a§l/score fuck <player> : 相手をなじりたいときに使います")
                 return
             }
 
@@ -34,22 +35,22 @@ object UserScoreCommand :Command("score","bungeemanager.score.user"){
                 val p = ProxyServer.getInstance().getPlayer(args[1])
 
                 if (p == null){
-                    sender.sendMessage(*ComponentBuilder("§c${p?.name}はオフラインです。").create())
+                    sendMessage(sender,"§c${p?.name}はオフラインです。")
                     return
                 }
 
                 if (sender.name == p.name){
-                    sender.sendMessage(*ComponentBuilder("§c自分自身に感謝できません。").create())
+                    sendMessage(sender,"§c自分自身に感謝できません。")
                     return
                 }
 
-                data.addScore(10, "${p.name}に感謝をした", data.mcid)
+                data.addScore(5, "${p.name}に感謝をした", data.mcid)
 
                 playerDataDic[p.uniqueId]!!.saveScore("${sender.name}から感謝された",sender.name,0)
 
                 playerDataDic[data.uuid] = data
 
-                ProxyServer.getInstance().broadcast(*ComponentBuilder("§a${p.name}さんは${sender.name}さんに感謝され、10ポイント獲得しました。").create())
+                sendGlobalMessage("§a${p.name}さんは${sender.name}さんに§d感謝§aされ、5ポイント獲得しました。")
 
                 return
             }
@@ -59,7 +60,7 @@ object UserScoreCommand :Command("score","bungeemanager.score.user"){
                 val p = ProxyServer.getInstance().getPlayer(args[1])
 
                 if (p == null){
-                    sender.sendMessage(*ComponentBuilder("§c${p?.name}はオフラインです。").create())
+                    sendMessage(sender,"§c${p?.name}はオフラインです。")
                     return
                 }
 
@@ -69,7 +70,7 @@ object UserScoreCommand :Command("score","bungeemanager.score.user"){
 
                 playerDataDic[data.uuid] = data
 
-                ProxyServer.getInstance().broadcast(*ComponentBuilder("§a${sender.name}さんは${p.name}さんにF**Kと言い、20ポイント失いました。").create())
+                sendGlobalMessage("§c§l${sender.name}さんは${p.name}さんにF**Kと言い、20ポイント失いました。")
 
                 return
             }

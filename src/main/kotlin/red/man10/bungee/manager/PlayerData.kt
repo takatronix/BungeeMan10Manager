@@ -142,7 +142,8 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
         if (rs == null || !rs.next()){
 
-            mysql.execute("INSERT INTO player_data (uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
+            mysql.execute("INSERT INTO player_data " +
+                    "(uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
                     "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
 
             plugin.logger.info("create $mcid's data.")
@@ -177,11 +178,13 @@ class PlayerData(val uuid: UUID,val mcid: String) {
     }
 
     fun saveCommand(command:String){
-        MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date) VALUES ('$uuid', '$mcid', '$command', ${dateToDatetime(Date())});")
+        MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date)" +
+                " VALUES ('$uuid', '$mcid', '$command', ${dateToDatetime(Date())});")
     }
 
     fun saveMessage(message:String){
-        MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date) VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
+        MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date)" +
+                " VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
     }
 
     fun saveScore(reason: String, issuer:String, score:Int){

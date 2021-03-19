@@ -2,6 +2,7 @@ package red.man10.bungee.manager.command
 
 import net.md_5.bungee.api.CommandSender
 import red.man10.bungee.manager.Man10BungeePlugin
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 
 
 class ReplyCommand(override val plugin: Man10BungeePlugin, name: String) : TellCommand(plugin, name) {

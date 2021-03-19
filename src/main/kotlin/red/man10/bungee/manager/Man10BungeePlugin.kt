@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
@@ -31,6 +32,23 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
 
+        fun sendMessage(p:ProxiedPlayer,text: String){
+            p.sendMessage(*ComponentBuilder(text).create())
+        }
+
+        fun sendMessage(c:CommandSender,text: String){
+            c.sendMessage(*ComponentBuilder(text).create())
+        }
+
+        fun sendGlobalMessage(text:String){
+            plugin.log("[Global]$text")
+
+            val outText = if (text.length>256) "※省略されました" else text
+
+            for (player in ProxyServer.getInstance().players) {
+                player.sendMessage(TextComponent(outText))
+            }
+        }
     }
 
     //region 設定
@@ -200,7 +218,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (blockAutoMessages != null) {
             if (blockAutoMessages!!.contains(message)) {
                 e.isCancelled = true
-                sendMessage(data.uuid, "§cチャットアプリによる自動メッセージをブロックしました!!")
+                sendMessage(p, "§cチャットアプリによる自動メッセージをブロックしました!!")
                 return
             }
         }
@@ -223,7 +241,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //   ミュートされている場合チャット＆コマンドも禁止
         if(data.isMuted()){
             warning("[Muted] <${e.sender}> ($chatMessage)")
-            sendMessage(data.uuid,"§eあなたはミュートされています!!")
+            sendMessage(p,"§eあなたはミュートされています!!")
             e.isCancelled = true
             return
         }
@@ -233,7 +251,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (data.isJailed()){
             warning("[Jailed] <${e.sender}> ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
-                sendMessage(data.uuid,"§eあなたはJailされています!!")
+                sendMessage(p,"§eあなたはJailされています!!")
                 e.isCancelled = true
                 return
             }
@@ -249,7 +267,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (data.isFrozen()){
             warning("[Frozen] ($chatMessage)")
             if(e.isProxyCommand  || e.isCommand){
-                sendMessage(data.uuid,"§eあなたはフリーズされています!!")
+                sendMessage(p,"§eあなたはフリーズされています!!")
                 e.isCancelled = true
                 return
             }
@@ -261,7 +279,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed()) {
             for (player in ProxyServer.getInstance().players) {
                 if (player.server.info.name != p.server.info.name) {
-                    sendMessage(player.uniqueId, chatMessage)
+                    sendMessage(player, chatMessage)
                 }
 
             }
@@ -345,22 +363,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     fun onTargeted(e: TargetedEvent) {
         logger.info("TargetedEvent sender:${e.sender} receiver:${e.receiver}")
     }
-
-    fun sendMessage(uuid: UUID ,text:String){
-        ProxyServer.getInstance().getPlayer(uuid).sendMessage(TextComponent(text))
-    }
-
-    fun sendGlobalMessage(text:String){
-        log("[Global]$text")
-
-        val outText = if (text.length>256) "※省略されました" else text
-
-        for (player in ProxyServer.getInstance().players) {
-            player.sendMessage(TextComponent(outText))
-        }
-    }
-
-
 
     private fun removeColorCode(msg: String?): String? {
         return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', msg))

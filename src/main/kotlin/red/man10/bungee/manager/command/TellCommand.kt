@@ -4,10 +4,10 @@ import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
-import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import java.util.*
 
 
@@ -91,17 +91,6 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
     companion object{
 
         var history = HashMap<String, String>()
-
-        /**
-         * 指定した対象にメッセージを送信する
-         *
-         * @param receiver 送信先
-         * @param message  メッセージ
-         */
-        fun sendMessage(receiver: CommandSender, message: String?) {
-            if (message == null) return
-            receiver.sendMessage(*ComponentBuilder(message).create())
-        }
 
         fun putHistory(receiver: String?, sender: String?) {
             history[receiver!!] = sender!!
