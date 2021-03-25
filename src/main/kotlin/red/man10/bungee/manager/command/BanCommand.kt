@@ -8,6 +8,7 @@ import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import red.man10.bungee.manager.PlayerData
+import red.man10.bungee.manager.db.ScoreDatabase
 import java.text.SimpleDateFormat
 
 object BanCommand : Command("mban","bungeemanager.ban"){
@@ -96,7 +97,8 @@ object BanCommand : Command("mban","bungeemanager.ban"){
             return
         }
 
-        sendGlobalMessage("§c§l${data.mcid}は「${args[2]}」の理由により、BANされました！")
+        sendGlobalMessage("§c§l${data.mcid}は「${args[2]}」の理由により、1000ポイント引かれ、BANされました！")
+        ScoreDatabase.giveScore(data.mcid,-1000,"${args[2]}によりBan",sender)
         sendGlobalMessage("§c§l解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.banUntil)}")
         if (unit == 'k'){
             sendGlobalMessage("§c1050年地下行きっ・・・・・・・・！")

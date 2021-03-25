@@ -18,6 +18,7 @@ import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
 import red.man10.bungee.manager.command.*
 import red.man10.bungee.manager.db.MySQLManager
+import red.man10.bungee.manager.db.ScoreDatabase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.HashMap
@@ -180,7 +181,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
                 return@launch
             }
 
-            sendGlobalMessage("§e${p}がMan10Networkにログインしました")
+            sendGlobalMessage("§e${p}がMan10Networkにログインしました スコア:${ScoreDatabase.getScore(p.uniqueId)}ポイント")
             discord.admin("**$p is connected**")
             discord.chat("**${p}がログインしました**")
 

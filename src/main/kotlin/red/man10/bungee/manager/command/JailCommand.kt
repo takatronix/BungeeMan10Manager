@@ -9,6 +9,7 @@ import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import red.man10.bungee.manager.PlayerData
+import red.man10.bungee.manager.db.ScoreDatabase
 import java.text.SimpleDateFormat
 
 object JailCommand : Command("mjail","bungeemanager.jail"){
@@ -97,7 +98,8 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
             return
         }
 
-        sendGlobalMessage("§c§l${data.mcid}は「${args[2]}」の理由により、Jailされました！")
+        sendGlobalMessage("§c§l${data.mcid}は「${args[2]}」の理由により、300ポイント引かれ、Jailされました！")
+        ScoreDatabase.giveScore(data.mcid,-300,"${args[2]}によりJail",sender)
         sendGlobalMessage("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}")
 
         if (unit == 'k'){
