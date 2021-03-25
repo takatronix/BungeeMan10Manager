@@ -115,7 +115,7 @@ class DiscordBot() : ListenerAdapter() {
         val text = message.contentDisplay
 
         val outText = "§f[§3@Discord§f]${event.member?.nickname?:user.name}§b:§f$text"
-        plugin!!.sendGlobalMessage(outText)
+        Man10BungeePlugin.sendGlobalMessage(outText)
     }
 
     override fun onReady(event: ReadyEvent) {
