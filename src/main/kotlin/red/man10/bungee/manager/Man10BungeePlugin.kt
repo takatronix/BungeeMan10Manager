@@ -78,6 +78,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, MuteCommand)
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
+        proxy.pluginManager.registerCommand(this, ReportCommand)
 
         //tell commandを置き換える
         for (command in arrayOf(
@@ -143,6 +144,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.notificationChannelID = config.getLong("Discord.NotificationChannel")
             discord.logChannelID = config.getLong("Discord.LogChannel")
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
+            discord.reportChannelID = config.getLong("Discord.ReportChannel")
             discord.plugin = this
             discord.discordEvent = this
             discord.setup()

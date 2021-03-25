@@ -15,7 +15,7 @@ interface IDiscordEvent{
     fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent)
 }
 
-class DiscordBot() : ListenerAdapter() {
+class DiscordBot : ListenerAdapter() {
 
     var plugin:Man10BungeePlugin? = null
 
@@ -31,12 +31,14 @@ class DiscordBot() : ListenerAdapter() {
     var systemChannelID:Long = 0
     var notificationChannelID:Long = 0
     var adminChannelID:Long = 0
+    var reportChannelID:Long = 0
 
     var chatChannel:TextChannel? = null
     var systemChannel:TextChannel? = null
     var logChannel:TextChannel? = null
     var notificationChannel:TextChannel? = null
     var adminChannel:TextChannel? = null
+    var reportChannel:TextChannel? = null
 
     var discordEvent:IDiscordEvent? = null
 
@@ -60,6 +62,10 @@ class DiscordBot() : ListenerAdapter() {
     //      Admin用
     fun admin(text:String){
         adminChannel?.sendMessage(text)?.queue()
+    }
+    //      Report
+    fun report(text: String){
+        reportChannel?.sendMessage(text)?.queue()
     }
 
     init{
@@ -91,6 +97,7 @@ class DiscordBot() : ListenerAdapter() {
             systemChannel = guild?.getTextChannelById(this.systemChannelID)
             notificationChannel = guild?.getTextChannelById(this.notificationChannelID)
             adminChannel = guild?.getTextChannelById(this.adminChannelID)
+            reportChannel = guild?.getTextChannelById(this.reportChannelID)
 
             } catch (e: LoginException) {
                 e.printStackTrace()
