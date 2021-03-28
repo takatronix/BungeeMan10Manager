@@ -65,6 +65,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     var enableSendMessageToOtherServer = true
     //endregion
 
+    val mhk = Man10Broadcast()
+
     override fun onEnable() { // Plugin startup logic
         log("started")
         loadConfig()
@@ -92,6 +94,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
         discord.chat(":ballot_box_with_check:**サーバーが起動しました**")
+
+        mhk.runMHK()
 
     }
 
@@ -146,6 +150,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.plugin = this
             discord.discordEvent = this
             discord.setup()
+            /////////////////////////////////////////////
+            //      Man10Broadcast initialization
+            mhk.broadcastList = config.getStringList("Broadcast")
         } catch (e: NullPointerException) {
             e.printStackTrace()
             error(e.localizedMessage)
