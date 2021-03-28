@@ -1,8 +1,8 @@
 package red.man10.bungee.manager
 
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.chat.ComponentBuilder
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
 import kotlin.random.Random
 
 class Man10Broadcast {
@@ -17,12 +17,8 @@ class Man10Broadcast {
 
                 val i = Random.nextInt(broadcastList.size + 1)
 
-                sendBroadcast(broadcastList[i])
+                sendGlobalMessage("§7${broadcastList[i]}")
             }
         }
-    }
-
-    fun sendBroadcast(text: String) {
-        ProxyServer.getInstance().broadcast(*ComponentBuilder("${prefix}§7${text}").create())
     }
 }
