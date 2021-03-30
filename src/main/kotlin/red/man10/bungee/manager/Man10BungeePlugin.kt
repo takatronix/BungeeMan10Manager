@@ -33,6 +33,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         var playerDataDic = ConcurrentHashMap<UUID,PlayerData>()
 
+        val lastConnectTime = HashMap<UUID,Date>()
+
         fun sendMessage(p:ProxiedPlayer,text: String){
             p.sendMessage(*ComponentBuilder(text).create())
         }
@@ -331,14 +333,27 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     // セッションの制御をプレイヤーに引き渡そうとしているときに呼び出されます。
     @EventHandler
     fun onServerConnected(e: ServerConnectedEvent) {
-        log("ServerConnectedEvent player:${e.player} server:${e.server} ")
+        log("ServerConnectedEvent player:${e.player} server:${e.server}")
     }
 
     //  Called when deciding to connect to a server.
     //  サーバーへの接続を決定する際に呼び出されます。
     @EventHandler
     fun onServerConnect(e: ServerConnectEvent) {
-        log("(5)ServerConnectEvent player:${e.player} target:${e.target} reason:${e.reason}")
+
+        val p = e.player
+        val last = lastConnectTime[p.uniqueId]?.time?:0L
+
+        if ((Date().time - last) < 60000){
+            if (e.reason == ServerConnectEvent.Reason.JOIN_PROXY){ return }
+            e.isCancelled = true
+            sendMessage(p,"§cしばらくお待ちください")
+            return
+        }
+
+        lastConnectTime[p.uniqueId] = Date()
+
+        log("(5)ServerConnectEvent player:${p} target:${e.target} reason:${e.reason} mods:${e.player.modList}")
     }
 
     @EventHandler
