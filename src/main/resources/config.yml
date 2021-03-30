@@ -22,3 +22,8 @@ BlockAutoMessages:
   - "Connected with MineChat" # MineChat
   - "I joined using ChatCraft from my Android device! Download it for free!" # Android ChatCraft
   - "I joined using ChatCraft from my iOS device! Download it for free!" # iOS ChatCraft
+
+Broadcast:
+  - "お久しぶりです。みんな大好きMHKですよーん! (受信料くれ)"
+  - "M◯Kをぶっ壊す!"
+  - "MHKはみんなに夢と希望を与える素晴らしいものなんだよ！"

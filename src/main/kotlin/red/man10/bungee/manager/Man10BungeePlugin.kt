@@ -16,6 +16,9 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
+import red.man10.bungee.manager.Man10Broadcast.broadcastDelay
+import red.man10.bungee.manager.Man10Broadcast.broadcastList
+import red.man10.bungee.manager.Man10Broadcast.runMHK
 import red.man10.bungee.manager.command.*
 import red.man10.bungee.manager.db.MySQLManager
 import red.man10.bungee.manager.db.ScoreDatabase
@@ -96,6 +99,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         discord.chat(":ballot_box_with_check:**サーバーが起動しました**")
 
+        runMHK()
+
     }
 
     override fun onDisable() {
@@ -150,6 +155,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.plugin = this
             discord.discordEvent = this
             discord.setup()
+            /////////////////////////////////////////////
+            //      Man10Broadcast initialization
+            broadcastDelay = config.getInt("BroadcastDelay")
+            broadcastList = config.getStringList("Broadcast")
         } catch (e: NullPointerException) {
             e.printStackTrace()
             error(e.localizedMessage)
