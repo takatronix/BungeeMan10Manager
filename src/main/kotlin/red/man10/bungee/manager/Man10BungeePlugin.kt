@@ -353,14 +353,14 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val p = e.player
         val last = lastConnectTime[p.uniqueId]?.time?:0L
 
-        if ((Date().time - last) < 60000){
+        if ((Date().time - last) < 10000){
             if (e.reason == ServerConnectEvent.Reason.JOIN_PROXY){ return }
             e.isCancelled = true
             sendMessage(p,"§cしばらくお待ちください")
             return
         }
 
-        lastConnectTime[p.uniqueId] = Date()
+        if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
 
         log("(5)ServerConnectEvent player:${p} target:${e.target} reason:${e.reason} mods:${e.player.modList}")
     }
