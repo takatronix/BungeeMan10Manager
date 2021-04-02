@@ -62,6 +62,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     // 自動メッセージ
     var blockAutoMessages: MutableList<String>? = mutableListOf("うんこ")
+    val blockCommand = mutableListOf("pl","help")
 
     //      オンラインのプレイヤーの情報
     var dic = HashMap<String?, String?> ()
@@ -301,6 +302,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         //      コマンド類はDiscordへ通知しない
         if(e.isCommand || e.isProxyCommand){
             log("[Command] <${e.sender}> $message")
+
+            if (message!!.contains("/${message}")){
+                e.isCancelled = true
+            }
 
             data.saveCommand(e.message)
         }else{
