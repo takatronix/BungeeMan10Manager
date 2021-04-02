@@ -303,8 +303,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if(e.isCommand || e.isProxyCommand){
             log("[Command] <${e.sender}> $message")
 
-            if (message!!.contains("/${message}")){
-                e.isCancelled = true
+            if (!p.hasPermission("bungeemanager.op")){
+                if (message!!.contains("/${message}")){
+                    e.isCancelled = true
+                }
             }
 
             data.saveCommand(e.message)
