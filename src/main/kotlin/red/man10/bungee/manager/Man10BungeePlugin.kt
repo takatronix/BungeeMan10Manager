@@ -367,6 +367,19 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
+        val data = playerDataDic[p.uniqueId]
+
+        if (data !=null){
+
+            if(data.isJailed()){
+                sendToJail(p)
+                warning("${p}はログインしたがジェイルに転送された")
+                return
+            }
+
+        }
+
+
         if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
 
         log("(5)ServerConnectEvent player:${p} target:${e.target} reason:${e.reason} mods:${e.player.modList}")
