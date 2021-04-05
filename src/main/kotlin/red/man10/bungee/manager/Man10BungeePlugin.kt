@@ -369,16 +369,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val data = playerDataDic[p.uniqueId]
 
-        if (data !=null){
-
-            if(data.isJailed()){
-                sendToJail(p)
-                warning("${p}はログインしたがジェイルに転送された")
-                return
-            }
-
+        if(data !=null &&data.isJailed()) {
+            sendToJail(p)
+            warning("${p}はログインしたがジェイルに転送された")
         }
-
 
         if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
 
