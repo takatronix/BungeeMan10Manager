@@ -1,7 +1,9 @@
 package red.man10.bungee.manager
 
+import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import red.man10.bungee.manager.db.MySQLManager
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,6 +18,8 @@ class PlayerData(val uuid: UUID,val mcid: String) {
     var banUntil: Date? = null         //      BAN期限
 
     private var score:Int = 0                  //      スコア
+
+    var isAuth = false
 
 
     fun isFrozen() : Boolean{
@@ -79,7 +83,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         save()
     }
 
-    fun addDate(date:Date?,min:Int,hour:Int,day:Int): Date? {
+    private fun addDate(date:Date?, min:Int, hour:Int, day:Int): Date? {
 
         val calender = Calendar.getInstance()
 
@@ -95,27 +99,6 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         }
 
         return time
-    }
-
-    fun addScore(int: Int,reason:String,issuer: String){
-        score += int
-        saveScore(reason,issuer,int)
-        setScore(score)
-    }
-
-    fun takeScore(int:Int,reason:String,issuer: String){
-        score -= int
-        saveScore(reason,issuer,int)
-        setScore(score)
-    }
-
-    fun setScore(int:Int){
-        score = int
-        save()
-    }
-
-    fun getScore():Int{
-        return score
     }
 
 
@@ -134,7 +117,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         plugin.logger.info("Loaded ${mcid}'s player data ")
     }
 
-    fun load(){
+    private fun load(){
 
         val mysql = MySQLManager(plugin,"BungeeManager Loading")
 
@@ -142,11 +125,15 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
         if (rs == null || !rs.next()){
 
-            mysql.execute("INSERT INTO player_data " +
-                    "(uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
-                    "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
+//            mysql.execute("INSERT INTO player_data " +
+//                    "(uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
+//                    "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
+//
+//            plugin.logger.info("create $mcid's data.")
 
-            plugin.logger.info("create $mcid's data.")
+            Thread.sleep(1000)
+
+            showAuthenticationMsg(ProxyServer.getInstance().getPlayer(uuid))
 
             mysql.close()
 
@@ -158,13 +145,23 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         freezeUntil = rs.getDate("freeze_until")?:null
         muteUntil = rs.getDate("mute_until")?:null
 
+        isAuth = true
+
         score = rs.getInt("score")
 
         mysql.close()
         rs.close()
     }
 
-    fun save(){
+    fun create(){
+        mysql.execute("INSERT INTO player_data " +
+                "(uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
+                "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
+
+        plugin.logger.info("create $mcid's data.")
+    }
+
+    private fun save(){
 
         MySQLManager.executeQueue("UPDATE player_data SET " +
                 "mcid='$mcid'," +
@@ -187,14 +184,14 @@ class PlayerData(val uuid: UUID,val mcid: String) {
                 " VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
     }
 
-    fun saveScore(reason: String, issuer:String, score:Int){
-        MySQLManager.executeQueue("INSERT INTO score_log (mcid, uuid, score, note, issuer, date) " +
-                "VALUES ('$mcid', '$uuid', $score, '$reason', '$issuer', '${dateToDatetime(Date())}')")
-    }
+//    private fun saveScore(reason: String, issuer:String, score:Int){
+//        MySQLManager.executeQueue("INSERT INTO score_log (mcid, uuid, score, note, issuer, date) " +
+//                "VALUES ('$mcid', '$uuid', $score, '$reason', '$issuer', '${dateToDatetime(Date())}')")
+//    }
 
 
     //mysql datetime を保存するやつ
-    fun dateToDatetime(date: Date?): String? {
+    private fun dateToDatetime(date: Date?): String? {
         return "'${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date?:return null)}'"
     }
 
@@ -202,6 +199,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
     companion object{
 
         private val mysql = MySQLManager(plugin,"BungeeManager Get UUID")
+        private val codeMap = HashMap<ProxiedPlayer,String>()
 
         //mcidからuuidを取得する
         fun getUUID(mcid:String):UUID?{
@@ -230,6 +228,25 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         fun get(mcid:String): Pair<PlayerData,UUID>? {
             val uuid = getUUID(mcid)?:return null
             return Pair(PlayerData(uuid,mcid),uuid)
+        }
+
+        fun showAuthenticationMsg(p:ProxiedPlayer){
+            val code = String.format("%06d", Random().nextInt(100000))
+
+            codeMap[p] = code
+
+            sendMessage(p,"§a§l§n以下の6桁の認証コードをチャット欄に入力してください")
+            sendMessage(p,"§b§l§nType on chat 6 digit code displayed below.")
+            sendMessage(p,"§c¶l${code}")
+        }
+
+        fun checkCode(p:ProxiedPlayer,msg:String):Boolean{
+
+            val correctCode = codeMap[p]?:return false
+
+            if (correctCode == msg)return true
+
+            return false
         }
     }
 }

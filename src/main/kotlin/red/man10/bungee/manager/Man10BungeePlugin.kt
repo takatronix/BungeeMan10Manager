@@ -201,11 +201,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             playerDataDic[uuid] = data
 
-            //      ログインしたユーザーがジェイル民なら転送
-            if(data.isJailed()){
-                sendToJail(p)
-                warning("${p}はログインしたがジェイルに転送された")
-            }
+//            //      ログインしたユーザーがジェイル民なら転送
+//            if(data.isJailed()){
+//                sendToJail(p)
+//                warning("${p}はログインしたがジェイルに転送された")
+//            }
         }
     }
 
@@ -223,6 +223,24 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             e.isCancelled = true
 //            log("chatevent")
             return
+        }
+
+        if (!data.isAuth){
+
+            if (!PlayerData.checkCode(p,e.message)){
+                PlayerData.showAuthenticationMsg(p)
+                e.isCancelled = true
+                return
+            }
+
+            sendMessage(p,"§a認証成功")
+            sendMessage(p,"§aAuthentication Success!")
+
+            GlobalScope.launch {
+                data.create()
+            }
+
+
         }
 
         var message = removeColorCode(e.message)
