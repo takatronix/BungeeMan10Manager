@@ -227,6 +227,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         if (!data.isAuth){
 
+            e.isCancelled = true
+
             if (!PlayerData.checkCode(p,e.message)){
                 PlayerData.showAuthenticationMsg(p)
                 e.isCancelled = true
@@ -239,7 +241,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             GlobalScope.launch {
                 data.create()
             }
-
 
         }
 

@@ -159,6 +159,8 @@ class PlayerData(val uuid: UUID,val mcid: String) {
                 "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
 
         plugin.logger.info("create $mcid's data.")
+
+        load()
     }
 
     private fun save(){
@@ -237,7 +239,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
             sendMessage(p,"§a§l§n以下の6桁の認証コードをチャット欄に入力してください")
             sendMessage(p,"§b§l§nType on chat 6 digit code displayed below.")
-            sendMessage(p,"§c¶l${code}")
+            sendMessage(p,"§c§l${code}")
         }
 
         fun checkCode(p:ProxiedPlayer,msg:String):Boolean{
