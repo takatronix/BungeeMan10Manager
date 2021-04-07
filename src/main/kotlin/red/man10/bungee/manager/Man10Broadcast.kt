@@ -15,7 +15,7 @@ object Man10Broadcast {
         ProxyServer.getInstance().scheduler.runAsync(plugin) {
             while (true) {
                 Thread.sleep((1000 * 60 * broadcastDelay).toLong())
-
+                if(broadcastList.isNullOrEmpty()) continue
                 val i = Random.nextInt(broadcastList.size)
 
                 sendGlobalMessage("${prefix}§7${broadcastList[i]}")
