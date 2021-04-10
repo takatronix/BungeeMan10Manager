@@ -369,7 +369,18 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     // セッションの制御をプレイヤーに引き渡そうとしているときに呼び出されます。
     @EventHandler
     fun onServerConnected(e: ServerConnectedEvent) {
-        log("ServerConnectedEvent player:${e.player} server:${e.server}")
+
+        val p = e.player
+        log("ServerConnectedEvent player:${p.name} server:${e.server.info.name}")
+
+
+        val data = playerDataDic[p.uniqueId]
+
+        if(data !=null &&data.isJailed()) {
+            sendToJail(p)
+            warning("${p}はログインしたがジェイルに転送された")
+        }
+
     }
 
     //  Called when deciding to connect to a server.
@@ -385,13 +396,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             e.isCancelled = true
             sendMessage(p,"§cしばらくお待ちください")
             return
-        }
-
-        val data = playerDataDic[p.uniqueId]
-
-        if(data !=null &&data.isJailed()) {
-            sendToJail(p)
-            warning("${p}はログインしたがジェイルに転送された")
         }
 
         if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
