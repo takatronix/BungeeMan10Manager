@@ -131,6 +131,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 //        player.connect(target)
 //    }
     fun sendToJail(player:ProxiedPlayer){
+        if (player.server.info.name == jailServerName)return
         val target = ProxyServer.getInstance().getServerInfo(jailServerName)
         player.connect(target)
     }
