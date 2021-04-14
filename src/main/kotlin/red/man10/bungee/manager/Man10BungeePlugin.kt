@@ -349,9 +349,14 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val p = e.player
 
-        sendGlobalMessage("§e${p}がMan10Networkからログアウトしました")
-        discord.admin("**$p is disconnected**")
-        discord.chat("**${p}がログアウトしました**")
+        if (playerDataDic[p.uniqueId] != null){
+            sendGlobalMessage("§e${p}がMan10Networkからログアウトしました")
+            discord.admin("**$p is disconnected**")
+            discord.chat("**${p}がログアウトしました**")
+
+            playerDataDic.remove(p.uniqueId)
+        }
+
     }
 
     //  Called when somebody reloads BungeeCord
