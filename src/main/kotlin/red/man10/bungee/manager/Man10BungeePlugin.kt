@@ -38,6 +38,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val lastConnectTime = HashMap<UUID,Date>()
 
+        var cancelSendingChatServer = mutableListOf<String>()
+        var cancelReceivingChatServer = mutableListOf<String>()
+
         fun sendMessage(p:ProxiedPlayer,text: String){
             p.sendMessage(*ComponentBuilder(text).create())
         }
@@ -161,6 +164,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             //      Man10Broadcast initialization
             broadcastDelay = config.getInt("BroadcastDelay")
             broadcastList = config.getStringList("Broadcast")
+            //////////////////////////////////////////////
+            //      Server chat setting
+            cancelSendingChatServer = config.getStringList("Chat.CancelSendingChatServer")?: mutableListOf()
+            cancelReceivingChatServer = config.getStringList("Chat.CancelReceivingChatServer")?: mutableListOf()
         } catch (e: NullPointerException) {
             e.printStackTrace()
             error(e.localizedMessage)
@@ -310,12 +317,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //////////////////////////////////////////////////////////////
         //     同一サーバにいないプレイヤーにチャットを送る (ユーザーがJailじゃなかった場合)
-        if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed()) {
+        if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed() ||
+            !cancelSendingChatServer.contains(p.server.info.name)) {
             for (player in ProxyServer.getInstance().players) {
-                if (player.server.info.name != p.server.info.name) {
+                if (player.server.info.name != p.server.info.name &&
+                    !cancelReceivingChatServer.contains(player.server.info.name)) {
                     sendMessage(player, chatMessage)
                 }
-
             }
         }
         //////////////////////////////////////////////////////
