@@ -88,6 +88,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, BanCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
         proxy.pluginManager.registerCommand(this, ReportCommand)
+        proxy.pluginManager.registerCommand(this, ChatSettingCommand)
 
         //tell commandを置き換える
         for (command in arrayOf(
