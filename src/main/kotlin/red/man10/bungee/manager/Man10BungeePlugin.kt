@@ -234,6 +234,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
+        val server = p.server.info.name
+
         if (!data.isAuth){
 
             e.isCancelled = true
@@ -318,11 +320,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         //////////////////////////////////////////////////////////////
         //     同一サーバにいないプレイヤーにチャットを送る (ユーザーがJailじゃなかった場合)
-        if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed() ||
-            !cancelSendingChatServer.contains(p.server.info.name)) {
+        if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed() &&
+            !cancelSendingChatServer.contains(server)) {
             for (player in ProxyServer.getInstance().players) {
-                if (player.server.info.name != p.server.info.name &&
-                    !cancelReceivingChatServer.contains(player.server.info.name)) {
+                if (player.server.info.name != server && !cancelReceivingChatServer.contains(player.server.info.name)) {
                     sendMessage(player, chatMessage)
                 }
             }
@@ -341,7 +342,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             data.saveCommand(e.message)
         }else{
             log(chatMessage)//ログを残す
-            discord.chat(discordMessage)
+
+            if (!cancelSendingChatServer.contains(server)){
+                discord.chat(discordMessage)
+            }
 
             data.saveMessage(e.message)
         }

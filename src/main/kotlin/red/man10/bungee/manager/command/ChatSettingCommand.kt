@@ -52,16 +52,16 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
 
                     cancelReceivingChatServer.remove(server)
 
-                    sendMessage(sender,"他鯖にも送るようにしました")
+                    sendMessage(sender,"他鯖から受け取るようにしました")
 
                     saveReceivingConfig()
 
                     return
                 }
 
-                cancelSendingChatServer.add(server)
+                cancelReceivingChatServer.add(server)
 
-                sendMessage(sender,"他鯖に送らないようにしました")
+                sendMessage(sender,"他鯖から受けとらないようにしました")
 
                 saveReceivingConfig()
 
@@ -69,7 +69,7 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
         }
     }
 
-    fun saveReceivingConfig(){
+    private fun saveReceivingConfig(){
         val cfgFile = ConfigFile(plugin)
         val cfg = cfgFile.getConfig()!!
 
@@ -79,7 +79,7 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
 
     }
 
-    fun saveSendingConfig(){
+    private fun saveSendingConfig(){
         val cfgFile = ConfigFile(plugin)
         val cfg = cfgFile.getConfig()!!
 
