@@ -24,6 +24,7 @@ import red.man10.bungee.manager.db.MySQLManager
 import red.man10.bungee.manager.db.ScoreDatabase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
 import kotlin.collections.HashMap
 
 
@@ -72,7 +73,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     var enableJapanizer:Boolean? = false
     var discord = DiscordBot()
     var enableSendMessageToOtherServer = true
-    //endregion
+
+    private val es = Executors.newCachedThreadPool()
 
     override fun onEnable() { // Plugin startup logic
         log("started")
@@ -191,8 +193,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val p = e.player
 
-        GlobalScope.launch {
-
+        es.execute {
             val uuid = p.uniqueId
 
             val data  = PlayerData(p)
@@ -201,7 +202,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             if (data.isBanned()){
 
                 p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
-                return@launch
+                return@execute
             }
 
             sendGlobalMessage("§e${p}がMan10Networkにログインしました スコア:${ScoreDatabase.getScore(p.uniqueId)}ポイント")
@@ -210,11 +211,18 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             playerDataDic[uuid] = data
 
-//            //      ログインしたユーザーがジェイル民なら転送
-//            if(data.isJailed()){
-//                sendToJail(p)
-//                warning("${p}はログインしたがジェイルに転送された")
-//            }
+            //      ログインしたユーザーがジェイル民なら転送
+            if(data.isJailed()){
+
+                Thread.sleep(5000)
+
+                proxy.scheduler.run {
+                    sendToJail(p)
+                }
+
+                warning("${p}はログインしたがジェイルに転送された")
+            }
+
         }
     }
 
@@ -394,10 +402,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val data = playerDataDic[p.uniqueId]
 
-        if(data !=null &&data.isJailed()) {
-            sendToJail(p)
-            warning("${p}はログインしたがジェイルに転送された")
-        }
+        if(data !=null &&data.isJailed()) { sendToJail(p) }
 
     }
 
