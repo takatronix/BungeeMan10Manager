@@ -416,18 +416,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
-        if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
-
-
         val data = playerDataDic[p.uniqueId]
 
-        if(data !=null &&data.isJailed()) {
-            if (p.server.info.name == jailServerName){
-                e.isCancelled = true
-            }else{
-                sendToJail(p)
-            }
-        }
+        if(data !=null &&data.isJailed()) { e.target = proxy.getServerInfo(jailServerName) }
+
+        if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
 
         log("(5)ServerConnectEvent player:${p} target:${e.target} reason:${e.reason} mods:${e.player.modList}")
     }
