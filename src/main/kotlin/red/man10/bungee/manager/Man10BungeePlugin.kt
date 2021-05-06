@@ -211,17 +211,17 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             playerDataDic[uuid] = data
 
-            //      ログインしたユーザーがジェイル民なら転送
-            if(data.isJailed()){
-
-                Thread.sleep(5000)
-
-                proxy.scheduler.run {
-                    sendToJail(p)
-                }
-
-                warning("${p}はログインしたがジェイルに転送された")
-            }
+//            //      ログインしたユーザーがジェイル民なら転送
+//            if(data.isJailed()){
+//
+//                Thread.sleep(5000)
+//
+//                proxy.scheduler.run {
+//                    sendToJail(p)
+//                }
+//
+//                warning("${p}はログインしたがジェイルに転送された")
+//            }
 
         }
     }
@@ -399,11 +399,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val p = e.player
         log("ServerConnectedEvent player:${p.name} server:${e.server.info.name}")
 
-
-        val data = playerDataDic[p.uniqueId]
-
-        if(data !=null &&data.isJailed()) { sendToJail(p) }
-
     }
 
     //  Called when deciding to connect to a server.
@@ -422,6 +417,17 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         }
 
         if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
+
+
+        val data = playerDataDic[p.uniqueId]
+
+        if(data !=null &&data.isJailed()) {
+            if (p.server.info.name == jailServerName){
+                e.isCancelled = true
+            }else{
+                sendToJail(p)
+            }
+        }
 
         log("(5)ServerConnectEvent player:${p} target:${e.target} reason:${e.reason} mods:${e.player.modList}")
     }
