@@ -262,5 +262,18 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
             return false
         }
+
+        fun countPlayers():Int{
+
+            val rs = mysql.query("select count(*) from player_data;")?:return 0
+            rs.next()
+
+            val ret = rs.getInt(1)
+            rs.close()
+            mysql.close()
+
+            return ret
+
+        }
     }
 }

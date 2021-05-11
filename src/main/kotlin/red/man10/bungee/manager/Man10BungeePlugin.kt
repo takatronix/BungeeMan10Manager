@@ -259,8 +259,15 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             GlobalScope.launch {
                 data.create()
+                val count = PlayerData.countPlayers()
+                sendGlobalMessage("§e§lMan10サーバーに§b§l${count}人目§e§lの" +
+                        "新規参加者がやってきました！おはつさんよろしく！")
+
+                discord.chat("Man10サーバーに**${count}人目**の" +
+                        "新規参加者がやってきました！おはつさんよろしく！")
             }
 
+            return
         }
 
         var message = removeColorCode(e.message)
