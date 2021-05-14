@@ -260,11 +260,10 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             GlobalScope.launch {
                 data.create()
                 val count = PlayerData.countPlayers()
-                sendGlobalMessage("§e§lMan10サーバーに§b§l${count}人目§e§lの" +
-                        "新規参加者がやってきました！おはつさんよろしく！")
+                sendGlobalMessage("§b§l${p.name}§e§lさんがMan10サーバーに初参加しました！ " +
+                        "§b§l${count}§e§l人目のプレイヤーです！")
 
-                discord.chat("Man10サーバーに**${count}人目**の" +
-                        "新規参加者がやってきました！おはつさんよろしく！")
+                discord.chat("**${p.name}**さんがMan10サーバーに初参加しました！ **${count}**人目のプレイヤーです！")
             }
 
             return
