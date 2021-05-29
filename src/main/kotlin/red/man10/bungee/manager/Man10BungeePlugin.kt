@@ -256,14 +256,25 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             sendMessage(p,"§a認証成功")
             sendMessage(p,"§aAuthentication Success!")
+            sendMessage(p,"§a&lようこそman10サーバーへ！")
+            sendMessage(p,"§e&lまずは/server man10をチャット欄に打ち込んでメインサーバーに入ろう！")
+            sendMessage(p,"§b5秒後に自動的にman10サーバーに転送されます・・・")
 
             GlobalScope.launch {
+            }
+
+            es.execute {
                 data.create()
                 val count = PlayerData.countPlayers()
                 sendGlobalMessage("§b§l${p.name}§e§lさんがMan10サーバーに初参加しました！ " +
                         "§b§l${count}§e§l人目のプレイヤーです！")
 
                 discord.chat("**${p.name}**さんがMan10サーバーに初参加しました！ **${count}**人目のプレイヤーです！")
+
+                Thread.sleep(5000)
+
+                p.connect(ProxyServer.getInstance().getServerInfo("man10"))
+
             }
 
             return
