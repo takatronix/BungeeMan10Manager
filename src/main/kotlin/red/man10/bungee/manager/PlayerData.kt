@@ -237,8 +237,8 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
             codeMap[p] = code
 
-            sendMessage(p,"§6§lこの数字をチャットに入力してください => §e§l$code")
-            sendMessage(p,"§6(Please enter this 6-digit number.)")
+            sendMessage(p,"§f§lこの数字をチャットに入力してください => §a§l$code")
+            sendMessage(p,"§f(Please enter this 6-digit number.)")
         }
 
         fun escapeSQL(query:String):String{
