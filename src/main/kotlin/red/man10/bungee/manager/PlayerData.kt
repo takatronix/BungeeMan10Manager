@@ -140,10 +140,10 @@ class PlayerData(val uuid: UUID,val mcid: String) {
             return
         }
 
-        jailUntil = rs.getDate("jail_until")?:null
-        banUntil = rs.getDate("ban_until")?:null
-        freezeUntil = rs.getDate("freeze_until")?:null
-        muteUntil = rs.getDate("mute_until")?:null
+        jailUntil = rs.getTimestamp("jail_until")?:null
+        banUntil = rs.getTimestamp("ban_until")?:null
+        freezeUntil = rs.getTimestamp("freeze_until")?:null
+        muteUntil = rs.getTimestamp("mute_until")?:null
 
         isAuth = true
 
