@@ -46,7 +46,7 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
         }
 
         sendMessage(sender,"§d§l/mmute <mcid> <期間+(d/h/m/reset(解除))> <ミュート理由>")
-        sendMessage(sender,"§d§l期間をマイナスにすると期間が縮みます")
+        sendMessage(sender,"§d§l/mmute <mcid> reset ミュート解除")
 
     }
 

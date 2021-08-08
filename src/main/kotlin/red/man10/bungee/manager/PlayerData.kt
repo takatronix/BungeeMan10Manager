@@ -217,13 +217,15 @@ class PlayerData(val uuid: UUID,val mcid: String) {
                     return null
                 }
 
-                rs.next()
-                uuid = UUID.fromString(rs.getString("uuid"))
-                rs.close()
-                mysql.close()
+                if (rs.next()){
+                    uuid = UUID.fromString(rs.getString("uuid"))
+                    rs.close()
+                    mysql.close()
+                    return uuid
+                }
             }
 
-            return uuid
+            return null
         }
 
         //プレイヤー名からユーザーデータをつくる

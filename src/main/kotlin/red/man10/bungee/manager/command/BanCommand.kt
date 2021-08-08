@@ -47,7 +47,7 @@ object BanCommand : Command("mban","bungeemanager.ban"){
         }
 
         sendMessage(sender,"§d§l/mban <mcid> <期間+(d/h/m/0k/reset(解除))> <Ban理由>")
-        sendMessage(sender,"§d§l期間をマイナスにすると期間が縮みます")
+        sendMessage(sender,"§d§l/mban <mcid> reset Ban解除")
 
     }
 

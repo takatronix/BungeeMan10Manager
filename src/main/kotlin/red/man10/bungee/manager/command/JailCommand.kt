@@ -48,7 +48,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
         }
 
         sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> <期間+(d/h/m/0k/reset(解除))> <Jail理由>").create())
-        sender.sendMessage(*ComponentBuilder("§d§l期間をマイナスにすると期間が縮みます").create())
+        sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> reset 釈放します").create())
 
     }
 

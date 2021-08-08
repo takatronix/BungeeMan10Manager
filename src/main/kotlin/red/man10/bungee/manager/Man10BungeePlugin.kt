@@ -430,6 +430,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         val data = playerDataDic[p.uniqueId]
 
+        if (data==null && e.reason != ServerConnectEvent.Reason.JOIN_PROXY){
+            sendMessage(p,"§c§lあなたは初ログインの認証ができていない可能性があります")
+            e.isCancelled = true
+        }
+
         if(data !=null &&data.isJailed()) { e.target = proxy.getServerInfo(jailServerName) }
 
         if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
