@@ -63,6 +63,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
     //region 設定
     var jailServerName: String? = null
+    var loginServerName = "login"
 
     // 自動メッセージ
     var blockAutoMessages: MutableList<String>? = mutableListOf("うんこ")
@@ -238,7 +239,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val data = playerDataDic[p.uniqueId]
         if (data == null){
             e.isCancelled = true
-//            log("chatevent")
             return
         }
 
@@ -257,12 +257,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             sendMessage(p,"§a認証できました！")
             sendMessage(p,"§aAuthentication Success!")
             sendMessage(p,"§a&lようこそman10サーバーへ！")
-//            sendMessage(p,"§e&lまずは/server man10をチャット欄に打ち込んでメインサーバーに入ろう！")
-//            sendMessage(p,"§b5秒後に自動的にman10サーバーに転送されます・・・")
 
             es.execute {
+
                 data.create()
+
                 val count = PlayerData.countPlayers()
+
                 sendGlobalMessage("§b§l${p.name}§e§lさんがMan10サーバーに初参加しました！ " +
                         "§b§l${count}§e§l人目のプレイヤーです！")
 
@@ -421,7 +422,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val p = e.player
         val last = lastConnectTime[p.uniqueId]?.time?:0L
 
-        if ((Date().time - last) < 10000){
+        if ((Date().time - last) < 5000 && !p.hasPermission("bungeemanager.jail")){
             if (e.reason == ServerConnectEvent.Reason.JOIN_PROXY){ return }
             e.isCancelled = true
             sendMessage(p,"§cしばらくお待ちください")
@@ -432,7 +433,14 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         if (data==null && e.reason != ServerConnectEvent.Reason.JOIN_PROXY){
             sendMessage(p,"§c§lあなたは初ログインの認証ができていない可能性があります")
-            e.isCancelled = true
+            e.target = proxy.getServerInfo(loginServerName)
+            return
+        }
+
+        if (data!= null && !data.isAuth){
+            sendMessage(p,"§c§lあなたは初ログインの認証ができていない可能性があります")
+            e.target = proxy.getServerInfo(loginServerName)
+            return
         }
 
         if(data !=null &&data.isJailed()) { e.target = proxy.getServerInfo(jailServerName) }
