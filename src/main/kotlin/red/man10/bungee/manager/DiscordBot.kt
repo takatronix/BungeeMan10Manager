@@ -32,6 +32,7 @@ class DiscordBot : ListenerAdapter() {
     var notificationChannelID:Long = 0
     var adminChannelID:Long = 0
     var reportChannelID:Long = 0
+    var jailChannelID:Long = 0
 
     var chatChannel:TextChannel? = null
     var systemChannel:TextChannel? = null
@@ -39,33 +40,38 @@ class DiscordBot : ListenerAdapter() {
     var notificationChannel:TextChannel? = null
     var adminChannel:TextChannel? = null
     var reportChannel:TextChannel? = null
+    var jailChannel:TextChannel? = null
 
     var discordEvent:IDiscordEvent? = null
 
     //      チャットチャンネル出力
     fun chat(text:String){
         if (text.indexOf("/") == 0) return
-        chatChannel?.sendMessage(text)?.queue()
+        chatChannel?.sendMessage(text)?.queue()?:return
     }
     //      ログチャンネル出力
     fun log(text:String){
-        logChannel?.sendMessage(text)?.queue()
+        logChannel?.sendMessage(text)?.queue()?:return
     }
     //      システム出力
     fun system(text:String){
-        systemChannel?.sendMessage(text)?.queue()
+        systemChannel?.sendMessage(text)?.queue()?:return
     }
     //      通知
     fun notification(text:String){
-        notificationChannel?.sendMessage(text)?.queue()
+        notificationChannel?.sendMessage(text)?.queue()?:return
     }
     //      Admin用
     fun admin(text:String){
-        adminChannel?.sendMessage(text)?.queue()
+        adminChannel?.sendMessage(text)?.queue()?:return
     }
     //      Report
     fun report(text: String){
-        reportChannel?.sendMessage(text)?.queue()
+        reportChannel?.sendMessage(text)?.queue()?:return
+    }
+    //      処罰系
+    fun jail(text:String){
+        jailChannel?.sendMessage(text)?.queue()?:return
     }
 
     init{
@@ -98,6 +104,7 @@ class DiscordBot : ListenerAdapter() {
             notificationChannel = guild?.getTextChannelById(this.notificationChannelID)
             adminChannel = guild?.getTextChannelById(this.adminChannelID)
             reportChannel = guild?.getTextChannelById(this.reportChannelID)
+            jailChannel = guild?.getTextChannelById(this.jailChannelID)
 
             } catch (e: LoginException) {
                 e.printStackTrace()

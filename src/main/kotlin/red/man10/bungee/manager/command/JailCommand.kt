@@ -99,13 +99,16 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
         }
 
         sendGlobalMessage("§c§l${data.mcid}は「${args[2]}」の理由により、300ポイント引かれ、Jailされました！")
-        ScoreDatabase.giveScore(data.mcid,-300,"${args[2]}によりJail",sender)
         sendGlobalMessage("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}")
+        ScoreDatabase.giveScore(data.mcid,-300,"${args[2]}によりJail",sender)
 
         if (unit == 'k'){
             sendGlobalMessage("§c1050年地下行きっ・・・・・・・・！")
         }
         playerDataDic[data.uuid] = data
+
+        plugin.discord.jail("${data.mcid}は「${args[2]}」の理由によりJailされました！(処罰者:${sender.name})")
+        plugin.discord.jail("釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}")
 
         val p = ProxyServer.getInstance().getPlayer(data.mcid)
 

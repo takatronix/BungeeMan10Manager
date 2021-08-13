@@ -162,6 +162,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.logChannelID = config.getLong("Discord.LogChannel")
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
             discord.reportChannelID = config.getLong("Discord.ReportChannel")
+            discord.jailChannelID = config.getLong("Discord.JailChannel")
             discord.plugin = this
             discord.discordEvent = this
             discord.setup()

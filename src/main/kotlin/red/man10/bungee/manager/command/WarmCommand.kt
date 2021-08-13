@@ -4,6 +4,7 @@ import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.PlayerData
 import red.man10.bungee.manager.db.ScoreDatabase
 
@@ -56,6 +57,7 @@ object WarmCommand : Command("mwarm", "bungeemanager.warm"){
         Man10BungeePlugin.sendGlobalMessage("§c${data.mcid}は「${reason}」の理由により${score}ポイント引かれ、警告されました！")
         ScoreDatabase.giveScore(data.mcid,-score,"${reason}により警告",sender)
 
+        plugin.discord.jail("${data.mcid}は「${reason}」の理由により${score}ポイント引かれ、警告されました！(処罰者:${sender.name})")
 
     }
 

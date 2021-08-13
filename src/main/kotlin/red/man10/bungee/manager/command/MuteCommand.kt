@@ -4,6 +4,7 @@ import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import red.man10.bungee.manager.PlayerData
@@ -102,6 +103,8 @@ object MuteCommand : Command("mmute","bungeemanager.mute"){
             sendMessage(p,"§c§lあなたは「${args[2]}」の理由により、ミュートされました！")
             sendMessage(p,"§c§l解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.muteUntil)}")
         }
+
+        plugin.discord.jail("${args[0]}は「${args[2]}」の理由により、ミュートされました！(処罰者:${sender.name})")
 
         playerDataDic[data.uuid] = data
 
