@@ -20,6 +20,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
     private var score:Int = 0                  //      スコア
 
     var isAuth = false
+    var isAuthDiscord = false
 
 
     fun isFrozen() : Boolean{

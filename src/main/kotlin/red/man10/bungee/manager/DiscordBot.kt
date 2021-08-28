@@ -34,13 +34,13 @@ class DiscordBot : ListenerAdapter() {
     var reportChannelID:Long = 0
     var jailChannelID:Long = 0
 
-    var chatChannel:TextChannel? = null
-    var systemChannel:TextChannel? = null
-    var logChannel:TextChannel? = null
-    var notificationChannel:TextChannel? = null
-    var adminChannel:TextChannel? = null
-    var reportChannel:TextChannel? = null
-    var jailChannel:TextChannel? = null
+    private var chatChannel:TextChannel? = null
+    private var systemChannel:TextChannel? = null
+    private var logChannel:TextChannel? = null
+    private var notificationChannel:TextChannel? = null
+    private var adminChannel:TextChannel? = null
+    private var reportChannel:TextChannel? = null
+    private var jailChannel:TextChannel? = null
 
     var discordEvent:IDiscordEvent? = null
 
@@ -74,9 +74,6 @@ class DiscordBot : ListenerAdapter() {
         jailChannel?.sendMessage(text)?.queue()?:return
     }
 
-    init{
-
-    }
     fun shutdown(){
         jda.shutdown()
         plugin?.log("discord shutdown")
@@ -127,6 +124,13 @@ class DiscordBot : ListenerAdapter() {
         if (channel.idLong != chatChannelID)return
 
         val text = message.contentDisplay
+
+        if (text.indexOf("/auth") == 0){
+            channel.deleteMessageById(message.id)
+            val minecraftID = text.replace("/auth ","")
+            val player = Man10BungeePlugin.plugin.proxy.getPlayer(minecraftID)?:return
+            return
+        }
 
         val outText = "§f[§3@Discord§f]${event.member?.nickname?:user.name}§b:§f$text"
         Man10BungeePlugin.sendGlobalMessage(outText)
