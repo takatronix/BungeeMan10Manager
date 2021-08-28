@@ -436,12 +436,14 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (data==null && e.reason != ServerConnectEvent.Reason.JOIN_PROXY){
             sendMessage(p,"§c§lあなたは初ログインの認証ができていない可能性があります")
             e.target = proxy.getServerInfo(loginServerName)
+            PlayerData.showAuthenticationMsg(p)
             return
         }
 
         if (data!= null && !data.isAuth){
             sendMessage(p,"§c§lあなたは初ログインの認証ができていない可能性があります")
             e.target = proxy.getServerInfo(loginServerName)
+            PlayerData.showAuthenticationMsg(p)
             return
         }
 
