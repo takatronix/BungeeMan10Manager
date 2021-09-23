@@ -19,10 +19,10 @@ object ConnectionDatabase {
 
         val sql = MySQLManager(plugin,"ConnectionLog")
 
-        val ip = p.socketAddress.toString().replace("/","")
+        val address = p.socketAddress.toString().replace("/","").split(":")
 
-        sql.execute("INSERT INTO connection_log (mcid, uuid, server, connected_time, disconnected_time, connection_seconds, ip) " +
-                "VALUES ('${p.name}', '${uuid}', '${server}', now(), null, null, '${ip}')")
+        sql.execute("INSERT INTO connection_log (mcid, uuid, server, connected_time, disconnected_time, connection_seconds, ip, port) " +
+                "VALUES ('${p.name}', '${uuid}', '${server}', now(), null, null, '${address[0]}', ${address[1].toInt()})")
         connectedTime[Pair(uuid,server)] = Date()
     }
 
