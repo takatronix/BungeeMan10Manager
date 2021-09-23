@@ -91,6 +91,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, ReportCommand)
         proxy.pluginManager.registerCommand(this, ChatSettingCommand)
         proxy.pluginManager.registerCommand(this, WarnCommand)
+        proxy.pluginManager.registerCommand(this, AltCheckCommand)
 
         //tell commandを置き換える
         for (command in arrayOf(
