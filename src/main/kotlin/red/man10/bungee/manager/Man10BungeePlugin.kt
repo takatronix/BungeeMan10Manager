@@ -2,8 +2,6 @@ package red.man10.bungee.manager
 
 import com.github.ucchyocean.lc.japanize.JapanizeType
 import com.github.ucchyocean.lc.japanize.Japanizer
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
@@ -20,12 +18,12 @@ import red.man10.bungee.manager.Man10Broadcast.broadcastDelay
 import red.man10.bungee.manager.Man10Broadcast.broadcastList
 import red.man10.bungee.manager.Man10Broadcast.runMHK
 import red.man10.bungee.manager.command.*
+import red.man10.bungee.manager.db.ConnectionDatabase
 import red.man10.bungee.manager.db.MySQLManager
 import red.man10.bungee.manager.db.ScoreDatabase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
-import kotlin.collections.HashMap
 
 
 class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
@@ -452,11 +450,15 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if (e.reason != ServerConnectEvent.Reason.JOIN_PROXY){lastConnectTime[p.uniqueId] = Date()}
 
         log("(5)ServerConnectEvent player:${p} target:${e.target} reason:${e.reason} mods:${e.player.modList}")
+
+        es.execute { ConnectionDatabase.connectServer(p) }
     }
 
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
         log("ServerDisconnectEvent player:${e.player} target:${e.target} ${e.target.name} ${e.target}")
+        es.execute { ConnectionDatabase.disconnectServer(e.player) }
+
     }
 
     //  Represents a player getting kicked from a server
