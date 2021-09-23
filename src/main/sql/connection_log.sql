@@ -8,7 +8,7 @@ create table connection_log
     connected_time     datetime     not null comment '接続時刻',
     disconnected_time  datetime     null comment '切断時刻',
     connection_seconds int          null comment '接続していた秒数: Disconnect時に保存',
-    ip                 varchar(256) null         '接続元IPアドレス'
+    ip                 varchar(256) null comment '接続元IPアドレス',
     port               int    null comment '接続元ポート'
 );
 
