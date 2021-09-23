@@ -457,7 +457,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
         log("ServerDisconnectEvent player:${e.player} target:${e.target} ${e.target.name} ${e.target}")
-        es.execute { ConnectionDatabase.disconnectServer(e.player,e.target.name) }
+        es.execute { ConnectionDatabase.disconnectServer(e.player) }
 
     }
 

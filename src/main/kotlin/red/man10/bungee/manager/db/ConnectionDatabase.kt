@@ -18,7 +18,7 @@ object ConnectionDatabase {
         connectedTime[p.uniqueId] = Date()
     }
 
-    fun disconnectServer(p:ProxiedPlayer,server: String){
+    fun disconnectServer(p:ProxiedPlayer){
 
         val connected = connectedTime[p.uniqueId]
 
