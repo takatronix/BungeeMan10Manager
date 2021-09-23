@@ -9,16 +9,16 @@ object ConnectionDatabase {
 
     private val connectedTime = ConcurrentHashMap<UUID,Date>()
 
-    fun connectServer(p:ProxiedPlayer){
+    fun connectServer(p:ProxiedPlayer,server:String){
 
         val sql = MySQLManager(plugin,"ConnectionLog")
 
         sql.execute("INSERT INTO connection_log (mcid, uuid, server, connected_time, disconnected_time, connection_seconds, ip) " +
-                "VALUES ('${p.name}', '${p.uniqueId}', '${p.server.info.name}', now(), null, null, '${p.socketAddress}')")
+                "VALUES ('${p.name}', '${p.uniqueId}', '${server}', now(), null, null, '${p.socketAddress}')")
         connectedTime[p.uniqueId] = Date()
     }
 
-    fun disconnectServer(p:ProxiedPlayer){
+    fun disconnectServer(p:ProxiedPlayer,server: String){
 
         val connected = connectedTime[p.uniqueId]
 
