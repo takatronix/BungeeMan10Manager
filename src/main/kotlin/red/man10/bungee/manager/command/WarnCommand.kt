@@ -8,13 +8,13 @@ import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.PlayerData
 import red.man10.bungee.manager.db.ScoreDatabase
 
-object WarmCommand : Command("mwarm", "bungeemanager.warm"){
+object WarnCommand : Command("mwarn", "bungeemanager.warn"){
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
 
         if (sender==null)return
 
 
-        //mmute <forest611> <100d> <reason>
+        //mwarn <forest611> <100d> <reason>
         if (!args.isNullOrEmpty() && args.size == 3){
 
             val pData = ProxyServer.getInstance().getPlayer(args[0])
@@ -43,7 +43,7 @@ object WarmCommand : Command("mwarm", "bungeemanager.warm"){
 
         }
 
-        Man10BungeePlugin.sendMessage(sender, "§d§l/mwarm <mcid> <減らすスコア> <警告理由>")
+        Man10BungeePlugin.sendMessage(sender, "§d§l/mwarn <mcid> <減らすスコア> <警告理由>")
 
 
 
