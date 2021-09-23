@@ -7,20 +7,30 @@ import java.util.concurrent.ConcurrentHashMap
 
 object ConnectionDatabase {
 
-    private val connectedTime = ConcurrentHashMap<UUID,Date>()
+    private val connectedTime = ConcurrentHashMap<Pair<UUID,String>,Date>()
 
     fun connectServer(p:ProxiedPlayer,server:String){
 
+        val uuid = p.uniqueId
+
+        if (connectedTime[Pair(p.uniqueId,server)] != null) {
+            disconnectServer(p,server)
+        }
+
         val sql = MySQLManager(plugin,"ConnectionLog")
 
+        val ip = p.socketAddress.toString().replace("/","")
+
         sql.execute("INSERT INTO connection_log (mcid, uuid, server, connected_time, disconnected_time, connection_seconds, ip) " +
-                "VALUES ('${p.name}', '${p.uniqueId}', '${server}', now(), null, null, '${p.socketAddress}')")
-        connectedTime[p.uniqueId] = Date()
+                "VALUES ('${p.name}', '${uuid}', '${server}', now(), null, null, '${ip}')")
+        connectedTime[Pair(uuid,server)] = Date()
     }
 
-    fun disconnectServer(p:ProxiedPlayer){
+    fun disconnectServer(p:ProxiedPlayer,server: String){
 
-        val connected = connectedTime[p.uniqueId]
+        val key = Pair(p.uniqueId,server)
+
+        val connected = connectedTime[key]
 
         if (connected == null){
             plugin.discord.log("接続した時間の取得に失敗[${p.name}]")
@@ -32,9 +42,9 @@ object ConnectionDatabase {
         val seconds = (Date().time-connected.time) / 1000
 
         sql.execute("update connection_log set disconnected_time=now(),connection_seconds=$seconds " +
-                "where mcid='${p.name}' order by id desc limit 1")
+                "where mcid='${p.name}' and server='$server' order by id desc limit 1")
 
-        connectedTime.remove(p.uniqueId)
+        connectedTime.remove(key)
 
     }
 
