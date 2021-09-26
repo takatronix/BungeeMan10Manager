@@ -40,6 +40,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         var cancelSendingChatServer = mutableListOf<String>()
         var cancelReceivingChatServer = mutableListOf<String>()
 
+        var banIpList = mutableListOf<String>()
+
         fun sendMessage(p:ProxiedPlayer,text: String){
             p.sendMessage(*ComponentBuilder(text).create())
         }
@@ -76,6 +78,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     private val es = Executors.newCachedThreadPool()
 
     override fun onEnable() { // Plugin startup logic
+
         log("started")
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
@@ -102,6 +105,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         for (command in arrayOf("reply", "r")) {
             proxy.pluginManager.registerCommand(this, ReplyCommand(this, command))
         }
+
+        banIpList = AltCheckCommand.getBanIPList()
 
         MySQLManager.setupBlockingQueue(this,"Man10BungeeDiscord")
 
@@ -202,7 +207,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             //Banされてたら切断する
             if (data.isBanned()){
+                p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
+                return@execute
+            }
 
+            if (banIpList.contains(AltCheckCommand.getAddress(p))){
                 p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
                 return@execute
             }
@@ -212,18 +221,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.chat("**${p}がログインしました**")
 
             playerDataDic[uuid] = data
-
-//            //      ログインしたユーザーがジェイル民なら転送
-//            if(data.isJailed()){
-//
-//                Thread.sleep(5000)
-//
-//                proxy.scheduler.run {
-//                    sendToJail(p)
-//                }
-//
-//                warning("${p}はログインしたがジェイルに転送された")
-//            }
 
         }
     }
