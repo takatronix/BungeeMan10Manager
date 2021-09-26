@@ -9,7 +9,6 @@ import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import red.man10.bungee.manager.db.MySQLManager
-import java.awt.TextComponent
 import java.util.*
 
 object AltCheckCommand : Command("malt","bungeemanager.alt") {
@@ -20,7 +19,8 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
         if (sender == null)return
 
         if (args.isEmpty()){
-            sendMessage(sender,"/malt user <mcid> サブ垢の可能性があるアカウントを検索します")
+            sendMessage(sender,"/malt sub <mcid> サブ垢の可能性があるアカウントを検索します")
+            sendMessage(sender,"/malt user <mcid> 過去のIPアドレスなどを検索します")
             sendMessage(sender,"/malt ip <mcid/ipアドレス(XXX.XXX.XXX.XXX)> 指定IPと同じIPのアカウントを検索します")
             sendMessage(sender,"/malt ban <mcid/ipアドレス> <理由> 指定したIP/プレイヤーのIPをBanします")
             sendMessage(sender,"/malt unban <ipアドレス> 指定したIPのIPをUnBanします")
@@ -29,6 +29,35 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
         }
 
         when (args[0]){
+
+            "sub" ->{
+                if (args.size<2)return
+
+                val searchPlayer = args[1]
+                Thread{
+
+                    val db = MySQLManager(plugin,"AltCheck")
+                    val rs = db.query("select mcid from connection_log where ip in " +
+                            "(select ip from connection_log where mcid in " +
+                            "(select mcid from connection_log where ip in " +
+                            "(select ip from connection_log where mcid='${searchPlayer}')));")?:return@Thread
+
+                    val playerSet = mutableSetOf<String>()
+
+                    while (rs.next()){ playerSet.add(rs.getString("mcid")) }
+
+                    rs.close()
+                    db.close()
+
+                    playerSet.remove(searchPlayer)
+
+                    sendMessage(sender,"§d§l検索ユーザー:${searchPlayer}")
+                    sendMessage(sender,"§d§lサブ垢の可能性があるプレイヤー")
+
+                    for (p in playerSet){ sendMessage(sender,"§c§l${p}") }
+
+                }.start()
+            }
 
             "user" ->{
                 if (args.size<2)return
@@ -50,12 +79,13 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
                     db.close()
 
                     sendMessage(sender,"§d§l検索ユーザー:${p}")
-                    sendMessage(sender,"§d§lサブ垢の可能性があるプレイヤー")
+                    sendMessage(sender,"§d§l検索ユーザーから過去のIPなどを検索")
 
                     for (pair in pairSet){ sendMessage(sender,"§c§l${pair.first} / ${pair.second}") }
 
                 }.start()
             }
+
 
             "ip" ->{
 
