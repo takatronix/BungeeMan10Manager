@@ -19,6 +19,8 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     private var score:Int = 0                  //      スコア
 
+    var lastChatMessage = ""
+
     var isAuth = false
 
 
@@ -182,6 +184,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
     }
 
     fun saveMessage(message:String){
+        lastChatMessage = message
         MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date)" +
                 " VALUES ('$uuid', '$mcid', '${escapeSQL(message)}', ${dateToDatetime(Date())});")
     }

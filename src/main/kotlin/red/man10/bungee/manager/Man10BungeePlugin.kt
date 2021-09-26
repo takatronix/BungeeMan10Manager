@@ -277,6 +277,15 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             return
         }
 
+        ///////////////////////////////////////////////
+        //      同じメッセージを連続して送れないように
+        if (data.lastChatMessage == e.message){
+            e.isCancelled = true
+            sendMessage(p,"§c§l同じメッセージを連続して送ることはできません")
+            return
+        }
+
+
         var message = removeColorCode(e.message)
 
         ////////////////////////////////////////////////////
