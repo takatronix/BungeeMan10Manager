@@ -38,9 +38,10 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
 
                     val db = MySQLManager(plugin,"AltCheck")
 
-                    val rs = db.query("select  mcid,ip,count(*) from connection_log " +
-                            "where ip in (select ip from connection_log " +
-                            "where mcid = '${searchPlayer}' group by mcid,ip order by ip) group by mcid,ip;")?:return@Thread
+                    val rs = db.query("select mcid " +
+                            "from connection_log " +
+                            "where ip in (select ip from connection_log where mcid = '${searchPlayer}' group by mcid, ip order by ip)\n" +
+                            "group by mcid;")?:return@Thread
 
                     val playerSet = mutableSetOf<String>()
 
@@ -67,22 +68,21 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
 
                     val db = MySQLManager(plugin,"AltCheck")
 
-                    val rs = db.query("select mcid from connection_log where ip in " +
-                            "(select ip from connection_log where mcid in " +
-                            "(select mcid from connection_log where ip in " +
-                            "(select ip from connection_log where mcid='${p}')));")?:return@Thread
+                    val rs = db.query("select  mcid,ip,count(*) from connection_log where ip in (select ip from connection_log " +
+                            "where mcid = '${p}' group by mcid,ip order by ip) group by mcid,ip;")?:return@Thread
 
-                    val pairSet = mutableSetOf<Pair<String,String>>()
+                    val value = mutableSetOf<Triple<String,String,Int>>()
 
-                    while (rs.next()){ pairSet.add(Pair(rs.getString("mcid"),rs.getString("ip"))) }
+                    while (rs.next()){ value.add(Triple(rs.getString(1),rs.getString(2),rs.getInt(3))) }
 
                     rs.close()
                     db.close()
 
                     sendMessage(sender,"§d§l検索ユーザー:${p}")
                     sendMessage(sender,"§d§l検索ユーザーから過去のIPなどを検索")
+                    sendMessage(sender,"§d§lMCID / IP / 接続回数")
 
-                    for (pair in pairSet){ sendMessage(sender,"§c§l${pair.first} / ${pair.second}") }
+                    for (t in value){ sendMessage(sender,"§c§l${t.first} / ${t.second} / ${t.third}") }
 
                 }.start()
             }
