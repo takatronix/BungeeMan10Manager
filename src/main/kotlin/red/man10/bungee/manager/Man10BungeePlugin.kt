@@ -458,13 +458,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         log("(5)ServerConnectEvent player:${p} target:${e.target} reason:${e.reason} mods:${e.player.modList}")
 
-        es.execute { ConnectionDatabase.connectServer(p,e.target.name) }
+        ConnectionDatabase.connectServer(p,e.target.name)
     }
 
     @EventHandler
     fun onServerDisconnect(e: ServerDisconnectEvent) {
         log("ServerDisconnectEvent player:${e.player} target:${e.target} ${e.target.name} ${e.target}")
-        es.execute { ConnectionDatabase.disconnectServer(e.player,e.target.name) }
+        ConnectionDatabase.disconnectServer(e.player,e.target.name)
 
     }
 

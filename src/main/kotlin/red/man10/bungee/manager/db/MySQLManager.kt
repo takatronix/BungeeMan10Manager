@@ -212,7 +212,8 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
                 try {
                     while (true) {
                         val take = blockingQueue.take()
-                        sql.execute(take)
+                        val ret = sql.execute(take)
+                        if (!ret){ plugin.proxy.logger.warning("クエリの失敗 Query:${take}") }
                     }
                 } catch (e: InterruptedException) {
 
