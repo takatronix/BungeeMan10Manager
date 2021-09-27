@@ -37,10 +37,16 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
                 Thread{
 
                     val db = MySQLManager(plugin,"AltCheck")
-                    val rs = db.query("select mcid from connection_log where ip in " +
-                            "(select ip from connection_log where mcid in " +
-                            "(select mcid from connection_log where ip in " +
-                            "(select ip from connection_log where mcid='${searchPlayer}')));")?:return@Thread
+//                    val rs = db.query("select mcid from connection_log where ip in " +
+//                            "(select ip from connection_log where mcid in " +
+//                            "(select mcid from connection_log where ip in " +
+//                            "(select ip from connection_log where mcid='${searchPlayer}')));")?:return@Thread
+
+                    val rs = db.query("select mcid,ip from connection_log " +
+                            "where ip in (select ip from connection_log " +
+                            "where mcid in (select mcid from connection_log " +
+                            "where ip in (select ip from connection_log " +
+                            "where mcid='${searchPlayer}' group by ip) group by mcid) group by ip) group by mcid,ip;")?:return@Thread
 
                     val playerSet = mutableSetOf<String>()
 
@@ -66,10 +72,12 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
                 Thread{
 
                     val db = MySQLManager(plugin,"AltCheck")
-                    val rs = db.query("select mcid,ip from connection_log where ip in " +
-                            "(select ip from connection_log where mcid in " +
-                            "(select mcid from connection_log where ip in " +
-                            "(select ip from connection_log where mcid='${p}')));")?:return@Thread
+
+                    val rs = db.query("select mcid,ip from connection_log " +
+                            "where ip in (select ip from connection_log " +
+                            "where mcid in (select mcid from connection_log " +
+                            "where ip in (select ip from connection_log " +
+                            "where mcid='${p}' group by ip) group by mcid) group by ip) group by mcid,ip;")?:return@Thread
 
                     val pairSet = mutableSetOf<Pair<String,String>>()
 
