@@ -203,6 +203,7 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
             .replace("\"", "\\\"")
     }
 
+
     fun close() {
 
         try {
