@@ -201,13 +201,13 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     fun saveCommand(command:String){
         MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date)" +
-                " VALUES ('$uuid', '$mcid', '$command', ${dateToDatetime(Date())});")
+                " VALUES ('$uuid', '$mcid', '${MySQLManager.escapeSQL(command)}', ${dateToDatetime(Date())});")
     }
 
     fun saveMessage(message:String){
         lastChatMessage = message
         MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date)" +
-                " VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
+                " VALUES ('$uuid', '$mcid', '${MySQLManager.escapeSQL(message)}', ${dateToDatetime(Date())});")
     }
 
 //    private fun saveScore(reason: String, issuer:String, score:Int){

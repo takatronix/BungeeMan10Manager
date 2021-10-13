@@ -49,7 +49,7 @@ object ScoreDatabase {
         mysql.execute("update player_data set score=score+$amount where uuid='$uuid';")
 
         mysql.execute("INSERT INTO score_log (mcid, uuid, score, note, issuer,now_score, date) " +
-                "VALUES ('$mcid', '$uuid', $amount, '[give]:$reason','${issuer.name}',${getScore(uuid)}, now())")
+                "VALUES ('$mcid', '$uuid', $amount, '[give]:${MySQLManager.escapeSQL(reason)}','${issuer.name}',${getScore(uuid)}, now())")
 
         return true
     }
@@ -61,7 +61,7 @@ object ScoreDatabase {
         mysql.execute("update player_data set score=$amount where uuid='$uuid';")
 
         mysql.execute("INSERT INTO score_log (mcid, uuid, score, note, issuer,now_score, date) " +
-                "VALUES ('$mcid', '$uuid', $amount, '[set]:$reason', '${issuer.name}',${getScore(uuid)}, now())")
+                "VALUES ('$mcid', '$uuid', $amount, '[set]:${MySQLManager.escapeSQL(reason)}', '${issuer.name}',${getScore(uuid)}, now())")
 
         return true
     }

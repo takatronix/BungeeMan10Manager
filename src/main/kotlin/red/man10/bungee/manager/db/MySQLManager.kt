@@ -132,8 +132,6 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
     ////////////////////////////////
     fun execute(query: String): Boolean {
 
-        val escapedQuery = escapeSQL(query)
-
         this.MySQL = MySQLFunc(this.HOST!!, this.DB!!, this.USER!!, this.PASS!!, this.PORT!!)
         this.con = this.MySQL!!.open()
         if (this.con == null) {
@@ -142,15 +140,15 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
         }
         var ret = true
         if (debugMode!!) {
-            plugin.logger.info("query:$escapedQuery")
+            plugin.logger.info("query:$query")
         }
 
         try {
             this.st = this.con!!.createStatement()
-            this.st!!.execute(escapedQuery)
+            this.st!!.execute(query)
         } catch (var3: SQLException) {
             this.plugin.logger.info("[" + this.conName + "] Error executing statement: " + var3.errorCode + ":" + var3.message)
-            this.plugin.logger.info(escapedQuery)
+            this.plugin.logger.info(query)
             ret = false
 
         }
@@ -164,8 +162,6 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
     ////////////////////////////////
     fun query(query: String): ResultSet? {
 
-        val escapedQuery = escapeSQL(query)
-
         this.MySQL = MySQLFunc(this.HOST!!, this.DB!!, this.USER!!, this.PASS!!, this.PORT!!)
         this.con = this.MySQL!!.open()
         var rs: ResultSet? = null
@@ -175,34 +171,21 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
         }
 
         if (debugMode!!) {
-            plugin.logger.info("[DEBUG] query:$escapedQuery")
+            plugin.logger.info("[DEBUG] query:$query")
         }
 
         try {
             this.st = this.con!!.createStatement()
-            rs = this.st!!.executeQuery(escapedQuery)
+            rs = this.st!!.executeQuery(query)
         } catch (var4: SQLException) {
             this.plugin.logger.info("[" + this.conName + "] Error executing query: " + var4.errorCode)
-            this.plugin.logger.info(escapedQuery)
+            this.plugin.logger.info(query)
         }
 
         //        this.close();
 
         return rs
     }
-
-    fun escapeSQL(query:String):String{
-        return query.replace("\\", "\\\\")
-            .replace("\b", "\\b")
-            .replace("\n", "\\n")
-            .replace("\r", "\\r")
-            .replace("\t", "\\t")
-            .replace("\\x1A", "\\Z")
-            .replace("\\x00", "\\0")
-            .replace("'", "\\'")
-            .replace("\"", "\\\"")
-    }
-
 
     fun close() {
 
@@ -243,6 +226,19 @@ class MySQLManager(private val plugin: Plugin, private val conName: String) {
         fun executeQueue(query:String){
             blockingQueue.add(query)
         }
+
+        fun escapeSQL(query:String):String{
+            return query.replace("\\", "\\\\")
+                .replace("\b", "\\b")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t")
+                .replace("\\x1A", "\\Z")
+                .replace("\\x00", "\\0")
+                .replace("'", "\\'")
+                .replace("\"", "\\\"")
+        }
+
 
     }
 }
