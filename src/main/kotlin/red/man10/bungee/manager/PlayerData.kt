@@ -201,13 +201,13 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     fun saveCommand(command:String){
         MySQLManager.executeQueue("INSERT INTO command_log (uuid, mcid, command, date)" +
-                " VALUES ('$uuid', '$mcid', '${escapeSQL(command)}', ${dateToDatetime(Date())});")
+                " VALUES ('$uuid', '$mcid', '$command', ${dateToDatetime(Date())});")
     }
 
     fun saveMessage(message:String){
         lastChatMessage = message
         MySQLManager.executeQueue("INSERT INTO message_log (uuid, mcid, message, date)" +
-                " VALUES ('$uuid', '$mcid', '${escapeSQL(message)}', ${dateToDatetime(Date())});")
+                " VALUES ('$uuid', '$mcid', '$message', ${dateToDatetime(Date())});")
     }
 
 //    private fun saveScore(reason: String, issuer:String, score:Int){
@@ -265,18 +265,6 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
             sendMessage(p,"§f§lこの数字をチャットに入力してください => §a§l$code")
             sendMessage(p,"§f(Please enter this 6-digit number.)")
-        }
-
-        fun escapeSQL(query:String):String{
-            return query.replace("\\", "\\\\")
-                .replace("\b", "\\b")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t")
-                .replace("\\x1A", "\\Z")
-                .replace("\\x00", "\\0")
-                .replace("'", "\\'")
-                .replace("\"", "\\\"")
         }
 
         fun checkCode(p:ProxiedPlayer,msg:String):Boolean{

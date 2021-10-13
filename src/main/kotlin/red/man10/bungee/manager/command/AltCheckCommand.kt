@@ -40,7 +40,7 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
 
                     val rs = db.query("select mcid " +
                             "from connection_log " +
-                            "where ip in (select ip from connection_log where mcid = '${searchPlayer}' group by mcid, ip order by ip)\n" +
+                            "where ip in (select ip from connection_log where mcid = '${searchPlayer}' group by mcid, ip order by ip) " +
                             "group by mcid;")?:return@Thread
 
                     val playerSet = mutableSetOf<String>()
