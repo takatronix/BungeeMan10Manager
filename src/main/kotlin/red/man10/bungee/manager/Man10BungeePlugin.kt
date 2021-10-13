@@ -42,6 +42,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         var banIpList = mutableListOf<String>()
 
+        var msbMessage = ""
+
         fun sendMessage(p:ProxiedPlayer,text: String){
             p.sendMessage(*ComponentBuilder(text).create())
         }
@@ -90,6 +92,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, JailCommand)
         proxy.pluginManager.registerCommand(this, MuteCommand)
         proxy.pluginManager.registerCommand(this, BanCommand)
+        proxy.pluginManager.registerCommand(this, MSBCommand)
         proxy.pluginManager.registerCommand(this, FreezeCommand)
         proxy.pluginManager.registerCommand(this, ReportCommand)
         proxy.pluginManager.registerCommand(this, ChatSettingCommand)
@@ -152,6 +155,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     private fun loadConfig(){
         val config = ConfigFile(this).getConfig()
         try {
+
+            msbMessage = config?.getString("msbMessage")?:""
+
             this.enableJapanizer = config?.getBoolean("japanizer")
             this.jailServerName = config?.getString("jail.server","jail")
 
@@ -204,6 +210,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             val uuid = p.uniqueId
 
             val data  = PlayerData(p)
+
+            if (data.isMSB()){
+                p.disconnect(*ComponentBuilder(msbMessage).create())
+                return@execute
+            }
 
             //Banされてたら切断する
             if (data.isBanned()){

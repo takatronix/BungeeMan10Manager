@@ -16,6 +16,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
     var muteUntil: Date? = null        //      ミュート期限
     var jailUntil: Date? = null        //      ジェイル期限
     var banUntil: Date? = null         //      BAN期限
+    var msbUntil: Date? = null         //      MSB期限
 
     private var score:Int = 0                  //      スコア
 
@@ -41,6 +42,11 @@ class PlayerData(val uuid: UUID,val mcid: String) {
     }
     fun isBanned() : Boolean{
         if(banUntil == null)return false
+
+        return true
+    }
+    fun isMSB() : Boolean{
+        if(msbUntil == null)return false
 
         return true
     }
@@ -70,6 +76,13 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     }
 
+    fun addMSBTime(min:Int=30,hour:Int=0,day:Int=0){
+
+        msbUntil = addDate(msbUntil,min,hour,day)
+        save()
+
+    }
+
     fun resetMute(){
         muteUntil = null
         save()
@@ -82,6 +95,11 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     fun resetJail(){
         jailUntil = null
+        save()
+    }
+
+    fun resetMSB(){
+        msbUntil = null
         save()
     }
 
@@ -113,6 +131,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         if (muteUntil!=null && now>muteUntil)muteUntil = null
         if (banUntil !=null && now>banUntil)banUntil = null
         if (freezeUntil != null && now>freezeUntil)freezeUntil = null
+        if (msbUntil != null && now>msbUntil)msbUntil = null
 
         save()
 
@@ -146,6 +165,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         banUntil = rs.getTimestamp("ban_until")?:null
         freezeUntil = rs.getTimestamp("freeze_until")?:null
         muteUntil = rs.getTimestamp("mute_until")?:null
+        msbUntil = rs.getTimestamp("msb_until")
 
         isAuth = true
 
@@ -157,8 +177,8 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
     fun create(){
         mysql.execute("INSERT INTO player_data " +
-                "(uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
-                "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
+                "(uuid, mcid, freeze_until, mute_until, jail_until, ban_until, msb_until, score) " +
+                "VALUES ('$uuid', '$mcid', null, null, null, null, null, DEFAULT)")
 
         plugin.logger.info("create $mcid's data.")
 
@@ -173,6 +193,7 @@ class PlayerData(val uuid: UUID,val mcid: String) {
                 "mute_until=${dateToDatetime(muteUntil)}," +
                 "jail_until=${dateToDatetime(jailUntil)}," +
                 "ban_until=${dateToDatetime(banUntil)}," +
+                "msb_until=${dateToDatetime(msbUntil)}," +
                 "score=$score " +
                 "where uuid='${uuid}';")
 
