@@ -53,7 +53,7 @@ object BanCommand : Command("mban","bungeemanager.ban"){
 
     }
 
-    private fun punishment(data:PlayerData,args: Array<out String>,sender: CommandSender){
+    fun punishment(data:PlayerData,args: Array<out String>,sender: CommandSender){
 
         if (args[1] == "reset"){
 
