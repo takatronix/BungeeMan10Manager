@@ -1,14 +1,20 @@
 package red.man10.bungee.manager.command
 
 import net.md_5.bungee.api.CommandSender
-import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 object ReportCommand : Command("report","bungeemanager.report"){
+
+    private val cooldownMap = HashMap<CommandSender,Pair<Int,Date>>()
+    private const val maxReport = 3
+
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
 
         if (sender == null)return
@@ -25,6 +31,25 @@ object ReportCommand : Command("report","bungeemanager.report"){
             return
         }
 
+        val pair = cooldownMap[sender]
+
+        if (pair!=null){
+
+            val now = LocalDateTime.now()
+            val lastReportTime = LocalDateTime.ofInstant(pair.second.toInstant(), ZoneId.systemDefault())
+
+            val diff = ChronoUnit.MINUTES.between(lastReportTime,now)
+            println("${diff},${pair.first}")
+            if (diff<5 && pair.first>= maxReport){
+                sendMessage(sender,"§c§l一定時間内にレポートコマンドを使う回数が多すぎます！")
+                return
+            }
+
+            cooldownMap[sender] = Pair(pair.first+1,Date())
+        }else{
+            cooldownMap[sender] = Pair(1,Date())
+        }
+
         val text = StringBuilder()
 
         text.append("送信者:${sender.name}\n")
@@ -33,6 +58,8 @@ object ReportCommand : Command("report","bungeemanager.report"){
         text.append("本文:${args[1]}")
 
         plugin.discord.report(text.toString())
+
+
 
         sendMessage(sender,"§a§l送信しました！ご協力ありがとうございます！")
 
