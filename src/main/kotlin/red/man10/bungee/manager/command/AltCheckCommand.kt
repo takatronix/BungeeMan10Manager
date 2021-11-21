@@ -165,16 +165,16 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
 
 
                     //サブ垢を検索してmban
-                    val rs1 = db.query("select mcid " +
+                    val rs1 = db.query("select mcid,uuid " +
                             "from connection_log " +
                             "where ip in (select ip from connection_log where mcid = '${p.name}' group by mcid, ip order by ip) " +
-                            "group by mcid;")?:return@Thread
+                            "group by mcid,uuid;")?:return@Thread
 
                     val array = mutableListOf("","0k",reason).toTypedArray()
 
                     while (rs1.next()){
-                        val pair = PlayerData.get(args[0])?:continue
-                        BanCommand.punishment(pair.first,array , sender)
+                        val data = PlayerData(UUID.fromString(rs1.getString("uuid")),rs1.getString("mcid"))
+                        BanCommand.punishment(data,array , sender)
                     }
 
                 }.start()
