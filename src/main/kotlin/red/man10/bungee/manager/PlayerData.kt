@@ -154,7 +154,9 @@ class PlayerData(val uuid: UUID,val mcid: String) {
 
             Thread.sleep(1000)
 
-            showAuthenticationMsg(ProxyServer.getInstance().getPlayer(uuid))
+            val p = ProxyServer.getInstance().getPlayer(uuid)?:return
+
+            showAuthenticationMsg(p)
 
             mysql.close()
 
