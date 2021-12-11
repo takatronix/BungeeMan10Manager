@@ -39,7 +39,6 @@ sourceSets {
 }
 
 processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
     }
@@ -59,18 +58,8 @@ buildscript {
 
 jar {
     from {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         configurations.compile.collect {
             it.isDirectory() ? it : zipTree(it)
         }
-        (configurations.compile.findAll { !it.path.endsWith(".pom") }).collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
     }
-}
-
-
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
 }

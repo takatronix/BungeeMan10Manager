@@ -14,9 +14,6 @@ import net.md_5.bungee.api.event.*
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.api.plugin.Plugin
 import net.md_5.bungee.event.EventHandler
-import red.man10.bungee.manager.Man10Broadcast.broadcastDelay
-import red.man10.bungee.manager.Man10Broadcast.broadcastList
-import red.man10.bungee.manager.Man10Broadcast.runMHK
 import red.man10.bungee.manager.command.*
 import red.man10.bungee.manager.db.ConnectionDatabase
 import red.man10.bungee.manager.db.MySQLManager
@@ -24,8 +21,6 @@ import red.man10.bungee.manager.db.ScoreDatabase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
@@ -72,9 +67,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     var jailServerName: String? = null
     var loginServerName = "login"
 
-    // 自動メッセージ
-    var blockAutoMessages: MutableList<String>? = mutableListOf("うんこ")
-    val blockCommand = mutableListOf("pl","help")
 
     //      オンラインのプレイヤーの情報
     var dic = HashMap<String?, String?> ()
@@ -121,8 +113,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         discord.chat(":ballot_box_with_check:**サーバーが起動しました**")
 
-        runMHK()
-
     }
 
     override fun onDisable() {
@@ -167,7 +157,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             this.enableJapanizer = config?.getBoolean("japanizer")
             this.jailServerName = config?.getString("jail.server","jail")
 
-            this.blockAutoMessages = config?.getStringList("BlockAutoMessages")
             ////////////////////////////////////////////
             //      discord bot initialization
             discord.token = config?.getString("Discord.Token")
@@ -182,10 +171,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             discord.plugin = this
             discord.discordEvent = this
             discord.setup()
-            /////////////////////////////////////////////
-            //      Man10Broadcast initialization
-            broadcastDelay = config.getInt("BroadcastDelay")
-            broadcastList = config.getStringList("Broadcast")
             //////////////////////////////////////////////
             //      Server chat setting
             cancelSendingChatServer = config.getStringList("Chat.CancelSendingChatServer")?: mutableListOf()
@@ -302,15 +287,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         var message = removeColorCode(e.message)
 
-        ////////////////////////////////////////////////////
-        //      チャットアプリによる自動メッセージSPAM防止
-        if (blockAutoMessages != null) {
-            if (blockAutoMessages!!.contains(message)) {
-                e.isCancelled = true
-                sendMessage(p, "§cチャットアプリによる自動メッセージをブロックしました!!")
-                return
-            }
-        }
+
 
         ////////////////////////////////////////////////////
         //      メッセージ整形:ローマ字
@@ -368,9 +345,12 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed() &&
             !cancelSendingChatServer.contains(server)) {
             for (player in ProxyServer.getInstance().players) {
-                if (player.server.info.name != server && !cancelReceivingChatServer.contains(player.server.info.name) &&
-                        mutedPlayers[p.uniqueId]?.contains(player.uniqueId) == false) {
+                if (player.server.info.name != server &&
+                    !cancelReceivingChatServer.contains(player.server.info.name) &&
+                    mutedPlayers[player.uniqueId]?.contains(p.uniqueId) == false) {
+
                     sendMessage(player, chatMessage)
+
                 }
             }
         }
