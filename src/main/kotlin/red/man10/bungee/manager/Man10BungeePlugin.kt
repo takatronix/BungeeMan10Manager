@@ -24,6 +24,8 @@ import red.man10.bungee.manager.db.ScoreDatabase
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
@@ -43,6 +45,9 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         var banIpList = mutableListOf<String>()
 
         var msbMessage = ""
+
+        // ミュートプレイヤー keyがされているひと、valueがkeyをミュートしている人
+        val mutedPlayers = HashMap<UUID,ArrayList<UUID>>()
 
         fun sendMessage(p:ProxiedPlayer,text: String){
             p.sendMessage(*ComponentBuilder(text).create())
@@ -98,6 +103,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, ChatSettingCommand)
         proxy.pluginManager.registerCommand(this, WarnCommand)
         proxy.pluginManager.registerCommand(this, AltCheckCommand)
+        proxy.pluginManager.registerCommand(this,NoPermissionMuteCommand)
 
         //tell commandを置き換える
         for (command in arrayOf(
@@ -362,7 +368,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed() &&
             !cancelSendingChatServer.contains(server)) {
             for (player in ProxyServer.getInstance().players) {
-                if (player.server.info.name != server && !cancelReceivingChatServer.contains(player.server.info.name)) {
+                if (player.server.info.name != server && !cancelReceivingChatServer.contains(player.server.info.name) &&
+                        mutedPlayers[p.uniqueId]?.contains(player.uniqueId) == false) {
                     sendMessage(player, chatMessage)
                 }
             }
