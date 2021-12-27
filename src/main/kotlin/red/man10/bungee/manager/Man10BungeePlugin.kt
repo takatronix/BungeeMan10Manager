@@ -41,9 +41,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
         var msbMessage = ""
 
-        // ミュートプレイヤー keyがされているひと、valueがkeyをミュートしている人
-        val mutedPlayers = HashMap<UUID,ArrayList<UUID>>()
-
         fun sendMessage(p:ProxiedPlayer,text: String){
             p.sendMessage(*ComponentBuilder(text).create())
         }
@@ -95,7 +92,6 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         proxy.pluginManager.registerCommand(this, ChatSettingCommand)
         proxy.pluginManager.registerCommand(this, WarnCommand)
         proxy.pluginManager.registerCommand(this, AltCheckCommand)
-        proxy.pluginManager.registerCommand(this,NoPermissionMuteCommand)
 
         //tell commandを置き換える
         for (command in arrayOf(
@@ -345,12 +341,8 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         if(enableSendMessageToOtherServer && !(e.isCommand || e.isProxyCommand) && !data.isJailed() &&
             !cancelSendingChatServer.contains(server)) {
             for (player in ProxyServer.getInstance().players) {
-                if (player.server.info.name != server &&
-                    !cancelReceivingChatServer.contains(player.server.info.name) &&
-                    mutedPlayers[player.uniqueId]?.contains(p.uniqueId) == false) {
-
+                if (player.server.info.name != server && !cancelReceivingChatServer.contains(player.server.info.name)) {
                     sendMessage(player, chatMessage)
-
                 }
             }
         }
