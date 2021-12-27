@@ -7,21 +7,15 @@ import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 object ReportCommand : Command("report","bungeemanager.report"){
 
-    private val cooldownMap = HashMap<CommandSender,Pair<Int,Date>>()
-    private const val maxReport = 3
+    private val lastSendReport = HashMap<CommandSender,String>()
 
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
 
         if (sender == null)return
-
-//        if (sender !is ProxiedPlayer)return
 
         if (args == null || args.size != 2){
             sendMessage(sender,"§a§l〜サーバーへ報告をする〜")
@@ -33,25 +27,15 @@ object ReportCommand : Command("report","bungeemanager.report"){
             return
         }
 
-        val pair = cooldownMap[sender]
+        val last = lastSendReport[sender]
 
-        if (pair!=null){
 
-            val now = LocalDateTime.now()
-            val lastReportTime = LocalDateTime.ofInstant(pair.second.toInstant(), ZoneId.systemDefault())
-
-            val diff = ChronoUnit.MINUTES.between(lastReportTime,now)
-            println("${diff},${pair.first}")
-            if (diff<5 && pair.first>= maxReport){
-                sendMessage(sender,"§c§l一定時間内にレポートコマンドを使う回数が多すぎます！")
-                return
-            }
-
-            cooldownMap[sender] = Pair(pair.first+1,Date())
-        }else{
-            cooldownMap[sender] = Pair(1,Date())
+        if (last != null &&last == args[1]){
+            sendMessage(sender,"§c§l同じ内容を複数回レポートすることはできません")
+            return
         }
 
+        lastSendReport[sender] = args[1]
 
         val title = args[0] + "(${(Japanizer.japanize(args[0], JapanizeType.GOOGLE_IME , plugin.dic)?:"")})"
         val body = args[1] + "(${(Japanizer.japanize(args[1], JapanizeType.GOOGLE_IME ,plugin.dic)?:"")})"
