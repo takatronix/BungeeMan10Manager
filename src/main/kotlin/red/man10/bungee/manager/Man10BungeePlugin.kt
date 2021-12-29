@@ -489,5 +489,45 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
     override fun onDiscordMessageReceivedEvent(event: MessageReceivedEvent) {
 
     }
+//
+//
+//    private fun levenshtein(str1:String,str2:String):Double{
+//
+//        var point = 0
+//
+//        val loop = str1.length.coerceAtMost(str2.length)
+//
+//        val str1Length = str1.length
+//        val str2Length = str2.length
+//
+//        for (i in 0 until loop){
+//
+//            if (str1Length<= i && str2Length <=i)break
+//
+//            if (str1Length> i && str2Length > i){
+//                if (str1[i] != str2[i]){
+//                    point++
+//                }
+//                continue
+//            }
+//
+//            if (str1Length>i && str2Length<=i){
+//                point++
+//                continue
+//            }
+//
+//            if (str1Length<=i && str2Length>i){
+//                point++
+//                continue
+//            }
+//        }
+//
+//        val score = (loop-point).toDouble()/loop.toDouble()
+//
+//        proxy.logger.info("Levenshtein point:${point}")
+//        proxy.logger.info("Levenshtein score:${score}")
+//
+//        return score
+//    }
 
 }
