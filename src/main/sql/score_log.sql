@@ -6,6 +6,7 @@ create table score_log
 	score int null,
 	note varchar(256) null,
 	issuer varchar(16) null,
+	now_score int null,
 	date datetime null,
 	constraint score_log_pk
 		primary key (id)

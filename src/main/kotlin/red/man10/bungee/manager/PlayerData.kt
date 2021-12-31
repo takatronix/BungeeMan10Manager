@@ -103,6 +103,21 @@ class PlayerData(val uuid: UUID,val mcid: String) {
         save()
     }
 
+    fun getJailReason():String?{
+
+        val mysql = MySQLManager(plugin,"BungeeManager")
+
+        val rs = mysql.query("select note from score_log where uuid='${uuid}' and note like '%Jail' order by id desc limit 1;")?:return null
+
+        if (!rs.next())return null
+
+        val reason = rs.getString("note").replace("[give]:","").replace("によりJail","")
+        rs.close()
+        mysql.close()
+
+        return reason
+    }
+
     private fun addDate(date:Date?, min:Int, hour:Int, day:Int): Date? {
 
         val calender = Calendar.getInstance()

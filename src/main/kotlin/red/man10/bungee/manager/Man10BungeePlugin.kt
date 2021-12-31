@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.Title
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -212,6 +213,19 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             if (banIpList.contains(AltCheckCommand.getAddress(p))){
                 p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
                 return@execute
+            }
+
+            if (data.isJailed()){
+                es.execute {
+                    Thread.sleep(5000)
+
+                    val reason = data.getJailReason()
+
+                    if (reason != null){
+                        sendMessage(p,"§c§lあなたは「${reason}」により、現在Jail(刑務所)にいます！")
+                        p.sendTitle(proxy.createTitle().title(*ComponentBuilder("§c§lあなたは刑務所にいます").create()))
+                    }
+                }
             }
 
             sendGlobalMessage("§e${p}がMan10Networkにログインしました スコア:${ScoreDatabase.getScore(p.uniqueId)}ポイント")
