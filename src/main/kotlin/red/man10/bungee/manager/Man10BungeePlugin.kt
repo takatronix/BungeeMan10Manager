@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.Title
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -232,14 +231,13 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             val loginMessage = when{
 
-                score<0     -> "§c${p}がMan10Networkにログインしました スコア:${score}ポイント"
+                score<-100  -> "§c${p}がMan10Networkにログインしました スコア:${score}ポイント"
                 score<1000  -> "§e${p}がMan10Networkにログインしました スコア:${score}ポイント"
                 score>=1000 -> "§e${p}がMan10Networkにログインしました §dスコア:${score}ポイント"
                 score>=2000 -> "§a${p}がMan10Networkにログインしました スコア:${score}ポイント"
                 score>=4000 -> "§a§l${p}§f§lがMan10Networkにログインしました §d§lスコア:${score}ポイント"
-                score>=8000 -> "§e${p}がMan10Networkにログインしました スコア:${score}ポイント"
 //                score>=10000 -> ""
-                else -> "§e"
+                else -> "§e${p}がMan10Networkにログインしました スコア:${score}ポイント"
 
             }
 
@@ -410,7 +408,21 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         val p = e.player
 
         if (playerDataDic[p.uniqueId] != null){
-            sendGlobalMessage("§e${p}がMan10Networkからログアウトしました")
+
+            val score = ScoreDatabase.getScore(p.uniqueId)
+
+            val logoutMessage = when{
+
+                score<-100  -> "§c${p}がMan10Networkからログアウトしました"
+                score<1000  -> "§e${p}がMan10Networkからログアウトしました"
+                score>=2000 -> "§a${p}がMan10Networkにからログアウトしました"
+                score>=4000 -> "§a§l${p}§f§lがMan10Networkから§d§lログアウトしました"
+//                score>=10000 -> ""
+                else -> "§e${p}がMan10Networkからログアウトしました"
+
+            }
+
+            sendGlobalMessage(logoutMessage)
             discord.admin("**$p is disconnected**")
             discord.chat("**${p}がログアウトしました**")
 
