@@ -228,7 +228,22 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
                 }
             }
 
-            sendGlobalMessage("§e${p}がMan10Networkにログインしました スコア:${ScoreDatabase.getScore(p.uniqueId)}ポイント")
+            val score = ScoreDatabase.getScore(p.uniqueId)
+
+            val loginMessage = when{
+
+                score<0     -> "§c${p}がMan10Networkにログインしました スコア:${score}ポイント"
+                score<1000  -> "§e${p}がMan10Networkにログインしました スコア:${score}ポイント"
+                score>=1000 -> "§e${p}がMan10Networkにログインしました §dスコア:${score}ポイント"
+                score>=2000 -> "§a${p}がMan10Networkにログインしました スコア:${score}ポイント"
+                score>=4000 -> "§a§l${p}§f§lがMan10Networkにログインしました §d§lスコア:${score}ポイント"
+                score>=8000 -> "§e${p}がMan10Networkにログインしました スコア:${score}ポイント"
+//                score>=10000 -> ""
+                else -> "§e"
+
+            }
+
+            sendGlobalMessage(loginMessage)
             discord.admin("**$p is connected**")
             discord.chat("**${p}がログインしました**")
 
