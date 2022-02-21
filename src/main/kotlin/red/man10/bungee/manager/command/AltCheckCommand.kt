@@ -129,15 +129,10 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
                     return
                 }
 
-                val p = plugin.proxy.getPlayer(args[1]).let {
-                    if (it==null){
-                        sendMessage(sender,"プレイヤーがオフラインです")
-                        return
-                    }
-                    it
-                }
+                val uuid = PlayerData.getUUID(args[1])
 
-                val ip = getAddress(p)
+                val p = plugin.proxy.getPlayer(uuid)
+
                 val reason = args[2]
 
                 Thread{
@@ -145,29 +140,33 @@ object AltCheckCommand : Command("malt","bungeemanager.alt") {
                     //DBコネクション作成
                     val db = MySQLManager(plugin,"AltCheck")
 
-                    //IPBAN処理
-                    val rs = db.query("select * from ban_ip_list where ip_address='${ip}';")
+                    if (p!=null){
+                        val ip = getAddress(p)
 
-                    if (rs!=null && rs.next()){
-                        sendMessage(sender,"§cIP:\"${ip}\"は、「${rs.getString("reason")}」の理由ですでにBanされています")
-                        rs.close()
-                        db.close()
-                        return@Thread
+                        //IPBAN処理
+                        val rs = db.query("select * from ban_ip_list where ip_address='${ip}';")
+
+                        if (rs!=null && rs.next()){
+                            sendMessage(sender,"§cIP:\"${ip}\"は、「${rs.getString("reason")}」の理由ですでにBanされています")
+                            rs.close()
+                            db.close()
+                            return@Thread
+                        }
+
+                        db.execute("INSERT INTO ban_ip_list (ip_address, date, reason) " +
+                                "VALUES ('${ip}', DEFAULT, '$reason')")
+
+                        Man10BungeePlugin.banIpList.add(ip)
+
+                        sendMessage(sender,"IP:\"${ip}\"を、「$reason」の理由でIPBanしました")
+                        plugin.discord.jail("IP:\"${ip}\"を、「$reason」の理由でIPBanしました(処罰者:${sender.name})")
+
                     }
-
-                    db.execute("INSERT INTO ban_ip_list (ip_address, date, reason) " +
-                            "VALUES ('${ip}', DEFAULT, '$reason')")
-
-                    Man10BungeePlugin.banIpList.add(ip)
-
-                    sendMessage(sender,"IP:\"${ip}\"を、「$reason」の理由でIPBanしました")
-                    plugin.discord.jail("IP:\"${ip}\"を、「$reason」の理由でIPBanしました(処罰者:${sender.name})")
-
 
                     //サブ垢を検索してmban
                     val rs1 = db.query("select mcid,uuid " +
                             "from connection_log " +
-                            "where ip in (select ip from connection_log where mcid = '${p.name}' group by mcid, ip order by ip) " +
+                            "where ip in (select ip from connection_log where mcid = '${args[1]}' group by mcid, ip order by ip) " +
                             "group by mcid,uuid;")?:return@Thread
 
                     val array = mutableListOf("","0k",reason).toTypedArray()
