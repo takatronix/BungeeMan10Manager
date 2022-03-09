@@ -42,11 +42,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         var msbMessage = ""
 
         fun sendMessage(p:ProxiedPlayer,text: String){
-            p.sendMessage(*ComponentBuilder(text).create())
+            p.sendMessage(*ComponentBuilder(prefix+text).create())
         }
 
         fun sendMessage(c:CommandSender,text: String){
-            c.sendMessage(*ComponentBuilder(text).create())
+            c.sendMessage(*ComponentBuilder(prefix+text).create())
         }
 
         fun sendGlobalMessage(text:String){
@@ -205,12 +205,16 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             //Banされてたら切断する
             if (data.isBanned()){
-                p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
+                p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています\n " +
+                        "§a身に覚えがない場合は、Man10公式Discordの#reportにお申し出ください。\n" +
+                        "If you do not remember it, please report it to #report on the official Man10 Discord.").create())
                 return@execute
             }
 
             if (banIpList.contains(AltCheckCommand.getAddress(p))){
-                p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています").create())
+                p.disconnect(*ComponentBuilder("§4§lYou are banned. : あなたはこのサーバーからBanされています\n " +
+                        "§a身に覚えがない場合は、Man10公式Discordの#reportにお申し出ください。\n" +
+                        "If you do not remember it, please report it to #report on the official Man10 Discord.").create())
                 return@execute
             }
 

@@ -24,6 +24,7 @@ object ReportCommand : Command("report","bungeemanager.report"){
             sendMessage(sender,"§dいたずら目的で使った場合は処罰されます。")
             sendMessage(sender,"§dうっかり途中で送信してしまった場合は、")
             sendMessage(sender,"§d同じタイトルで、書き続けてください。")
+            sendMessage(sender,"§d報告されたレポートは、即座にサーバー運営が見れるチャンネルに転送されます。")
             return
         }
 

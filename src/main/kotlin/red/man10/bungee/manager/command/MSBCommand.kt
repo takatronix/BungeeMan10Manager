@@ -105,7 +105,6 @@ object MSBCommand : Command("msb","bungeemanager.msb"){
 
         val p = ProxyServer.getInstance().getPlayer(data.mcid)
 
-        //TODO:メッセージを考える
         if (p !=null){
             p.disconnect(*ComponentBuilder(msbMessage).create())
             return

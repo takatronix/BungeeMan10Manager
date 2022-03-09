@@ -34,7 +34,7 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
             val pair = PlayerData.get(args[0])
 
             if (pair ==null){
-                sender.sendMessage(*ComponentBuilder("§4存在しないユーザーです").create())
+                sendMessage(sender,"§4存在しないユーザーです")
                 return
             }
 
@@ -47,8 +47,8 @@ object JailCommand : Command("mjail","bungeemanager.jail"){
 
         }
 
-        sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> <期間+(d/h/m/0k/reset(解除))> <Jail理由>").create())
-        sender.sendMessage(*ComponentBuilder("§d§l/mjail <mcid> reset 釈放します").create())
+        sendMessage(sender,"§d§l/mjail <mcid> <期間+(d/h/m/0k/reset(解除))> <Jail理由>")
+        sendMessage(sender,"§d§l/mjail <mcid> reset 釈放します")
 
     }
 
