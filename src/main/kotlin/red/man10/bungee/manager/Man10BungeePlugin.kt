@@ -42,11 +42,11 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
         var msbMessage = ""
 
         fun sendMessage(p:ProxiedPlayer,text: String){
-            p.sendMessage(*ComponentBuilder(prefix+text).create())
+            p.sendMessage(*ComponentBuilder(text).create())
         }
 
         fun sendMessage(c:CommandSender,text: String){
-            c.sendMessage(*ComponentBuilder(prefix+text).create())
+            c.sendMessage(*ComponentBuilder(text).create())
         }
 
         fun sendGlobalMessage(text:String){
