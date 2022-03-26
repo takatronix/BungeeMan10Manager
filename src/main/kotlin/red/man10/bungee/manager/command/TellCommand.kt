@@ -75,8 +75,14 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
         if (sender is ProxiedPlayer) {
             senderServer = sender.server.info.name
         }
-        val endmsg =
-            "§7[" + sender.name + "@" + senderServer + " > " + reciever.name + "@" + reciever.server.info.name + "] §f" + msg
+
+        val isSenderAdmin = sender.hasPermission("bungeemanager.admin")
+        val isReceiverAdmin = reciever.hasPermission("bungeemanager.admin")
+
+        val endmsg = "§b個人チャット[${sender.name}@${senderServer+ if(isSenderAdmin)"(GM)" else ""} >" +
+                " ${reciever.name}@${reciever.server.info.name}${if(isSenderAdmin)"(GM)" else ""}] §f${msg}"
+
+
         // メッセージ送信
         sendMessage(sender, endmsg)
         sendMessage(reciever, endmsg)
