@@ -234,11 +234,24 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             val score = ScoreDatabase.getScore(p.uniqueId)
 
             val loginMessage = when{
-                score>=4000 -> "§a§l${p}§f§lがMan10Networkにログインしました §d§lスコア:${score}ポイント"
-                score>=2000 -> "§a${p}がMan10Networkにログインしました スコア:${score}ポイント"
-                score>=1000 -> "§e${p}がMan10Networkにログインしました §dスコア:${score}ポイント"
-                score<-100  -> "§c${p}がMan10Networkにログインしました スコア:${score}ポイント"
-                score<1000  -> "§e${p}がMan10Networkにログインしました スコア:${score}ポイント"
+                score>=5000 -> {
+                    //1 , 1+(L/3) , 1+(L%3)+2*(L/3)
+                    val name = StringBuilder()
+
+                    val l = p.name.length
+
+                    name.append(p.name)
+                    name.insert(0,"§d§l§o")
+                    name.insert(1+(l/3),"§f§l§o")
+                    name.insert(2+(l%3)+2*(l/3),"§a§l§o")
+
+                    "${name}が§d§l§oMan10§f§l§oNet§a§l§owork§7§lにログインしました §d§lスコア:${score}ポイント"
+                }
+                score>=4000 -> "§a§l${p.name}§f§lがMan10Networkにログインしました §d§lスコア:${score}ポイント"
+                score>=2000 -> "§a${p.name}がMan10Networkにログインしました スコア:${score}ポイント"
+                score>=1000 -> "§e${p.name}がMan10Networkにログインしました §dスコア:${score}ポイント"
+                score<-100  -> "§c${p.name}がMan10Networkにログインしました スコア:${score}ポイント"
+                score<1000  -> "§e${p.name}がMan10Networkにログインしました スコア:${score}ポイント"
 //                score>=10000 -> ""
                 else -> "§e${p}がMan10Networkにログインしました スコア:${score}ポイント"
 
@@ -246,7 +259,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             sendGlobalMessage(loginMessage)
             discord.admin("**$p is connected**")
-            discord.chat("**${p}がログインしました**")
+            discord.chat("**${p.name}がログインしました**")
 
             playerDataDic[uuid] = data
 
@@ -282,7 +295,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
 
             sendMessage(p,"§a認証できました！")
             sendMessage(p,"§aAuthentication Success!")
-            sendMessage(p,"§a&lようこそman10サーバーへ！")
+            sendMessage(p,"§a§lようこそman10サーバーへ！")
 
             es.execute {
 
