@@ -234,19 +234,7 @@ class Man10BungeePlugin : Plugin() ,Listener,IDiscordEvent{
             val score = ScoreDatabase.getScore(p.uniqueId)
 
             val loginMessage = when{
-                score>=5000 -> {
-                    //1 , 1+(L/3) , 1+(L%3)+2*(L/3)
-                    val name = StringBuilder()
 
-                    val l = p.name.length
-
-                    name.append(p.name)
-                    name.insert(0,"§d§l§o")
-                    name.insert(1+(l/3),"§f§l§o")
-                    name.insert(2+(l%3)+2*(l/3),"§a§l§o")
-
-                    "${name}§7§lが§d§l§oMan10§f§l§oNet§a§l§owork§7§lにログインしました §d§lスコア:${score}ポイント"
-                }
                 score>=4000 -> "§a§l${p.name}§f§lがMan10Networkにログインしました §d§lスコア:${score}ポイント"
                 score>=2000 -> "§a${p.name}がMan10Networkにログインしました スコア:${score}ポイント"
                 score>=1000 -> "§e${p.name}がMan10Networkにログインしました §dスコア:${score}ポイント"
