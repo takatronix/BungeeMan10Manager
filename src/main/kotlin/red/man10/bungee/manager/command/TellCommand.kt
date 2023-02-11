@@ -16,7 +16,7 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
 
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
 
-        if (sender == null)return
+        if (sender == null) return
 
         // 引数が足らないので、Usageを表示して終了する。
         if (args?.size!! <= 1) {
@@ -26,16 +26,20 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
 
         // 自分自身には送信できない。
         if (args[0] == sender.name) {
-            sendMessage(sender, "§c自分自身にはプライベートメッセージを送信することができません。" +
-                    "Cannot send a private message to myself.")
+            sendMessage(
+                sender, "§c自分自身にはプライベートメッセージを送信することができません。" +
+                        "Cannot send a private message to myself."
+            )
             return
         }
 
         // 送信先プレイヤーの取得。取得できないならエラーを表示して終了する。
         val receiver = plugin.proxy.getPlayer(args[0])
         if (receiver == null) {
-            sendMessage(sender, "§cメッセージ送信先が見つかりません。" +
-                    "§cThe destination for the message was not found.")
+            sendMessage(
+                sender, "§cメッセージ送信先が見つかりません。" +
+                        "§cThe destination for the message was not found."
+            )
             return
         }
 
@@ -61,7 +65,7 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
      * @param reciever 受信者名
      * @param message  メッセージ
      */
-     fun sendPrivateMessage(sender: CommandSender, reciever: ProxiedPlayer, message: String?) {
+    fun sendPrivateMessage(sender: CommandSender, reciever: ProxiedPlayer, message: String?) {
         // Japanizeの付加
         var msg = ChatColor.translateAlternateColorCodes('&', message)
         var msgs = ""
@@ -79,8 +83,8 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
         val isSenderAdmin = sender.hasPermission("bungeemanager.admin")
         val isReceiverAdmin = reciever.hasPermission("bungeemanager.admin")
 
-        val endmsg = "§b個人チャット[${sender.name}@${senderServer+ if(isSenderAdmin)"(GM)" else ""} >" +
-                " ${reciever.name}@${reciever.server.info.name}${if(isSenderAdmin)"(GM)" else ""}] §f${msg}"
+        val endmsg = "§b個人チャット[${sender.name}@${senderServer + if (isSenderAdmin) "(GM)" else ""} >" +
+                " ${reciever.name}@${reciever.server.info.name}${if (isSenderAdmin) "(GM)" else ""}] §f${msg}"
 
 
         // メッセージ送信
@@ -93,8 +97,7 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
     }
 
 
-
-    companion object{
+    companion object {
 
         var history = HashMap<String, String>()
 

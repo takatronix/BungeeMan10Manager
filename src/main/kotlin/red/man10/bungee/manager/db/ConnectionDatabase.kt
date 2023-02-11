@@ -1,6 +1,7 @@
 package red.man10.bungee.manager.db
 
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.db.MySQLManager.Companion.executeQueue
 import java.util.*
@@ -32,7 +33,7 @@ object ConnectionDatabase {
         val connected = connectedTime[key]
 
         if (connected == null){
-            plugin.discord.log("接続した時間の取得に失敗[${p.name}]")
+            Man10BungeePlugin.discord.log("接続した時間の取得に失敗[${p.name}]")
             return
         }
 

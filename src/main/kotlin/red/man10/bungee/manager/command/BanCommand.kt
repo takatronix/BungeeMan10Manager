@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.DiscordBot
+import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
@@ -107,8 +108,8 @@ object BanCommand : Command("mban","bungeemanager.ban"){
         }
         playerDataDic[data.uuid] = data
 
-        plugin.discord.jail("${data.mcid}は「${args[2]}」の理由によりBANされました！(処罰者:${sender.name})")
-        plugin.discord.jail("解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.banUntil)}")
+        Man10BungeePlugin.discord.jail("${data.mcid}は「${args[2]}」の理由によりBANされました！(処罰者:${sender.name})")
+        Man10BungeePlugin.discord.jail("解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.banUntil)}")
 
         val p = ProxyServer.getInstance().getPlayer(data.mcid)
 

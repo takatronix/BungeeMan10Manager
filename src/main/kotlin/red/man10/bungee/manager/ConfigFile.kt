@@ -12,27 +12,28 @@ import java.io.InputStream
 
 
 class ConfigFile(private var plugin: Plugin) {
-    private var file:File
-    private lateinit var config:Configuration
+    private var file: File
+    private lateinit var config: Configuration
 
     private val filePatch = "config.yml"
+
     init {
         //  Directory
-        if(!plugin.dataFolder.exists())plugin.dataFolder.mkdir()
+        if (!plugin.dataFolder.exists()) plugin.dataFolder.mkdir()
         this.file = File(plugin.dataFolder, filePatch)
         //  File
-        if(!file.exists()){
-            try{
+        if (!file.exists()) {
+            try {
                 file.createNewFile()
-                try{
-                    val inputStream:InputStream = getResourceAsStream("config.yml")
-                    val outputStream: FileOutputStream = FileOutputStream(file)
-                    ByteStreams.copy(inputStream,outputStream)
-                }catch (e: IOException){
+                try {
+                    val inputStream: InputStream = getResourceAsStream("config.yml")
+                    val outputStream = FileOutputStream(file)
+                    ByteStreams.copy(inputStream, outputStream)
+                } catch (e: IOException) {
                     e.printStackTrace()
                     plugin.logger.warning("Unable to create storage file. $filePatch")
                 }
-            }catch (e: IOException){
+            } catch (e: IOException) {
                 e.printStackTrace()
                 plugin.logger.info("failed to create config.yml")
             }
@@ -44,26 +45,27 @@ class ConfigFile(private var plugin: Plugin) {
         return plugin.getResourceAsStream(patch)
     }
 
-    fun getConfig():Configuration? {
+    fun getConfig(): Configuration? {
         return try {
             this.config = ConfigurationProvider.getProvider(YamlConfiguration::class.java).load(this.file)
             this.config
-        }catch (e:IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
             null
         }
     }
 
-    fun saveConfig(){
+    fun saveConfig() {
         try {
-            ConfigurationProvider.getProvider(YamlConfiguration::class.java).save(config, File(plugin?.dataFolder, "config.yml"))
-        }catch (e:IOException){
+            ConfigurationProvider.getProvider(YamlConfiguration::class.java)
+                .save(config, File(plugin.dataFolder, "config.yml"))
+        } catch (e: IOException) {
             e.printStackTrace()
             plugin.logger.severe("Couldn't save storage file!")
         }
     }
 
-    fun dataFolder():File{
+    fun dataFolder(): File {
         return plugin.dataFolder
     }
 

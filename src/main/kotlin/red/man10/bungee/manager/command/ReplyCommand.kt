@@ -16,14 +16,16 @@ class ReplyCommand(override val plugin: Man10BungeePlugin, name: String) : TellC
                 sendMessage(sender, "§d現在の会話相手:${receiverName} §dCurrent Conversation Partner： $receiverName");
             } else {
                 sendMessage(
-                    sender, "§c現在の会話相手はいません。 §cThere is no current conversation partner.")
+                    sender, "§c現在の会話相手はいません。 §cThere is no current conversation partner."
+                )
             }
             return
         }
         // 送信先プレイヤーの取得。取得できないならエラーを表示して終了する。
         if (receiverName == null) {
             sendMessage(
-                sender, "§cメッセージ送信先が見つかりません。")
+                sender, "§cメッセージ送信先が見つかりません。"
+            )
             return
         }
         val receiver = plugin.proxy.getPlayer(getHistory(sender.name))

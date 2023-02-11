@@ -100,8 +100,8 @@ object MSBCommand : Command("msb","bungeemanager.msb"){
 
         Man10BungeePlugin.playerDataDic[data.uuid] = data
 
-        Man10BungeePlugin.plugin.discord.jail("${data.mcid}は「${args[2]}」の理由によりMSBされました！(処罰者:${sender.name})")
-        Man10BungeePlugin.plugin.discord.jail("解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.msbUntil)}")
+        Man10BungeePlugin.discord.jail("${data.mcid}は「${args[2]}」の理由によりMSBされました！(処罰者:${sender.name})")
+        Man10BungeePlugin.discord.jail("解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.msbUntil)}")
 
         val p = ProxyServer.getInstance().getPlayer(data.mcid)
 
