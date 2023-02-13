@@ -75,13 +75,14 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
 
     override fun onEnable() { // Plugin startup logic
 
+        plugin = this
+
         log("started")
         loadConfig()
         proxy.pluginManager.registerListener(this, this)
 
         discord.system("サーバー開始しました")
 
-        plugin = this
 
         proxy.pluginManager.registerCommand(this, JailCommand)
         proxy.pluginManager.registerCommand(this, MuteCommand)
@@ -322,16 +323,10 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
             return
         }
 
-        ////////////////////////////
-        //数字のみのチャットは表示しない
-        if (isNumber){
-            e.isCancelled = true
-            return
-        }
 
         ///////////////////////////////////////////////
         //      同じメッセージを連続して送れないように
-        if (data.lastChatMessage == normalMessage) {
+        if (data.lastChatMessage == normalMessage && !isNumber) {
             e.isCancelled = true
             sendMessage(p, "§c§l同じメッセージを連続して送ることはできません")
             return
@@ -386,6 +381,11 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
                 e.isCancelled = true
                 return
             }
+            return
+        }
+
+        //数字だったらここで終了
+        if (isNumber){
             return
         }
 
