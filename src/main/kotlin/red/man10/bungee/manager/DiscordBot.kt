@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
+import java.util.concurrent.LinkedBlockingQueue
 import javax.security.auth.login.LoginException
 
 
@@ -43,40 +44,56 @@ class DiscordBot : ListenerAdapter() {
 
     lateinit var discordEvent: IDiscordEvent
 
+    private val blockingQueue = LinkedBlockingQueue<()->Unit>()
+
     //      チャットチャンネル出力
     fun chat(text: String) {
-        if (text.indexOf("/") == 0) return
-        chatChannel?.sendMessage(text)?.queue()?:return
+        blockingQueue.add {
+            if (text.indexOf("/") == 0) return@add
+            chatChannel?.sendMessage(text)?.queue()
+        }
     }
 
     //      ログチャンネル出力
     fun log(text: String) {
-        logChannel?.sendMessage(text)?.queue()?:return
+        blockingQueue.add {
+            logChannel?.sendMessage(text)?.queue()
+        }
     }
 
     //      システム出力
     fun system(text: String) {
-        systemChannel?.sendMessage(text)?.queue()?:return
+        blockingQueue.add {
+            systemChannel?.sendMessage(text)?.queue()
+        }
     }
 
     //      通知
     fun notification(text: String) {
-        notificationChannel?.sendMessage(text)?.queue()?:return
+        blockingQueue.add {
+            notificationChannel?.sendMessage(text)?.queue()
+        }
     }
 
     //      Admin用
     fun admin(text: String) {
-        adminChannel?.sendMessage(text)?.queue()?:return
+        blockingQueue.add {
+            adminChannel?.sendMessage(text)?.queue()
+        }
     }
 
     //      Report
     fun report(text: String) {
-        reportChannel?.sendMessage(text)?.queue()?:return
+        blockingQueue.add {
+            reportChannel?.sendMessage(text)?.queue()
+        }
     }
 
     //      処罰系
     fun jail(text: String) {
-        jailChannel?.sendMessage(text)?.queue()?:return
+        blockingQueue.add {
+            jailChannel?.sendMessage(text)?.queue()
+        }
     }
 
     fun shutdown() {
@@ -116,6 +133,21 @@ class DiscordBot : ListenerAdapter() {
         plugin.log("discord setup done!")
     }
 
+    fun chatQueueThread(){
+
+        while (true){
+            try {
+                val job = blockingQueue.take()
+                job.invoke()
+            }catch (e:InterruptedException){
+                break
+            }catch (e:Exception){
+                continue
+            }
+        }
+
+    }
+
     override fun onMessageReceived(event: MessageReceivedEvent) {
 //        println("chat event")
 
@@ -131,7 +163,7 @@ class DiscordBot : ListenerAdapter() {
         val text = message.contentDisplay
 
         val outText = "§f[§3@Discord§f]${event.member?.nickname ?: user.name}§b:§f$text"
-        Man10BungeePlugin.sendGlobalMessage(outText)
+        Man10BungeePlugin.globalMessage(outText)
     }
 
     override fun onReady(event: ReadyEvent) {

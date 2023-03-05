@@ -7,7 +7,7 @@ import red.man10.bungee.manager.ConfigFile
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.cancelReceivingChatServer
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.cancelSendingChatServer
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.msg
 
 object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
     override fun execute(sender: CommandSender?, args: Array<out String>?) {
@@ -15,8 +15,8 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
         if (sender == null || sender !is ProxiedPlayer)return
         if (args.isNullOrEmpty()){
 
-            sendMessage(sender,"/chatset cancelsend       他鯖に送らない")
-            sendMessage(sender,"/chatset cancelreceive    他鯖のを受け取らない")
+            msg(sender,"/chatset cancelsend       他鯖に送らない")
+            msg(sender,"/chatset cancelreceive    他鯖のを受け取らない")
             return
         }
 
@@ -30,7 +30,7 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
 
                     cancelSendingChatServer.remove(server)
 
-                    sendMessage(sender,"他鯖にも送るようにしました")
+                    msg(sender,"他鯖にも送るようにしました")
 
                     saveSendingConfig()
 
@@ -39,7 +39,7 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
 
                 cancelSendingChatServer.add(server)
 
-                sendMessage(sender,"他鯖に送らないようにしました")
+                msg(sender,"他鯖に送らないようにしました")
 
                 saveSendingConfig()
 
@@ -52,7 +52,7 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
 
                     cancelReceivingChatServer.remove(server)
 
-                    sendMessage(sender,"他鯖から受け取るようにしました")
+                    msg(sender,"他鯖から受け取るようにしました")
 
                     saveReceivingConfig()
 
@@ -61,7 +61,7 @@ object ChatSettingCommand : Command("chatset","bungeemanager.chatset") {
 
                 cancelReceivingChatServer.add(server)
 
-                sendMessage(sender,"他鯖から受けとらないようにしました")
+                msg(sender,"他鯖から受けとらないようにしました")
 
                 saveReceivingConfig()
 

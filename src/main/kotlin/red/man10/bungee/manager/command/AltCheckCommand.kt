@@ -7,7 +7,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.msg
 import red.man10.bungee.manager.PlayerData
 import red.man10.bungee.manager.db.MySQLManager
 import java.util.*
@@ -20,12 +20,12 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
         if (sender == null) return
 
         if (args.isEmpty()) {
-            sendMessage(sender, "/malt sub <mcid> サブ垢の可能性があるアカウントを検索します")
-            sendMessage(sender, "/malt user <mcid> 過去のIPアドレスなどを検索します")
-            sendMessage(sender, "/malt ip <mcid/ipアドレス(XXX.XXX.XXX.XXX)> 指定IPと同じIPのアカウントを検索します")
-            sendMessage(sender, "/malt ipban <mcid/ipアドレス> <理由> 指定したIP/プレイヤーのIPをBanします")
-            sendMessage(sender, "/malt ban <mcid> <理由> 指定したプレイヤーとそのサブアカウントをmbanします")
-            sendMessage(sender, "/malt unban <ipアドレス> 指定したIPのIPをUnBanします")
+            msg(sender, "/malt sub <mcid> サブ垢の可能性があるアカウントを検索します")
+            msg(sender, "/malt user <mcid> 過去のIPアドレスなどを検索します")
+            msg(sender, "/malt ip <mcid/ipアドレス(XXX.XXX.XXX.XXX)> 指定IPと同じIPのアカウントを検索します")
+            msg(sender, "/malt ipban <mcid/ipアドレス> <理由> 指定したIP/プレイヤーのIPをBanします")
+            msg(sender, "/malt ban <mcid> <理由> 指定したプレイヤーとそのサブアカウントをmbanします")
+            msg(sender, "/malt unban <ipアドレス> 指定したIPのIPをUnBanします")
 
             return
         }
@@ -58,11 +58,11 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
 
                     playerSet.remove(searchPlayer)
 
-                    sendMessage(sender, "§d§l検索ユーザー:${searchPlayer}")
-                    sendMessage(sender, "§d§lサブ垢の可能性があるプレイヤー")
+                    msg(sender, "§d§l検索ユーザー:${searchPlayer}")
+                    msg(sender, "§d§lサブ垢の可能性があるプレイヤー")
 
                     for (p in playerSet) {
-                        sendMessage(sender, "§c§l${p}")
+                        msg(sender, "§c§l${p}")
                     }
 
                 }.start()
@@ -90,12 +90,12 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                     rs.close()
                     db.close()
 
-                    sendMessage(sender, "§d§l検索ユーザー:${p}")
-                    sendMessage(sender, "§d§l検索ユーザーから過去のIPなどを検索")
-                    sendMessage(sender, "§d§lMCID / IP / 接続回数")
+                    msg(sender, "§d§l検索ユーザー:${p}")
+                    msg(sender, "§d§l検索ユーザーから過去のIPなどを検索")
+                    msg(sender, "§d§lMCID / IP / 接続回数")
 
                     for (t in value) {
-                        sendMessage(sender, "§c§l${t.first} / ${t.second} / ${t.third}")
+                        msg(sender, "§c§l${t.first} / ${t.second} / ${t.third}")
                     }
 
                 }.start()
@@ -124,11 +124,11 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                     rs.close()
                     db.close()
 
-                    sendMessage(sender, "§d§l検索IP:${ip}")
-                    sendMessage(sender, "§d§l同じIPのプレイヤー")
+                    msg(sender, "§d§l検索IP:${ip}")
+                    msg(sender, "§d§l同じIPのプレイヤー")
 
                     for (player in playerList) {
-                        sendMessage(sender, "§c§l${player}")
+                        msg(sender, "§c§l${player}")
                     }
 
 
@@ -141,7 +141,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                 //malt ban mcid/ip reason
 
                 if (args.size < 3) {
-                    sendMessage(sender, "/malt ban <mcid/ip> <reason>")
+                    msg(sender, "/malt ban <mcid/ip> <reason>")
                     return
                 }
 
@@ -163,7 +163,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                         val rs = db.query("select * from ban_ip_list where ip_address='${ip}';")
 
                         if (rs != null && rs.next()) {
-                            sendMessage(sender, "§cIP:\"${ip}\"は、「${rs.getString("reason")}」の理由ですでにBanされています")
+                            msg(sender, "§cIP:\"${ip}\"は、「${rs.getString("reason")}」の理由ですでにBanされています")
                             rs.close()
                             db.close()
                             return@Thread
@@ -176,7 +176,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
 
                         Man10BungeePlugin.banIpList.add(ip)
 
-                        sendMessage(sender, "IP:\"${ip}\"を、「$reason」の理由でIPBanしました")
+                        msg(sender, "IP:\"${ip}\"を、「$reason」の理由でIPBanしました")
                         Man10BungeePlugin.discord.jail("IP:\"${ip}\"を、「$reason」の理由でIPBanしました(処罰者:${sender.name})")
 
                     }
@@ -204,7 +204,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                 //malt ban mcid/ip reason
 
                 if (args.size < 3) {
-                    sendMessage(sender, "/malt ban <mcid/ip> <reason>")
+                    msg(sender, "/malt ban <mcid/ip> <reason>")
                     return
                 }
 
@@ -214,7 +214,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                 val reason = args[2]
 
                 if (!isIPAddress(ip)) {
-                    sendMessage(sender, "プレイヤーがオフラインか、IPアドレスの入力に問題があります。")
+                    msg(sender, "プレイヤーがオフラインか、IPアドレスの入力に問題があります。")
                     return
                 }
 
@@ -224,7 +224,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                     val rs = db.query("select * from ban_ip_list where ip_address='${ip}';")
 
                     if (rs != null && rs.next()) {
-                        sendMessage(sender, "§cIP:\"${ip}\"は、「${rs.getString("reason")}」の理由ですでにBanされています")
+                        msg(sender, "§cIP:\"${ip}\"は、「${rs.getString("reason")}」の理由ですでにBanされています")
                         rs.close()
                         db.close()
                         return@Thread
@@ -244,7 +244,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                         }
                     }
 
-                    sendMessage(sender, "IP:\"${ip}\"を、「$reason」の理由でIPBanしました")
+                    msg(sender, "IP:\"${ip}\"を、「$reason」の理由でIPBanしました")
                     Man10BungeePlugin.discord.jail("IP:\"${ip}\"を、「$reason」の理由でIPBanしました(処罰者:${sender.name})")
 
 
@@ -258,7 +258,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                 val ip = args[1]
 
                 if (!isIPAddress(ip)) {
-                    sendMessage(sender, "IPアドレスの入力に問題があります")
+                    msg(sender, "IPアドレスの入力に問題があります")
                     return
                 }
 
@@ -268,7 +268,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
                     val rs = db.query("select * from ban_ip_list where ip_address='${ip}';")
 
                     if (rs == null || !rs.next()) {
-                        sendMessage(sender, "IP:${ip}はBanされていません")
+                        msg(sender, "IP:${ip}はBanされていません")
                         db.close()
                         return@Thread
                     }
@@ -277,7 +277,7 @@ object AltCheckCommand : Command("malt", "bungeemanager.alt") {
 
                     Man10BungeePlugin.banIpList.remove(ip)
 
-                    sendMessage(sender, "IP:\"${ip}\"のIPBanを解除しました")
+                    msg(sender, "IP:\"${ip}\"のIPBanを解除しました")
                     Man10BungeePlugin.discord.jail("IP:\"${ip}\"のIPBanを解除しました(解除:${sender.name})")
 
                 }.start()

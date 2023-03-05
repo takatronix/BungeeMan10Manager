@@ -7,7 +7,7 @@ import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.msg
 import java.util.*
 
 
@@ -20,13 +20,13 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
 
         // 引数が足らないので、Usageを表示して終了する。
         if (args?.size!! <= 1) {
-            sendMessage(sender, "§c/$name <player> <message> : プレイベートメッセージを送ります。 Send private message.")
+            msg(sender, "§c/$name <player> <message> : プレイベートメッセージを送ります。 Send private message.")
             return
         }
 
         // 自分自身には送信できない。
         if (args[0] == sender.name) {
-            sendMessage(
+            msg(
                 sender, "§c自分自身にはプライベートメッセージを送信することができません。" +
                         "Cannot send a private message to myself."
             )
@@ -36,7 +36,7 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
         // 送信先プレイヤーの取得。取得できないならエラーを表示して終了する。
         val receiver = plugin.proxy.getPlayer(args[0])
         if (receiver == null) {
-            sendMessage(
+            msg(
                 sender, "§cメッセージ送信先が見つかりません。" +
                         "§cThe destination for the message was not found."
             )
@@ -88,8 +88,8 @@ open class TellCommand(open val plugin: Man10BungeePlugin, name: String) : Comma
 
 
         // メッセージ送信
-        sendMessage(sender, endmsg)
-        sendMessage(reciever, endmsg)
+        msg(sender, endmsg)
+        msg(reciever, endmsg)
         //履歴をput
         putHistory(reciever.name, sender.name)
         // コンソールに表示設定なら、コンソールに表示する

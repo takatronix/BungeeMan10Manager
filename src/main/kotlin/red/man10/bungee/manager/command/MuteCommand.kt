@@ -5,9 +5,8 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.globalMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.msg
 import red.man10.bungee.manager.PlayerData
 import java.text.SimpleDateFormat
 
@@ -34,7 +33,7 @@ object MuteCommand : Command("mmute", "bungeemanager.mute") {
             val pair = PlayerData.get(args[0])
 
             if (pair == null) {
-                sendMessage(sender, "§4存在しないユーザーです")
+                msg(sender, "§4存在しないユーザーです")
                 return
             }
 
@@ -47,8 +46,8 @@ object MuteCommand : Command("mmute", "bungeemanager.mute") {
 
         }
 
-        sendMessage(sender, "§d§l/mmute <mcid> <期間+(d/h/m/reset(解除))> <ミュート理由>")
-        sendMessage(sender, "§d§l/mmute <mcid> reset ミュート解除")
+        msg(sender, "§d§l/mmute <mcid> <期間+(d/h/m/reset(解除))> <ミュート理由>")
+        msg(sender, "§d§l/mmute <mcid> reset ミュート解除")
 
     }
 
@@ -58,7 +57,7 @@ object MuteCommand : Command("mmute", "bungeemanager.mute") {
 
             data.resetMute()
             playerDataDic[data.uuid] = data
-            sendGlobalMessage("§c§l${data.mcid}はミュート解除されました")
+            globalMessage("§c§l${data.mcid}はミュート解除されました")
             return
         }
 
@@ -68,12 +67,12 @@ object MuteCommand : Command("mmute", "bungeemanager.mute") {
         try {
             time = args[1].replace(unit.toString(), "").toInt()
         } catch (e: Exception) {
-            sendMessage(sender, "§c§l時間の指定方法が不適切です")
+            msg(sender, "§c§l時間の指定方法が不適切です")
             return
         }
 
         if (!data.isMuted() && time < 0) {
-            sendMessage(sender, "§c§lこのユーザーは既にミュート解除されています！")
+            msg(sender, "§c§lこのユーザーは既にミュート解除されています！")
             return
         }
 
@@ -84,25 +83,25 @@ object MuteCommand : Command("mmute", "bungeemanager.mute") {
             'm' -> data.addMuteTime(time, 0, 0)
 
             else -> {
-                sendMessage(sender, "§c§l時間の指定方法が不適切です")
+                msg(sender, "§c§l時間の指定方法が不適切です")
                 return
             }
 
         }
 
         if (!data.isMuted()) {
-            sendMessage(sender, "§c§l${data.mcid}はミュート解除されました")
+            msg(sender, "§c§l${data.mcid}はミュート解除されました")
             playerDataDic[data.uuid] = data
             return
         }
 
-        sendMessage(sender, "§c§l${args[0]}をミュートしました")
+        msg(sender, "§c§l${args[0]}をミュートしました")
 
         val p = ProxyServer.getInstance().getPlayer(data.mcid)
 
         if (p != null) {
-            sendMessage(p, "§c§lあなたは「${args[2]}」の理由により、ミュートされました！")
-            sendMessage(p, "§c§l解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.muteUntil)}")
+            msg(p, "§c§lあなたは「${args[2]}」の理由により、ミュートされました！")
+            msg(p, "§c§l解除日:${SimpleDateFormat("yyyy/MM/dd").format(data.muteUntil)}")
         }
 
         Man10BungeePlugin.discord.jail("${args[0]}は「${args[2]}」の理由により、ミュートされました！(処罰者:${sender.name})")

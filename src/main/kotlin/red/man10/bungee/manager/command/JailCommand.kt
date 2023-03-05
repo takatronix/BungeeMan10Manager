@@ -6,8 +6,8 @@ import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.playerDataDic
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendGlobalMessage
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.globalMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.msg
 import red.man10.bungee.manager.PlayerData
 import red.man10.bungee.manager.db.ScoreDatabase
 import java.text.SimpleDateFormat
@@ -18,8 +18,14 @@ object JailCommand : Command("mjail", "bungeemanager.jail") {
 
         if (sender == null) return
 
+        if (args.isNullOrEmpty()){
+            msg(sender, "§d§l/mjail <mcid> <期間+(d/h/m/0k/reset(解除))> <Jail理由>")
+            msg(sender, "§d§l/mjail <mcid> reset 釈放します")
+            return
+        }
+
         //mjail <forest611> <100d> <reason>
-        if (!args.isNullOrEmpty() && args.size == 3) {
+        if (args.size == 3 || (args[1] == "reset" && args.size == 2)) {
 
             val pData = ProxyServer.getInstance().getPlayer(args[0])
 
@@ -28,13 +34,12 @@ object JailCommand : Command("mjail", "bungeemanager.jail") {
 
                 punishment(data, args, sender)
                 return
-
             }
 
             val pair = PlayerData.get(args[0])
 
             if (pair == null) {
-                sendMessage(sender, "§4存在しないユーザーです")
+                msg(sender, "§4存在しないユーザーです")
                 return
             }
 
@@ -42,14 +47,9 @@ object JailCommand : Command("mjail", "bungeemanager.jail") {
                 punishment(pair.first, args, sender)
             }.start()
 
-
             return
 
         }
-
-        sendMessage(sender, "§d§l/mjail <mcid> <期間+(d/h/m/0k/reset(解除))> <Jail理由>")
-        sendMessage(sender, "§d§l/mjail <mcid> reset 釈放します")
-
     }
 
     private fun punishment(data: PlayerData, args: Array<out String>, sender: CommandSender) {
@@ -58,10 +58,9 @@ object JailCommand : Command("mjail", "bungeemanager.jail") {
 
             data.resetJail()
             playerDataDic[data.uuid] = data
-            sendGlobalMessage("§c§l${data.mcid}は釈放されました")
+            globalMessage("§c§l${data.mcid}は釈放されました")
             return
         }
-
 
         val unit = args[1][args[1].length - 1]
 
@@ -69,12 +68,12 @@ object JailCommand : Command("mjail", "bungeemanager.jail") {
         try {
             time = args[1].replace(unit.toString(), "").toInt()
         } catch (e: Exception) {
-            sendMessage(sender, "§c§l時間の指定方法が不適切です")
+            msg(sender, "§c§l時間の指定方法が不適切です")
             return
         }
 
         if (!data.isJailed() && time < 0) {
-            sendMessage(sender, "§c§lこのユーザーは既に釈放されています！")
+            msg(sender, "§c§lこのユーザーは既に釈放されています！")
             return
         }
 
@@ -86,29 +85,16 @@ object JailCommand : Command("mjail", "bungeemanager.jail") {
             'k' -> data.addJailTime(0, 0, 383512)
 
             else -> {
-                sendMessage(sender, "§c§l時間の指定方法が不適切です")
+                msg(sender, "§c§l時間の指定方法が不適切です")
                 return
             }
 
         }
 
+        msg(sender,"§c§l${data.mcid}は「${args[2]}」の理由により、300ポイント引かれ、Jailされました！")
 
-//        2023/02/11 Jailメッセージを非表示に
-
-//        if (!data.isJailed()) {
-//            sendGlobalMessage("§c§l${data.mcid}は釈放されました")
-//            playerDataDic[data.uuid] = data
-//            return
-//        }
-
-//        sendGlobalMessage("§c§l${data.mcid}は「${args[2]}」の理由により、300ポイント引かれ、Jailされました！")
-//        sendGlobalMessage("§c§l釈放日:${SimpleDateFormat("yyyy/MM/dd").format(data.jailUntil)}")
         ScoreDatabase.giveScore(data.mcid, -300, "${args[2]}によりJail", sender)
 
-//        if (unit == 'k') {
-//            sendGlobalMessage("§c1050年地下行きっ・・・・・・・・！")
-//        }
-        
         playerDataDic[data.uuid] = data
 
         Man10BungeePlugin.discord.jail("${data.mcid}は「${args[2]}」の理由によりJailされました！(処罰者:${sender.name})")
@@ -117,6 +103,7 @@ object JailCommand : Command("mjail", "bungeemanager.jail") {
         val p = ProxyServer.getInstance().getPlayer(data.mcid)
 
         if (p != null) {
+            msg(p,"§c§lあなたは「${args[2]}」の理由により、300ポイント引かれ、島流しにされました！")
             plugin.sendToJail(p)
             return
         }

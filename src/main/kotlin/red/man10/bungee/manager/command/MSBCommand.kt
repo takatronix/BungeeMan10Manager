@@ -6,9 +6,8 @@ import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.plugin.Command
 import red.man10.bungee.manager.Man10BungeePlugin
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.msbMessage
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.msg
 import red.man10.bungee.manager.PlayerData
-import red.man10.bungee.manager.db.ScoreDatabase
 import java.text.SimpleDateFormat
 
 object MSBCommand : Command("msb","bungeemanager.msb"){
@@ -34,7 +33,7 @@ object MSBCommand : Command("msb","bungeemanager.msb"){
                 val pair = PlayerData.get(args[0])
 
                 if (pair ==null){
-                    sendMessage(sender, "§4存在しないユーザーです")
+                    msg(sender, "§4存在しないユーザーです")
                     return@Thread
                 }
 
@@ -45,8 +44,8 @@ object MSBCommand : Command("msb","bungeemanager.msb"){
 
         }
 
-        sendMessage(sender, "§d§l/msb <mcid> <期間+(d/h/m/0k/reset(解除))> <理由>")
-        sendMessage(sender, "§d§l/msb <mcid> reset MSB解除")
+        msg(sender, "§d§l/msb <mcid> <期間+(d/h/m/0k/reset(解除))> <理由>")
+        msg(sender, "§d§l/msb <mcid> reset MSB解除")
 
 
         return
@@ -58,7 +57,7 @@ object MSBCommand : Command("msb","bungeemanager.msb"){
 
             data.resetMSB()
             Man10BungeePlugin.playerDataDic[data.uuid] = data
-            sendMessage(sender,"§c§l${data.mcid}はMSB解除されました")
+            msg(sender,"§c§l${data.mcid}はMSB解除されました")
             return
         }
 
@@ -69,12 +68,12 @@ object MSBCommand : Command("msb","bungeemanager.msb"){
         try {
             time = args[1].replace(unit.toString(), "").toInt()
         } catch (e: Exception) {
-            sendMessage(sender, "§c§l時間の指定方法が不適切です")
+            msg(sender, "§c§l時間の指定方法が不適切です")
             return
         }
 
         if (!data.isMSB() && time <0){
-            sendMessage(sender, "§c§lこのユーザーは既にMSB解除されています！")
+            msg(sender, "§c§lこのユーザーは既にMSB解除されています！")
             return
         }
 
@@ -86,14 +85,14 @@ object MSBCommand : Command("msb","bungeemanager.msb"){
             'k' ->data.addMSBTime(0,0,383512)
 
             else -> {
-                sendMessage(sender, "§c§l時間の指定方法が不適切です")
+                msg(sender, "§c§l時間の指定方法が不適切です")
                 return
             }
 
         }
 
         if (!data.isMSB()){
-            sendMessage(sender,"§c§l${data.mcid}はMSB解除されました")
+            msg(sender,"§c§l${data.mcid}はMSB解除されました")
             Man10BungeePlugin.playerDataDic[data.uuid] = data
             return
         }

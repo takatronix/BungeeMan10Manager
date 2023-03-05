@@ -1,9 +1,10 @@
 package red.man10.bungee.manager
 
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import red.man10.bungee.manager.Man10BungeePlugin.Companion.plugin
-import red.man10.bungee.manager.Man10BungeePlugin.Companion.sendMessage
+import red.man10.bungee.manager.Man10BungeePlugin.Companion.msg
 import red.man10.bungee.manager.db.MySQLManager
 import java.text.SimpleDateFormat
 import java.util.*
@@ -165,17 +166,12 @@ class PlayerData(val uuid: UUID, val mcid: String) {
 
         val rs = mysql.query("SELECT * from player_data where uuid='$uuid';")
 
+        //初回ログイン
         if (rs == null || !rs.next()) {
 
-//            mysql.execute("INSERT INTO player_data " +
-//                    "(uuid, mcid, freeze_until, mute_until, jail_until, ban_until, score) " +
-//                    "VALUES ('$uuid', '$mcid', null, null, null, null, DEFAULT)")
-//
-//            plugin.logger.info("create $mcid's data.")
-
-            Thread.sleep(1000)
-
             val p = ProxyServer.getInstance().getPlayer(uuid) ?: return
+
+            Thread.sleep(5000)
 
             showAuthenticationMsg(p)
 
@@ -288,8 +284,11 @@ class PlayerData(val uuid: UUID, val mcid: String) {
 
             codeMap[p] = code
 
-            sendMessage(p, "§f§lこの数字をチャットに入力してください => §a§l$code")
-            sendMessage(p, "§f(Please enter this 6-digit number.)")
+            msg(p, "§f§lこの数字をチャットに入力してください => §a§l$code")
+            msg(p, "§f(Please enter this 6-digit number.)")
+            p.sendTitle(plugin.proxy.createTitle()
+                .title(*ComponentBuilder("§6§l${code}").create())
+                .subTitle(*ComponentBuilder("§6§l↑チャットに数字を入れよう！↑").create()))
         }
 
         fun checkCode(p: ProxiedPlayer, msg: String): Boolean {
