@@ -102,6 +102,11 @@ class DiscordBot : ListenerAdapter() {
     }
 
     fun setup() {
+
+        Thread{
+            chatQueueThread()
+        }.start()
+
         plugin.log("discord setup")
 
         if (!::token.isInitialized) {
@@ -133,7 +138,9 @@ class DiscordBot : ListenerAdapter() {
         plugin.log("discord setup done!")
     }
 
-    fun chatQueueThread(){
+    private fun chatQueueThread(){
+
+        log("チャットキューの起動")
 
         while (true){
             try {
