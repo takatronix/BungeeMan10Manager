@@ -171,8 +171,7 @@ class DiscordBot : ListenerAdapter() {
 
         //      まんぼ君の場合の処理
         if (user.idLong == AIBotID){
-            val outText = "§f[§3まんぼ§f]§b:§f$text"
-            Man10BungeePlugin.globalMessage(outText)
+            Man10BungeePlugin.globalMessage(text)
             return
         }
 
