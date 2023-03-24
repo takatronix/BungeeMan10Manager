@@ -34,6 +34,8 @@ class DiscordBot : ListenerAdapter() {
     var reportChannelID: Long = 0
     var jailChannelID: Long = 0
 
+    var AIBotID : Long = 0
+
     private var chatChannel: TextChannel? = null
     private var systemChannel: TextChannel? = null
     private var logChannel: TextChannel? = null
@@ -161,13 +163,20 @@ class DiscordBot : ListenerAdapter() {
         val message = event.message
         val user = message.author
 
-        if (user.isBot) return
-
         val channel = message.channel
 
         if (channel.idLong != chatChannelID) return
 
         val text = message.contentDisplay
+
+        //      まんぼ君の場合の処理
+        if (user.idLong == AIBotID){
+            val outText = "§f[§3まんぼ§f]§b:§f$text"
+            Man10BungeePlugin.globalMessage(outText)
+            return
+        }
+
+        if (user.isBot) return
 
         val outText = "§f[§3@Discord§f]${event.member?.nickname ?: user.name}§b:§f$text"
         Man10BungeePlugin.globalMessage(outText)

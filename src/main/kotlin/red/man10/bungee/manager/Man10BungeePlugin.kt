@@ -63,7 +63,11 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
         fun globalMessage(text: String) {
             plugin.log("[Global]$text")
 
-            val outText = if (text.length > 256) "※省略されました" else text
+            val outText = if (text.length > 128){
+                "${text.substring(0, 16)}..."
+            } else{
+                text
+            }
 
             for (player in ProxyServer.getInstance().players) {
                 player.sendMessage(TextComponent(outText))
@@ -163,6 +167,9 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
             discord.adminChannelID = config.getLong("Discord.AdminChannel")
             discord.reportChannelID = config.getLong("Discord.ReportChannel")
             discord.jailChannelID = config.getLong("Discord.JailChannel")
+
+            discord.AIBotID = config.getLong("Discord.AIBot")
+
             discord.discordEvent = this
             discord.setup()
             //////////////////////////////////////////////
