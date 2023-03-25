@@ -28,6 +28,8 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
     companion object {
         private const val prefix = "§f[§dMan§f10§aBot§f]"
 
+        private const val maxWords = 200
+
         lateinit var plugin: Man10BungeePlugin
 
         var playerDataDic = ConcurrentHashMap<UUID, PlayerData>()
@@ -63,8 +65,8 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
         fun globalMessage(text: String) {
             plugin.log("[Global]$text")
 
-            val outText = if (text.length > 128){
-                "${text.substring(0, 16)}..."
+            val outText = if (text.length > maxWords){
+                "${text.substring(0, maxWords)}..."
             } else{
                 text
             }
