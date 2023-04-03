@@ -349,7 +349,7 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
             }
 
             //Banされてたら切断する
-            if (data.isBanned() && banIpList.contains(AltCheckCommand.getAddress(p))) {
+            if (data.isBanned() || banIpList.contains(AltCheckCommand.getAddress(p))) {
                 p.disconnect(
                     *ComponentBuilder(
                         "§4§lYou are banned. : あなたはこのサーバーからBanされています\n " +
