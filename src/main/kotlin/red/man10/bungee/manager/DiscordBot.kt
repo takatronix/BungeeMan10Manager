@@ -34,7 +34,7 @@ class DiscordBot : ListenerAdapter() {
     var reportChannelID: Long = 0
     var jailChannelID: Long = 0
 
-    var AIBotID : Long = 0
+    var AIBotID = mutableListOf<Long>()
 
     private var chatChannel: TextChannel? = null
     private var systemChannel: TextChannel? = null
@@ -169,8 +169,8 @@ class DiscordBot : ListenerAdapter() {
 
         val text = message.contentDisplay
 
-        //      まんぼ君の場合の処理
-        if (user.idLong == AIBotID){
+        //      まんぼ君などのBotの場合の処理
+        if (AIBotID.contains(user.idLong)){
             Man10BungeePlugin.globalMessage(text)
             return
         }
