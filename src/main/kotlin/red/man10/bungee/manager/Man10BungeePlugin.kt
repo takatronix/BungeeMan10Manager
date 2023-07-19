@@ -170,7 +170,7 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
             discord.reportChannelID = config.getLong("Discord.ReportChannel")
             discord.jailChannelID = config.getLong("Discord.JailChannel")
 
-            discord.AIBotID = config.getLong("Discord.AIBot")
+            discord.AIBotID = config.getLongList("Discord.AIBot")
 
             discord.discordEvent = this
             discord.setup()
