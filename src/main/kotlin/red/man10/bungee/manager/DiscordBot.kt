@@ -52,7 +52,8 @@ class DiscordBot : ListenerAdapter() {
     fun chat(text: String) {
         blockingQueue.add {
             if (text.indexOf("/") == 0) return@add
-            chatChannel?.sendMessage(text)?.queue()
+            val fixedText = text.replace("@","＠")
+            chatChannel?.sendMessage(fixedText)?.queue()
         }
     }
 
