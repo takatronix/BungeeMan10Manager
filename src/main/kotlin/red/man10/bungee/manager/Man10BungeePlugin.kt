@@ -266,7 +266,7 @@ class Man10BungeePlugin : Plugin(), Listener, IDiscordEvent {
         val chatMessage = "§f[§3@${p.server.info.name}§f]${p.name}§b:§f$noColorMessage"
 
         //discord用メッセージ
-        val discordMessage = "<${p.name}@${p.server.info.name}> ${removeColorCode(noColorMessage.replace("@",""))}"
+        val discordMessage = "<${p.name}@${p.server.info.name}> ${removeColorCode(noColorMessage.replace("@","＠"))}"
 
         ////////////////////////////////////////////////////
         //   ミュートされている場合チャット＆コマンドも禁止
