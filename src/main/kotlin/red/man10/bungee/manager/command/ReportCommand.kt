@@ -33,7 +33,7 @@ object ReportCommand : Command("report","bungeemanager.report"){
         val msgBuilder = StringBuilder()
 
         for (i in 1 until args.size){
-            msgBuilder.append(args[i]).append("\n")
+            msgBuilder.append(args[i]).append(" ")
         }
 
         val msg = msgBuilder.toString()
@@ -45,8 +45,8 @@ object ReportCommand : Command("report","bungeemanager.report"){
 
         lastSendReport[sender] = msg
 
-        val title = args[0] + "(Japanese:${(Japanizer.japanize(args[0], JapanizeType.GOOGLE_IME , Man10BungeePlugin.JapanizerDictionary)?:"")})"
-        val body = msg + "(Japanese:${(Japanizer.japanize(msg, JapanizeType.GOOGLE_IME ,Man10BungeePlugin.JapanizerDictionary)?:"")})"
+        val title = args[0] + "(${(Japanizer.japanize(args[0], JapanizeType.GOOGLE_IME , Man10BungeePlugin.JapanizerDictionary)?:"")})"
+        val body = msg + "(${(Japanizer.japanize(msg, JapanizeType.GOOGLE_IME ,Man10BungeePlugin.JapanizerDictionary)?:"")})"
 
         val text = StringBuilder()
 
