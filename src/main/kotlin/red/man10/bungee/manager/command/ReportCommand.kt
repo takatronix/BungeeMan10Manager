@@ -17,7 +17,7 @@ object ReportCommand : Command("report","bungeemanager.report"){
 
         if (sender == null)return
 
-        if (args == null || args.size != 2){
+        if (args == null || args.size < 2){
             msg(sender,"§a§l〜サーバーへ報告をする〜")
             msg(sender,"§a/report <タイトル> <本文>")
             msg(sender,"§d不具合のの報告や、あらしをしていた場合に報告をしてください。")
@@ -30,16 +30,23 @@ object ReportCommand : Command("report","bungeemanager.report"){
 
         val last = lastSendReport[sender]
 
+        val msgBuilder = StringBuilder()
 
-        if (last != null &&last == args[1]){
+        for (i in 1 until args.size){
+            msgBuilder.append(args[i]).append("\n")
+        }
+
+        val msg = msgBuilder.toString()
+
+        if (last != null &&last == msg){
             msg(sender,"§c§l同じ内容を複数回レポートすることはできません")
             return
         }
 
-        lastSendReport[sender] = args[1]
+        lastSendReport[sender] = msg
 
         val title = args[0] + "(Japanese:${(Japanizer.japanize(args[0], JapanizeType.GOOGLE_IME , Man10BungeePlugin.JapanizerDictionary)?:"")})"
-        val body = args[1] + "(Japanese:${(Japanizer.japanize(args[1], JapanizeType.GOOGLE_IME ,Man10BungeePlugin.JapanizerDictionary)?:"")})"
+        val body = msg + "(Japanese:${(Japanizer.japanize(msg, JapanizeType.GOOGLE_IME ,Man10BungeePlugin.JapanizerDictionary)?:"")})"
 
         val text = StringBuilder()
 
