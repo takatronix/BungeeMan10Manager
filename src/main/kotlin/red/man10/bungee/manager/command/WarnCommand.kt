@@ -60,7 +60,7 @@ object WarnCommand : Command("mwarn", "bungeemanager.warn") {
 
         if (p != null) {
             msg(p,"§c§lあなたは「${reason}」の理由により、${score}ポイント引かれ、警告されました！")
-            Man10BungeePlugin.plugin.sendToJail(p)
+//            Man10BungeePlugin.plugin.sendToJail(p)
             return
         }
     }

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/BungeeMan10Manage.iml" filepath="$PROJECT_DIR$/.idea/BungeeMan10Manage.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/BungeeMan10Manager.main.iml" filepath="$PROJECT_DIR$/.idea/modules/BungeeMan10Manager.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/red.man10.BungeeMan10Manager.main.iml" filepath="$PROJECT_DIR$/.idea/modules/red.man10.BungeeMan10Manager.main.iml" />
     </modules>
   </component>
 </project>
